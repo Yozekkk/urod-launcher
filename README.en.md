@@ -15,7 +15,7 @@
   <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-arch.svg" alt="Arch Linux downloads" width="290"></a>
 </p>
 
-> These buttons lead to the release page. Version 0.1.0 installers are available through [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/workflows/check.yml) after the workflow succeeds. No release has been published, so direct release file links are unavailable. Version 0.1.0 is not declared Stable.
+> These buttons lead to the release page. Version 0.1.0 installers were built in [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), but no release has been published; direct release file links are therefore unavailable. Version 0.1.0 is not declared Stable.
 
 <p align="center"><img src="docs/screenshots/urod-0.1.0/home.png" alt="Real UrodLauncher home screen" width="1000"></p>
 

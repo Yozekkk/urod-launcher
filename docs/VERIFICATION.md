@@ -7,13 +7,13 @@ Checked on 2026-10-13 and 2026-10-14 in an EndeavourOS desktop session. This is 
 - `pnpm install --frozen-lockfile`, Vue/TypeScript, ESLint, Prettier and 17 frontend tests passed.
 - Rust fmt for the three UrodLauncher packages, check, Clippy with warnings denied and workspace package tests passed. Some inherited live-network and credential-vault tests are intentionally ignored by default. Formatting the vendored upstream workspaces with the root toolchain produces unrelated differences and is not part of this check.
 - The native boundary audit and release package naming test passed.
-- Before the GitHub repository was recreated, CI built a Windows NSIS installer, installed and inspected the Debian package on Ubuntu, and installed and inspected the Arch package in an Arch container. Local backup copies of those three CI artifacts have SHA-256 hashes below. A fresh run in the recreated repository must be checked separately:
+- [GitHub Actions run 38515455380](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380) completed successfully in the recreated repository. The Windows NSIS installer was built and uploaded; the Debian package was installed and inspected on Ubuntu; the Arch package was installed and inspected in an Arch container. The three downloaded CI artifacts have SHA-256 hashes:
 
   | Package | SHA-256 |
   | --- | --- |
-  | `UrodLauncher-Setup-0.1.0.exe` | `cfab6ab101d2a235b57a6804411ffe29fcd2e8cdb126f1a829a397d6a207c38f` |
-  | `UrodLauncher-0.1.0-amd64.deb` | `8f05ce20553de8bb57fa4f4b5c37e8a42a43ec89640c0af3bf2683627816c197` |
-  | `UrodLauncher-0.1.0-x86_64.pkg.tar.zst` | `ba985209e8cf17dd9da588d60c8185d65be156c9d1d58da7efd10a007a417ac3` |
+  | `UrodLauncher-Setup-0.1.0.exe` | `79fabb1c38b25f7e97332a1e9d114f88e167d71b07f127f11cac049783379ed3` |
+  | `UrodLauncher-0.1.0-amd64.deb` | `bbde5b2b6aeab6583d3be84e9443f1447e5f419813b80a12d6d20d52de23861e` |
+  | `UrodLauncher-0.1.0-x86_64.pkg.tar.zst` | `ed017bc2d3362bcb4857485ef821e1d5f70ce1b5e6b2ce60a3d9faa3f27926b0` |
 - The Microsoft OAuth/Xbox/Minecraft and Ely.by deterministic auth suites exercise the inherited real pipeline against controlled network responses. They do not constitute live sign-in.
 - The new skin-library test saves two skins, switches the active Offline skin, reloads persisted data, resets and deletes it.
 

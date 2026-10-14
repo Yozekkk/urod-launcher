@@ -15,7 +15,7 @@
   <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-arch.svg" alt="Загрузки Arch Linux" width="290"></a>
 </p>
 
-> Кнопки ведут на страницу релизов. Сборки установщиков 0.1.0 доступны через [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/workflows/check.yml) после успешного выполнения проверки. Релиз ещё не опубликован; поэтому прямых ссылок на файлы релиза нет. Версия 0.1.0 не объявлена Stable.
+> Кнопки ведут на страницу релизов. Установщики 0.1.0 собраны в [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), но релиз ещё не опубликован; поэтому прямых ссылок на файлы релиза нет. Версия 0.1.0 не объявлена Stable.
 
 <p align="center"><img src="docs/screenshots/urod-0.1.0/home.png" alt="Настоящий снимок главной страницы UrodLauncher" width="1000"></p>
 
