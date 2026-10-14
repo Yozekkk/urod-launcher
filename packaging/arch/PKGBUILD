@@ -1,0 +1,21 @@
+# Maintainer: UrodLauncher contributors
+pkgname=urod-launcher
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Minecraft launcher for the Gorod Urodov community'
+arch=('x86_64')
+url='https://github.com/Yozekkk/urod-launcher'
+license=('GPL-3.0-only')
+depends=('webkit2gtk-4.1' 'gtk3' 'libayatana-appindicator' 'openssl' 'xdg-utils')
+options=('!strip')
+source=()
+sha256sums=()
+
+package() {
+  local root="${startdir}/../.."
+  install -Dm755 "${root}/target/release/UrodLauncher" "${pkgdir}/usr/bin/urod-launcher"
+  install -Dm644 "${root}/packaging/arch/urod-launcher.desktop" "${pkgdir}/usr/share/applications/urod-launcher.desktop"
+  install -Dm644 "${root}/apps/app/icons/256x256.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/urod-launcher.png"
+  install -Dm644 "${root}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 "${root}/NOTICE.md" "${pkgdir}/usr/share/doc/${pkgname}/NOTICE.md"
+}

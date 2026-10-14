@@ -1,0 +1,15 @@
+{
+	"name": "urod-launcher",
+	"version": "0.1.0",
+	"private": true,
+	"license": "GPL-3.0-only",
+	"packageManager": "pnpm@10.30.3",
+	"scripts": {
+		"app:dev": "pnpm --filter @urod/app dev",
+		"app:build": "pnpm --filter @urod/app build",
+		"prepr:frontend:app": "pnpm --filter @urod/app-frontend check",
+		"typecheck": "pnpm --filter @urod/app-frontend typecheck",
+		"lint": "pnpm --filter @urod/app-frontend lint",
+		"build": "pnpm --filter @urod/app-frontend build"
+	}
+}

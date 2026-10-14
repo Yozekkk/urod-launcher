@@ -1,0 +1,55 @@
+name: Draft desktop release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    uses: ./.github/workflows/check.yml
+
+  draft:
+    needs: packages
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*-package'
+          path: release-assets
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-installer
+          path: release-assets
+      - name: Validate names and add GPL source and checksums
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import { releaseNames } from './scripts/release-assets.mjs';
+          const tag = process.env.RELEASE_TAG;
+          const names = releaseNames(tag);
+          for (const file of [names.windows, names.debian, names.arch]) {
+            const stat = fs.statSync(`release-assets/${file}`);
+            if (!stat.isFile() || !stat.size) throw new Error(`Missing package ${file}`);
+          }
+          const config = JSON.parse(fs.readFileSync('apps/app/tauri.conf.json', 'utf8'));
+          if (config.version !== tag.slice(1)) throw new Error('Tag does not match app version');
+          JS
+          git archive --format=tar.gz --prefix="UrodLauncher-${RELEASE_TAG}/" --output="release-assets/UrodLauncher-${RELEASE_TAG}-source.tar.gz" HEAD
+          cd release-assets
+          sha256sum UrodLauncher-* > SHA256SUMS.txt
+          sha256sum -c SHA256SUMS.txt
+      - name: Create reviewable draft only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "UrodLauncher $RELEASE_TAG" --notes "Installer packages and GPL source. Automated checks passed. This draft requires manual release review. Signed in-app updates are not configured."

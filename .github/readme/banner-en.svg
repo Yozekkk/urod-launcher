@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+<title id="title">UrodLauncher — Minecraft launcher for Gorod Urodov</title>
+<desc id="desc">Typography banner with the original UrodLauncher vector mark.</desc>
+<defs>
+<linearGradient id="bg" x2="1" y2="1"><stop stop-color="#20242b"/><stop offset="1" stop-color="#11151b"/></linearGradient>
+<linearGradient id="red" x2="1" y2="1"><stop stop-color="#ff645d"/><stop offset="1" stop-color="#a51123"/></linearGradient>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity=".045"/></pattern>
+</defs>
+<rect width="1200" height="320" rx="28" fill="url(#bg)"/>
+<rect width="1200" height="320" rx="28" fill="url(#grid)"/>
+<path d="M1200 0h-160l-230 320h390z" fill="#d73547" opacity=".08"/>
+<path d="M1200 0h-92L878 320h92z" fill="#ff645d" opacity=".06"/>
+<rect x="58" y="48" width="224" height="224" rx="48" fill="#17191d" stroke="#ffffff" stroke-opacity=".1"/>
+<g transform="translate(58 48) scale(.875)">
+<path d="M45 58h38v111c0 23 18 42 45 42s45-19 45-42V58h38v111c0 45-35 77-83 77s-83-32-83-77z" fill="url(#red)"/>
+<path d="M45 58V29h32v13h25V29h32v13h25V29h32v13h20v16z" fill="#ff645d"/>
+<path d="M113 109h30v42h-30z" fill="#17191d"/>
+</g>
+<rect x="327" y="77" width="52" height="5" rx="2.5" fill="#e64b57"/>
+<text x="327" y="164" fill="#f7f8fa" font-family="DejaVu Sans,Arial,sans-serif" font-size="61" font-weight="800" letter-spacing="-2">UrodLauncher</text>
+<text x="330" y="215" fill="#c1c7d0" font-family="DejaVu Sans,Arial,sans-serif" font-size="25">Minecraft launcher for Gorod Urodov</text>
+<text x="331" y="252" fill="#e16d73" font-family="DejaVu Sans,Arial,sans-serif" font-size="16" letter-spacing="3">COMMUNITY · YOUR WORLDS · YOUR RULES</text>
+</svg>

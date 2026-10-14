@@ -1,0 +1,133 @@
+name: Desktop checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Install Linux desktop libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y build-essential pkg-config libssl-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf xdg-utils
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm prepr:frontend:app
+      - run: pnpm build
+      - run: node --test scripts/release-assets.test.mjs
+      - run: cargo fmt --package urod-launcher --package urod-app-lib --package urod-launcher-core --check
+      - run: cargo check --locked -p urod-launcher -p urod-app-lib -p urod-launcher-core --all-targets
+      - run: cargo clippy --locked -p urod-launcher -p urod-app-lib -p urod-launcher-core --all-targets --no-deps -- -D warnings
+      - run: cargo test --locked -p urod-launcher -p urod-app-lib -p urod-launcher-core
+      - run: node scripts/check-stage2-boundary.mjs
+
+  windows:
+    needs: verify
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm app:build --bundles nsis --config tauri.ci.conf.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: target/release/bundle/nsis/UrodLauncher-Setup-*.exe
+          if-no-files-found: error
+
+  debian:
+    needs: verify
+    runs-on: ubuntu-22.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y build-essential pkg-config libssl-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf xdg-utils
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm app:build --bundles deb --config tauri.ci.conf.json
+      - name: Install and inspect Debian package
+        run: |
+          deb=$(find target/release/bundle/deb -maxdepth 1 -name 'UrodLauncher-*-amd64.deb' -print -quit)
+          test -n "$deb"
+          dpkg-deb --info "$deb"
+          sudo apt-get install -y "./$deb"
+          package=$(dpkg-deb --field "$deb" Package)
+          dpkg -L "$package" | grep '/usr/bin/'
+          dpkg -L "$package" | grep '/usr/share/applications/'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: debian-package
+          path: target/release/bundle/deb/UrodLauncher-*-amd64.deb
+          if-no-files-found: error
+
+  arch:
+    needs: verify
+    runs-on: ubuntu-22.04
+    container: archlinux:base-devel
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arch build dependencies
+        run: |
+          pacman -Syu --noconfirm --needed rust nodejs npm webkit2gtk-4.1 gtk3 libayatana-appindicator openssl xdg-utils librsvg patchelf pkgconf git
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm app:build --no-bundle --config tauri.ci.conf.json
+      - name: Build and inspect pacman package
+        run: |
+          useradd -m builder
+          chown -R builder:builder packaging/arch
+          su builder -s /bin/bash -c 'cd packaging/arch && makepkg --force --nodeps --nocheck'
+          mkdir -p target/release/bundle/arch
+          cp packaging/arch/*.pkg.tar.zst target/release/bundle/arch/UrodLauncher-0.1.0-x86_64.pkg.tar.zst
+          pacman -Qp target/release/bundle/arch/*.pkg.tar.zst
+          bsdtar -tf target/release/bundle/arch/*.pkg.tar.zst | grep 'usr/bin/urod-launcher'
+          pacman -U --noconfirm target/release/bundle/arch/*.pkg.tar.zst
+          pacman -Q urod-launcher
+          test -x /usr/bin/urod-launcher
+          test -f /usr/share/applications/urod-launcher.desktop
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arch-package
+          path: target/release/bundle/arch/UrodLauncher-*-x86_64.pkg.tar.zst
+          if-no-files-found: error

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=UrodLauncher
+Comment=Minecraft launcher for the Gorod Urodov community
+Comment[ru]=Minecraft-лаунчер Города Уродов
+Exec=urod-launcher %u
+Icon=urod-launcher
+Terminal=false
+Type=Application
+Categories=Game;
+MimeType=x-scheme-handler/urodlauncher;
+StartupWMClass=UrodLauncher

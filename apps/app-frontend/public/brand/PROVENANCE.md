@@ -1,0 +1,1 @@
+The geometric UrodLauncher U icon was created for this project as an original, unofficial vector mark. It is not an approved symbol of the Gorod Urodov community. The launcher background and README banners use CSS and hand-authored SVG graphics, with no generated illustrations.

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+target/
+.env
+.env.*
+!*.example
+verification/
+release-assets/
+*.log
+.DS_Store
+apps/app/gen/
+apps/app/icons/android/
+apps/app/icons/ios/
+packaging/arch/pkg/
+packaging/arch/src/
+packaging/arch/*.pkg.tar.zst
