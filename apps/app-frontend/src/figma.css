@@ -540,6 +540,88 @@
 	border-radius: 12px;
 	background: var(--figma-border);
 }
+.figma-java-panel {
+	gap: 14px;
+	padding-top: 9px;
+}
+.figma-java-section {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+.figma-java-section h2 {
+	margin: 0;
+	font:
+		600 18px/22px Geologica,
+		sans-serif;
+}
+.figma-java-card {
+	min-height: 109px;
+	padding: 21px 18px;
+	border-radius: 20px;
+	background: var(--figma-panel);
+}
+.figma-java-path {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+}
+.figma-java-path input {
+	min-width: 0;
+	flex: 1;
+	height: 29px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 20px;
+	background: var(--figma-control);
+	color: var(--figma-muted);
+	font:
+		400 14px Geologica,
+		sans-serif;
+	text-overflow: ellipsis;
+}
+.figma-java-path img {
+	width: 20px;
+	height: 20px;
+}
+.figma-java-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 8px;
+}
+.figma-java-actions button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 27px;
+	padding: 7px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--figma-control);
+	color: var(--figma-text);
+	font:
+		600 10px/13px Geologica,
+		sans-serif;
+	white-space: nowrap;
+	cursor: pointer;
+}
+.figma-java-actions button:disabled {
+	opacity: 0.65;
+	cursor: not-allowed;
+}
+.figma-java-actions button img {
+	width: 15px;
+	height: 15px;
+}
+.figma-java-message {
+	margin: 0;
+	color: var(--figma-muted);
+	font:
+		400 12px/1.25 Geologica,
+		sans-serif;
+}
 .figma-resource-panel {
 	gap: 0;
 	padding-top: 2px;
@@ -635,6 +717,7 @@
 	.figma-settings-body {
 		left: 240px;
 		right: 24px;
+		bottom: 24px;
 		scrollbar-width: thin;
 		scrollbar-color: var(--figma-border) transparent;
 	}
@@ -647,6 +730,12 @@
 	.figma-settings-window {
 		width: calc(100% - 20px);
 		margin: 10px;
+	}
+	.figma-java-card {
+		min-height: 109px;
+	}
+	.figma-java-actions {
+		flex-wrap: wrap;
 	}
 }
 body {

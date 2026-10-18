@@ -303,8 +303,17 @@ const activeAccount = computed(() => snapshot.value?.accounts.find((account) => 
 const selectedAccount = computed(() =>
 	snapshot.value?.accounts.find((account) => account.uuid === selectedUuid.value),
 )
+function serializeSettings(value: Settings | null | undefined) {
+	return JSON.stringify(value, (_key, item) =>
+		item && typeof item === 'object' && !Array.isArray(item)
+			? Object.fromEntries(
+					Object.entries(item).sort(([left], [right]) => left.localeCompare(right)),
+				)
+			: item,
+	)
+}
 const settingsChanged = computed(
-	() => JSON.stringify(draft.value) !== JSON.stringify(snapshot.value?.settings),
+	() => serializeSettings(draft.value) !== serializeSettings(snapshot.value?.settings),
 )
 const usernameValid = (value: string) => /^[A-Za-z0-9_]{3,16}$/.test(value)
 const accountType = (account: Account) =>
@@ -465,7 +474,7 @@ async function loadSkin(account: Account, force = false) {
 function applySnapshot(result: Snapshot) {
 	const pendingSettings = draft.value && settingsChanged.value ? draft.value : null
 	snapshot.value = result
-	if (!pendingSettings || JSON.stringify(pendingSettings) === JSON.stringify(result.settings))
+	if (!pendingSettings || serializeSettings(pendingSettings) === serializeSettings(result.settings))
 		draft.value = {
 			...result.settings,
 			release_channel: result.settings.release_channel || 'stable',
@@ -597,6 +606,10 @@ async function pickDefaultJava() {
 	} catch (reason) {
 		error.value = errorMessage(reason)
 	}
+}
+function updateDefaultJavaPath(major: number, path: string) {
+	if (!draft.value) return
+	draft.value.java_paths = { ...draft.value.java_paths, [major]: path }
 }
 async function saveSettings() {
 	if (!draft.value) return
@@ -1203,9 +1216,8 @@ onUnmounted(() => {
 						:changed="settingsChanged"
 						@close="setPage('library')"
 						@save="saveSettings"
-						@pick-java="pickDefaultJava"
 						@update-memory="draft.memory_mb = $event"
-						@update-java="draft.java_path = $event"
+						@update-java-path="updateDefaultJavaPath"
 					/>
 					<details class="figma-settings-legacy">
 						<summary>Другие настройки лаунчера</summary>

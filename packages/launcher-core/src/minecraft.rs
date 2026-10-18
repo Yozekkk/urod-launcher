@@ -606,6 +606,15 @@ impl Engine {
 		Ok(())
 	}
 	pub async fn launch(&self, instance_id: &str, identity: LaunchIdentity) -> Result<RunningGame> {
+		self.launch_with_java_paths(instance_id, identity, &std::collections::BTreeMap::new())
+			.await
+	}
+	pub async fn launch_with_java_paths(
+		&self,
+		instance_id: &str,
+		identity: LaunchIdentity,
+		java_paths: &std::collections::BTreeMap<u32, String>,
+	) -> Result<RunningGame> {
 		let _guard = self.mutation.lock().await;
 		self.ensure_stopped(instance_id).await?;
 		let mut instance = self.instance(instance_id).await?;
@@ -633,6 +642,8 @@ impl Engine {
 			|| info.java_version.as_ref().map_or(8, |v| v.major_version),
 			|m| m.java.major,
 		);
+		let mut java_instance = instance.clone();
+		apply_default_java_path(&mut java_instance.java_path, java_major, java_paths);
 		if let Some(m) = &edition
 			&& (instance.memory_mb < m.memory.minimum_mb
 				|| instance.memory_mb > m.memory.maximum_mb)
@@ -643,7 +654,7 @@ impl Engine {
 		}
 
 		let java_op = self.begin("java", Some(instance_id));
-		let resolved = self.choose_java(&instance, java_major, &java_op).await;
+		let resolved = self.choose_java(&java_instance, java_major, &java_op).await;
 		java_op.finish(&resolved);
 		let java = resolved?;
 		let runtime = self.root.join("minecraft");
@@ -1143,8 +1154,38 @@ impl Drop for SecretMap {
 	}
 }
 
+fn apply_default_java_path(
+	instance_path: &mut Option<String>,
+	required: u32,
+	java_paths: &std::collections::BTreeMap<u32, String>,
+) {
+	if instance_path.as_deref().is_none_or(str::is_empty)
+		&& let Some(path) = java_paths
+			.get(&required)
+			.filter(|path| !path.trim().is_empty())
+	{
+		*instance_path = Some(path.clone());
+	}
+}
+
 #[cfg(test)]
 mod tests {
+	#[test]
+	fn configured_java_path_uses_required_major_and_keeps_pack_override() {
+		let paths = std::collections::BTreeMap::from([
+			(21, "/java-21/bin/java".to_string()),
+			(25, "/java-25/bin/java".to_string()),
+		]);
+		let mut automatic = None;
+		super::apply_default_java_path(&mut automatic, 25, &paths);
+		assert_eq!(automatic.as_deref(), Some("/java-25/bin/java"));
+		let mut override_path = Some("/pack-specific/java".to_string());
+		super::apply_default_java_path(&mut override_path, 21, &paths);
+		assert_eq!(override_path.as_deref(), Some("/pack-specific/java"));
+		let mut missing = None;
+		super::apply_default_java_path(&mut missing, 17, &paths);
+		assert!(missing.is_none());
+	}
 	#[cfg(target_os = "linux")]
 	#[test]
 	fn unicode_native_directory_has_private_ascii_alias_until_cleanup() {

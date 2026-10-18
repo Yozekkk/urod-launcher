@@ -391,11 +391,8 @@ pub async fn core_launch(
 		.login
 		.try_lock()
 		.map_err(|_| "Дождитесь завершения операции с аккаунтом".to_string())?;
-	let account = state
-		.store()
-		.await?
-		.snapshot()
-		.await?
+	let snapshot = state.store().await?.snapshot().await?;
+	let account = snapshot
 		.accounts
 		.into_iter()
 		.find(|a| a.active)
@@ -438,7 +435,7 @@ pub async fn core_launch(
 		xuid: None,
 		authlib_injector,
 	};
-	let launch = e.launch(&instance_id, identity);
+	let launch = e.launch_with_java_paths(&instance_id, identity, &snapshot.settings.java_paths);
 	tokio::pin!(launch);
 	let mut tick = tokio::time::interval(std::time::Duration::from_millis(500));
 	loop {
@@ -785,6 +782,17 @@ pub async fn core_resume_edition_install(
 	))
 }
 
+#[tauri::command]
+pub async fn core_java_runtimes(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+) -> Result<Vec<urod_launcher_core::JavaRuntime>> {
+	engine(&window, &state)
+		.await?
+		.java_runtimes()
+		.await
+		.map_err(core_error)
+}
 #[tauri::command]
 pub async fn core_pick_java(
 	window: tauri::WebviewWindow,

@@ -174,6 +174,7 @@ export type UpdatePlan = {
 
 export type JavaRuntime = { path: string; major: number; architecture: string }
 export const gameApi = {
+	javaRuntimes: () => invoke<JavaRuntime[]>('core_java_runtimes'),
 	pickJava: (instanceId: string | null = null) =>
 		invoke<JavaRuntime | null>('core_pick_java', { instanceId }),
 	selectJava: (instanceId: string, path: string) =>

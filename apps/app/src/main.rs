@@ -200,6 +200,23 @@ async fn save_settings(
 			.await
 			.map_err(core_commands::core_error)?;
 	}
+	for (major, path) in &settings.java_paths {
+		if path.trim().is_empty() {
+			continue;
+		}
+		let runtime = state
+			.engine()
+			.await?
+			.validate_java(path, None)
+			.await
+			.map_err(core_commands::core_error)?;
+		if runtime.major != *major {
+			return Err(format!(
+				"Выбранная Java {major} имеет версию {}",
+				runtime.major
+			));
+		}
+	}
 	state.store().await?.settings(settings).await
 }
 #[tauri::command]
@@ -564,6 +581,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		core_commands::core_categories,
 		core_commands::core_open_folder,
 		core_commands::pick_instance_icon,
+		core_commands::core_java_runtimes,
 		core_commands::core_pick_java,
 		core_commands::core_select_java,
 		core_commands::core_java_download,
@@ -630,6 +648,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		core_commands::core_categories,
 		core_commands::core_open_folder,
 		core_commands::pick_instance_icon,
+		core_commands::core_java_runtimes,
 		core_commands::core_pick_java,
 		core_commands::core_select_java,
 		core_commands::core_java_download,

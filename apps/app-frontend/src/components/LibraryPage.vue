@@ -304,7 +304,9 @@ async function createInstance() {
 			loader: loader.value,
 			loader_version: loader.value === 'vanilla' ? null : loaderVersion.value,
 			memory_mb: props.settings.memory_mb,
-			java_path: props.settings.java_path || null,
+			java_path: Object.values(props.settings.java_paths).some(Boolean)
+				? null
+				: props.settings.java_path || null,
 		})
 		createDialog.value?.close()
 		await loadInstances()

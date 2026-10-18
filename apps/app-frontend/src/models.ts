@@ -17,6 +17,7 @@ export type Settings = {
 	reduced_motion: boolean
 	memory_mb: number
 	java_path: string
+	java_paths: Record<string, string>
 	game_directory: string
 	auto_updates: boolean
 	release_channel: 'stable' | 'beta'

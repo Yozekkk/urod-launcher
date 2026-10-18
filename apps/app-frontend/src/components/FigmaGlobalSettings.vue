@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { displayError, gameApi } from '../game-api'
 import type { Settings } from '../models'
 
 type Section = 'global' | 'java' | 'resources'
@@ -12,12 +13,13 @@ defineProps<{
 const emit = defineEmits<{
 	close: []
 	save: []
-	pickJava: []
 	updateMemory: [value: number]
-	updateJava: [value: string]
+	updateJavaPath: [major: number, path: string]
 }>()
 const section = ref<Section>('global')
 const localChanged = ref(false)
+const javaBusy = ref(false)
+const javaMessage = ref('')
 const memoryMax = 32768
 const syncRows = [
 	['Синхронизация настроек игры', 'Использовать одинаковые настройки игры в сборках.'],
@@ -33,13 +35,45 @@ function updateMemory(event: Event) {
 	localChanged.value = true
 	emit('updateMemory', Number((event.target as HTMLInputElement).value))
 }
-function updateJava(event: Event) {
+function updateJavaPath(major: number, event: Event) {
 	localChanged.value = true
-	emit('updateJava', (event.target as HTMLInputElement).value)
+	emit('updateJavaPath', major, (event.target as HTMLInputElement).value)
 }
-function pickJava() {
-	localChanged.value = true
-	emit('pickJava')
+async function detectJava(major: number) {
+	javaBusy.value = true
+	javaMessage.value = ''
+	try {
+		const runtime = (await gameApi.javaRuntimes()).find((item) => item.major === major)
+		if (!runtime) {
+			javaMessage.value = `Java ${major} не найдена на этом устройстве.`
+			return
+		}
+		localChanged.value = true
+		emit('updateJavaPath', major, runtime.path)
+		javaMessage.value = `Найдена Java ${major}. Сохраните настройку.`
+	} catch (reason) {
+		javaMessage.value = displayError(reason)
+	} finally {
+		javaBusy.value = false
+	}
+}
+async function chooseJava(major: number) {
+	javaBusy.value = true
+	javaMessage.value = ''
+	try {
+		const runtime = await gameApi.pickJava()
+		if (!runtime) return
+		if (runtime.major !== major) {
+			javaMessage.value = `Выбрана Java ${runtime.major}; для этого поля нужна Java ${major}.`
+			return
+		}
+		localChanged.value = true
+		emit('updateJavaPath', major, runtime.path)
+	} catch (reason) {
+		javaMessage.value = displayError(reason)
+	} finally {
+		javaBusy.value = false
+	}
 }
 </script>
 
@@ -119,32 +153,42 @@ function pickJava() {
 					</div>
 				</div>
 			</div>
-			<div v-else-if="section === 'java'" class="figma-settings-panel" data-figma-node="3:104">
-				<h2>Расположение Java</h2>
-				<div class="figma-settings-row">
-					<div>
-						<strong>Автоматический выбор Java</strong>
-						<p>Лаунчер подбирает подходящую версию Java для каждой сборки.</p>
+			<div
+				v-else-if="section === 'java'"
+				class="figma-settings-panel figma-java-panel"
+				data-figma-node="3:104"
+			>
+				<div v-for="major in [25, 21]" :key="major" class="figma-java-section">
+					<h2>Расположение Java {{ major }}</h2>
+					<div class="figma-java-card">
+						<div class="figma-java-path">
+							<input
+								:value="settings.java_paths[String(major)] || ''"
+								:aria-label="`Путь к Java ${major}`"
+								placeholder="Автоматически"
+								spellcheck="false"
+								@input="updateJavaPath(major, $event)"
+							/>
+							<img v-if="settings.java_paths[String(major)]" src="/figma/c00b7.svg" alt="" />
+						</div>
+						<div class="figma-java-actions">
+							<button
+								disabled
+								aria-label="Установить рекомендуемую Java — пока недоступно"
+								title="Автоматическая установка Java из настроек пока недоступна"
+							>
+								<img src="/figma/2c95b.svg" alt="" />Установить рекомендуемую
+							</button>
+							<button :disabled="busy || javaBusy" @click="detectJava(major)">
+								<img src="/figma/2c95b.svg" alt="" />Обнаружить
+							</button>
+							<button :disabled="busy || javaBusy" @click="chooseJava(major)">
+								<img src="/figma/d4b65.svg" alt="" />Указать
+							</button>
+						</div>
 					</div>
-					<span
-						class="figma-settings-switch on"
-						role="status"
-						aria-label="Автоматический выбор Java включён"
-					/>
 				</div>
-				<label class="figma-settings-field">
-					<strong>Путь к Java</strong>
-					<input
-						:value="settings.java_path"
-						placeholder="Автоматически"
-						spellcheck="false"
-						@input="updateJava"
-					/>
-					<small>Для всех новых сборок. Существующие сборки настраиваются отдельно.</small>
-				</label>
-				<button class="figma-settings-action" :disabled="busy" @click="pickJava">
-					Выбрать Java вручную
-				</button>
+				<p v-if="javaMessage" class="figma-java-message" role="status">{{ javaMessage }}</p>
 			</div>
 			<div v-else class="figma-settings-panel figma-resource-panel" data-figma-node="3:199">
 				<label class="figma-resource-section figma-resource-location">
