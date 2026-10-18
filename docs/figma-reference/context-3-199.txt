@@ -1,0 +1,127 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/71a30144-f932-4011-9e5e-b962ed465dbf";
+const imgVector421 = `${assetPathPrefix}/83a6f.svg`;
+const imgVector422 = `${assetPathPrefix}/a355e.svg`;
+const imgVector = `${assetPathPrefix}/20469.svg`;
+const imgGroup565 = `${assetPathPrefix}/7c452.svg`;
+const imgVectorStroke = `${assetPathPrefix}/94db2.svg`;
+const imgVector1 = `${assetPathPrefix}/39274.svg`;
+const imgVectorStroke1 = `${assetPathPrefix}/6a8c5.svg`;
+const imgVectorStroke2 = `${assetPathPrefix}/0866e.svg`;
+
+export default function Frame866() {
+  return (
+    <div className="bg-[#202020] overflow-clip relative rounded-[27px] size-full" data-node-id="3:199">
+      <div className="absolute h-0 left-0 top-[92px] w-[878px]" data-node-id="3:200">
+        <div className="absolute inset-[-0.75px_0]">
+          <img alt="" className="block max-w-none size-full" src={imgVector421} />
+        </div>
+      </div>
+      <div className="absolute flex h-[305px] items-center justify-center left-[251px] top-[128px] w-0" data-node-id="3:201">
+        <div className="flex-none rotate-90">
+          <div className="h-0 relative w-[305px]">
+            <div className="absolute inset-[-0.75px_0]">
+              <img alt="" className="block max-w-none size-full" src={imgVector422} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="[word-break:break-word] absolute font-['Inter:Semi_Bold'] font-semibold leading-[normal] left-[32px] not-italic text-[18px] text-white top-[35px] whitespace-nowrap" data-node-id="3:202">
+        Настройки
+      </p>
+      <div className="absolute left-[791px] size-[14px] top-[39px]" data-node-id="3:203" data-name="Vector">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector} />
+      </div>
+      <div className="absolute content-stretch flex flex-col gap-[7px] items-start left-[284px] top-[125px] w-[506px]" data-node-id="3:204">
+        <p className="[word-break:break-word] font-['Geologica:SemiBold'] font-semibold leading-[normal] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap" data-node-id="3:205" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Каталог приложения
+        </p>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-node-id="3:206">
+          <div className="bg-[#333] col-1 h-[29px] ml-0 mt-0 relative rounded-[20px] row-1 w-[505px]" data-node-id="3:207" />
+          <p className="[word-break:break-word] col-1 font-['Geologica:Regular'] font-normal leading-[normal] ml-[14px] mt-[5px] not-italic relative row-1 text-[#848488] text-[14px] whitespace-nowrap" data-node-id="3:208" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            C:\Program Files\Java\jdk-22\bin\javaw.exe
+          </p>
+        </div>
+        <div className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[0] not-italic relative shrink-0 text-[#848488] text-[13px] whitespace-nowrap" data-node-id="3:209" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          <p className="leading-[normal] mb-0 whitespace-pre">{`Здесь urodlaucher хранит сборки и другие файлы. Изменения вступят в `}</p>
+          <p className="leading-[normal] whitespace-pre">силу после перезапуска.</p>
+        </div>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-node-id="3:210">
+          <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[461px] mt-[13.8px] place-items-start relative row-1" data-node-id="3:211">
+            <div className="col-1 flex h-[24.2px] items-center justify-center ml-0 mt-0 relative row-1 w-[44px]" data-node-id="3:212">
+              <div className="flex-none rotate-180">
+                <div className="h-[24.2px] relative w-[44px]">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup565} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="[word-break:break-word] col-1 content-stretch flex flex-col items-start ml-0 mt-0 not-italic relative row-1 w-[405px]" data-node-id="3:215">
+            <p className="font-['Geologica:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[16px] text-white w-full" data-node-id="3:216" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Отчёты на всех этапах установки
+            </p>
+            <div className="font-['Geologica:Regular'] font-normal leading-[0] relative shrink-0 text-[#848488] text-[13px] w-full whitespace-pre-wrap" data-node-id="3:217" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              <p className="leading-[normal] mb-0">{`Показывать кнопку «Получить отчёт» на всех этапах `}</p>
+              <p className="leading-[normal]">установки. Для прерванных установок кнопка видна всегда.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute content-stretch flex flex-col gap-[7px] items-start left-[284px] top-[293px] w-[449px]" data-node-id="3:218">
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-node-id="3:219">
+          <p className="[word-break:break-word] col-1 font-['Geologica:SemiBold'] font-semibold leading-[normal] ml-0 mt-0 not-italic relative row-1 text-[16px] text-white w-[449px]" data-node-id="3:220" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Кеш приложения
+          </p>
+          <div className="bg-[#333] col-1 content-stretch flex gap-[10px] items-center justify-center ml-0 mt-[27px] p-[10px] relative rounded-[12px] row-1" data-node-id="3:221">
+            <div className="h-[16px] relative shrink-0 w-[15px]" data-node-id="3:222" data-name="Vector (Stroke)">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVectorStroke} />
+            </div>
+            <p className="[word-break:break-word] font-['Geologica:SemiBold'] font-semibold leading-[normal] not-italic relative shrink-0 text-[12px] text-white whitespace-nowrap" data-node-id="3:223" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Очистить кеш
+            </p>
+          </div>
+        </div>
+        <p className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[normal] min-w-full not-italic relative shrink-0 text-[#848488] text-[13px] w-[min-content]" data-node-id="3:224" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Удаляет кешированные данные и повторно скачивает их с urodlaucher. Приложение может замедлиться, пока кеш не восстановится.
+        </p>
+      </div>
+      <div className="absolute contents left-[28px] top-[125px]" data-node-id="3:225">
+        <p className="[word-break:break-word] absolute font-['Geologica:SemiBold'] font-semibold leading-[normal] left-[28px] not-italic text-[#848488] text-[16px] top-[125px] w-[166px]" data-node-id="3:226" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Сборки
+        </p>
+        <div className="absolute content-stretch flex gap-[15px] items-center left-[28px] top-[157px]" data-node-id="3:227">
+          <div className="h-[13px] relative shrink-0 w-[15px]" data-node-id="3:228" data-name="Vector">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector1} />
+          </div>
+          <p className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#848488] text-[14px] w-[166px]" data-node-id="3:229" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Глобальные настройки
+          </p>
+        </div>
+        <div className="absolute content-stretch flex gap-[15px] items-end left-[28px] top-[187px]" data-node-id="3:230">
+          <div className="relative shrink-0 size-[15px]" data-node-id="3:231" data-name="Vector (Stroke)">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVectorStroke1} />
+          </div>
+          <p className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#848488] text-[14px] w-[166px]" data-node-id="3:232" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Расположение Java
+          </p>
+        </div>
+        <div className="absolute content-stretch flex gap-[15px] items-center left-[28px] top-[217px]" data-node-id="3:233">
+          <div className="h-[12px] relative shrink-0 w-[15px]" data-node-id="3:234" data-name="Vector (Stroke)">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVectorStroke2} />
+          </div>
+          <p className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#c12926] text-[14px] w-[166px]" data-node-id="3:235" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Управление ресурсами
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

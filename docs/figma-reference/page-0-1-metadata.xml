@@ -1,0 +1,1535 @@
+<canvas id="0:1" name="Page 1" x="0" y="0" width="0" height="0">
+  <rounded-rectangle id="3:5" name="image 280" x="678" y="1237" width="346" height="1025" />
+  <rounded-rectangle id="3:6" name="image 281" x="-2547" y="2459" width="250" height="651" />
+  <rounded-rectangle id="3:7" name="image 282" x="-2547" y="1744" width="1280" height="687" />
+  <rounded-rectangle id="3:8" name="image 283" x="-1129" y="1456" width="1172" height="645" />
+  <rounded-rectangle id="3:9" name="image 284" x="-3819" y="1964" width="907" height="706" />
+  <rounded-rectangle id="3:10" name="image 285" x="-3682" y="3259" width="1171" height="648" />
+  <frame id="3:11" name="Frame 839" x="-2012" y="4251" width="837" height="470">
+    <vector id="3:12" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:13" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <text id="3:14" name="Иконка" x="657" y="122" width="62" height="20" />
+    <rounded-rectangle id="3:15" name="Rectangle 146747" x="657" y="151" width="112" height="112" />
+    <vector id="3:16" name="Vector 419 (Stroke)" x="173" y="39" width="9" height="13" />
+    <frame id="3:17" name="Frame 865" x="284" y="122" width="449" height="303">
+      <frame id="3:18" name="Frame 862" x="0" y="0" width="233" height="56">
+        <text id="3:19" name="Название" x="0" y="0" width="233" height="20" />
+        <frame id="3:20" name="Group 604" x="0" y="27" width="233" height="29">
+          <rounded-rectangle id="3:21" name="Rectangle 146730" x="0" y="27" width="233" height="29" />
+          <text id="3:22" name="GY 1.21.11" x="15" y="32" width="62" height="18" />
+        </frame>
+      </frame>
+      <frame id="3:23" name="Frame 863" x="0" y="70" width="335" height="101">
+        <text id="3:24" name="Создание копии сборки" x="0" y="0" width="335" height="20" />
+        <frame id="3:25" name="Frame 840" x="0" y="27" width="140" height="35">
+          <vector id="3:26" name="Vector (Stroke)" x="10" y="10" width="15" height="15" />
+          <text id="3:27" name="Создать копию" x="35" y="10" width="95" height="15" />
+        </frame>
+        <text id="3:28" name="Создает копию сборки, включая миры, настройки, моды и т. д." x="0" y="69" width="335" height="32" />
+      </frame>
+      <frame id="3:29" name="Frame 864" x="0" y="185" width="449" height="118">
+        <text id="3:30" name="Удаление сборки" x="0" y="0" width="449" height="20" />
+        <frame id="3:31" name="Frame 841" x="0" y="27" width="143" height="36">
+          <vector id="3:32" name="Vector (Stroke)" x="10" y="10" width="15" height="16" />
+          <text id="3:33" name="Удалить сборку" x="35" y="10.5" width="98" height="15" />
+        </frame>
+        <text id="3:34" name="Навсегда удаляет сборку с устройства, в том числе миры, настройки и весь установленный контент. Учтите, что после удаления сборки её невозможно восстановить" x="0" y="70" width="449" height="48" />
+      </frame>
+    </frame>
+    <frame id="3:35" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:36" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:37" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:38" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:39" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <frame id="3:40" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:41" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:42" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:43" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:44" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:45" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:46" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <frame id="3:47" name="Frame 859" x="-209" y="4251" width="837" height="470">
+    <vector id="3:48" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:49" name="Vector 422" x="251" y="128" width="0.000013331970180274766" height="305" />
+    <text id="3:50" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:51" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:52" name="Frame 877" x="284" y="123" width="505" height="268">
+      <frame id="3:53" name="Group 634" x="0" y="0" width="505" height="40">
+        <frame id="3:54" name="Group 609" x="425" y="13" width="80" height="27" />
+        <text id="3:59" name="Синхронизация настроек игры" x="0" y="0" width="487" height="20" />
+        <text id="3:60" name="Использовать одинаковые настройки игры в сборках." x="0" y="20" width="487" height="16" />
+      </frame>
+      <frame id="3:61" name="Group 635" x="0" y="54" width="505" height="40">
+        <frame id="3:62" name="Group 609" x="425" y="67" width="80" height="27" />
+        <text id="3:67" name="Синхронизация серверов" x="0" y="54" width="487" height="20" />
+        <text id="3:68" name="Использовать одинаковые серверы в сборках." x="0" y="74" width="487" height="16" />
+      </frame>
+      <frame id="3:69" name="Group 636" x="0" y="108" width="505" height="40">
+        <frame id="3:70" name="Group 609" x="425" y="121" width="80" height="27" />
+        <text id="3:75" name="Синхронизация наборов ресурсов" x="0" y="108" width="487" height="20" />
+        <text id="3:76" name="Использовать одинаковые наборы ресурсов в сборках." x="0" y="128" width="487" height="16" />
+      </frame>
+      <frame id="3:77" name="Group 637" x="0" y="162" width="505" height="40">
+        <frame id="3:78" name="Group 609" x="425" y="175" width="80" height="27" />
+        <text id="3:83" name="Синхронизация истории команд" x="0" y="162" width="487" height="20" />
+        <text id="3:84" name="Использовать одинаковую историю команд в сборках." x="0" y="182" width="487" height="16" />
+      </frame>
+      <frame id="3:85" name="Group 638" x="0" y="216" width="505" height="52">
+        <frame id="3:86" name="Group 609" x="425" y="229" width="80" height="27" />
+        <text id="3:91" name="Синхронизация сохранённых инструментов" x="0" y="216" width="487" height="20" />
+        <text id="3:92" name="Использовать одинаковые сохранённые инструменты в сборках." x="0" y="236" width="487" height="32" />
+      </frame>
+    </frame>
+    <frame id="3:93" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:94" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:95" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:96" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:97" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:98" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:99" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:100" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:101" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:102" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:103" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:104" name="Frame 864" x="663" y="4251" width="837" height="470">
+    <vector id="3:105" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:106" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <text id="3:107" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:108" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:109" name="Frame 880" x="284" y="132" width="505" height="146">
+      <text id="3:110" name="Расположение Java 25" x="0" y="0" width="505" height="23" />
+      <frame id="3:111" name="Group 640" x="0" y="37" width="505" height="109">
+        <rounded-rectangle id="3:112" name="Rectangle 146730" x="0" y="37" width="505" height="109" />
+        <frame id="3:113" name="Group 630" x="18" y="58" width="468" height="66">
+          <frame id="3:114" name="Frame 878" x="18" y="95" width="393" height="29">
+            <frame id="3:115" name="Frame 879" x="0" y="0" width="192" height="29">
+              <vector id="3:116" name="Vector" x="7" y="7" width="15" height="15" />
+              <text id="3:117" name="Установить рекомендуемую" x="39" y="8" width="146" height="13" />
+            </frame>
+            <frame id="3:118" name="Frame 870" x="200" y="0" width="105" height="29">
+              <vector id="3:119" name="Vector" x="7" y="7" width="15" height="15" />
+              <text id="3:120" name="Обнаружить" x="32" y="8" width="66" height="13" />
+            </frame>
+            <frame id="3:121" name="Frame 871" x="313" y="0" width="80" height="29">
+              <vector id="3:122" name="Vector (Stroke)" x="7" y="7" width="15" height="15" />
+              <text id="3:123" name="Указать" x="32" y="8" width="41" height="13" />
+            </frame>
+          </frame>
+          <frame id="3:124" name="Group 629" x="18" y="58" width="468" height="29">
+            <frame id="3:125" name="Group 629" x="18" y="58" width="468" height="29">
+              <frame id="3:126" name="Group 604" x="18" y="58" width="437" height="29">
+                <rounded-rectangle id="3:127" name="Rectangle 146730" x="18" y="58" width="437" height="29" />
+                <text id="3:128" name="C:\Program Files\Java\jdk-22\bin\javaw.exe" x="32" y="63" width="303" height="18" />
+              </frame>
+              <vector id="3:129" name="Vector (Stroke)" x="466" y="62" width="20" height="20" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:130" name="Frame 881" x="284" y="292" width="505" height="146">
+      <text id="3:131" name="Расположение Java 21" x="0" y="0" width="505" height="23" />
+      <frame id="3:132" name="Group 640" x="0" y="37" width="505" height="109">
+        <rounded-rectangle id="3:133" name="Rectangle 146730" x="0" y="37" width="505" height="109" />
+        <frame id="3:134" name="Group 630" x="18" y="58" width="468" height="66">
+          <frame id="3:135" name="Frame 878" x="18" y="95" width="393" height="29">
+            <frame id="3:136" name="Frame 879" x="0" y="0" width="192" height="29">
+              <vector id="3:137" name="Vector" x="7" y="7" width="15" height="15" />
+              <text id="3:138" name="Установить рекомендуемую" x="39" y="8" width="146" height="13" />
+            </frame>
+            <frame id="3:139" name="Frame 870" x="200" y="0" width="105" height="29">
+              <vector id="3:140" name="Vector" x="7" y="7" width="15" height="15" />
+              <text id="3:141" name="Обнаружить" x="32" y="8" width="66" height="13" />
+            </frame>
+            <frame id="3:142" name="Frame 871" x="313" y="0" width="80" height="29">
+              <vector id="3:143" name="Vector (Stroke)" x="7" y="7" width="15" height="15" />
+              <text id="3:144" name="Указать" x="32" y="8" width="41" height="13" />
+            </frame>
+          </frame>
+          <frame id="3:145" name="Group 629" x="18" y="58" width="468" height="29">
+            <frame id="3:146" name="Group 629" x="18" y="58" width="468" height="29">
+              <frame id="3:147" name="Group 604" x="18" y="58" width="437" height="29">
+                <rounded-rectangle id="3:148" name="Rectangle 146730" x="18" y="58" width="437" height="29" />
+                <text id="3:149" name="C:\Program Files\Java\jdk-22\bin\javaw.exe" x="32" y="63" width="303" height="18" />
+              </frame>
+              <vector id="3:150" name="Vector (Stroke)" x="466" y="62" width="20" height="20" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:151" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:152" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:153" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:154" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:155" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:156" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:157" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:158" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:159" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:160" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:161" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:162" name="Frame 865" x="1535" y="4251" width="837" height="470">
+    <vector id="3:163" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:164" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <text id="3:165" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:166" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:167" name="Frame 874" x="284" y="125" width="506" height="154">
+      <text id="3:168" name="Каталог приложения" x="0" y="0" width="175" height="20" />
+      <frame id="3:169" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:170" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:171" name="C:\Program Files\Java\jdk-22\bin\javaw.exe" x="14" y="32" width="303" height="18" />
+      </frame>
+      <text id="3:172" name="Здесь urodlaucher хранит сборки и другие файлы. Изменения вступят в силу после перезапуска." x="0" y="63" width="469" height="32" />
+      <frame id="3:173" name="Group 623" x="0" y="102" width="505" height="52">
+        <frame id="3:174" name="Group 609" x="461" y="115.79999923706055" width="44.000003814697266" height="24.20000457763672" />
+        <frame id="3:178" name="Frame 848" x="0" y="102" width="405" height="52">
+          <text id="3:179" name="Отчёты на всех этапах установки" x="0" y="0" width="405" height="20" />
+          <text id="3:180" name="Показывать кнопку «Получить отчёт» на всех этапах установки. Для прерванных установок кнопка видна всегда." x="0" y="20" width="405" height="32" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:181" name="Frame 882" x="284" y="293" width="449" height="118">
+      <frame id="3:182" name="Group 641" x="0" y="0" width="449" height="63">
+        <text id="3:183" name="Кеш приложения" x="0" y="0" width="449" height="20" />
+        <frame id="3:184" name="Frame 841" x="0" y="27" width="131" height="36">
+          <vector id="3:185" name="Vector (Stroke)" x="10" y="10" width="15" height="16" />
+          <text id="3:186" name="Очистить кеш" x="35" y="10.5" width="86" height="15" />
+        </frame>
+      </frame>
+      <text id="3:187" name="Удаляет кешированные данные и повторно скачивает их с urodlaucher. Приложение может замедлиться, пока кеш не восстановится." x="0" y="70" width="449" height="48" />
+    </frame>
+    <frame id="3:188" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:189" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:190" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:191" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:192" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:193" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:194" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:195" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:196" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:197" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:198" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:199" name="Frame 866" x="1535" y="4767" width="837" height="470">
+    <vector id="3:200" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:201" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <text id="3:202" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:203" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:204" name="Frame 874" x="284" y="125" width="506" height="154">
+      <text id="3:205" name="Каталог приложения" x="0" y="0" width="175" height="20" />
+      <frame id="3:206" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:207" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:208" name="C:\Program Files\Java\jdk-22\bin\javaw.exe" x="14" y="32" width="303" height="18" />
+      </frame>
+      <text id="3:209" name="Здесь urodlaucher хранит сборки и другие файлы. Изменения вступят в силу после перезапуска." x="0" y="63" width="469" height="32" />
+      <frame id="3:210" name="Group 623" x="0" y="102" width="505" height="52">
+        <frame id="3:211" name="Group 609" x="461" y="115.79990005493164" width="44.000003814697266" height="24.20000457763672" />
+        <frame id="3:215" name="Frame 848" x="0" y="102" width="405" height="52">
+          <text id="3:216" name="Отчёты на всех этапах установки" x="0" y="0" width="405" height="20" />
+          <text id="3:217" name="Показывать кнопку «Получить отчёт» на всех этапах установки. Для прерванных установок кнопка видна всегда." x="0" y="20" width="405" height="32" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:218" name="Frame 882" x="284" y="293" width="449" height="118">
+      <frame id="3:219" name="Group 641" x="0" y="0" width="449" height="63">
+        <text id="3:220" name="Кеш приложения" x="0" y="0" width="449" height="20" />
+        <frame id="3:221" name="Frame 841" x="0" y="27" width="131" height="36">
+          <vector id="3:222" name="Vector (Stroke)" x="10" y="10" width="15" height="16" />
+          <text id="3:223" name="Очистить кеш" x="35" y="10.5" width="86" height="15" />
+        </frame>
+      </frame>
+      <text id="3:224" name="Удаляет кешированные данные и повторно скачивает их с urodlaucher. Приложение может замедлиться, пока кеш не восстановится." x="0" y="70" width="449" height="48" />
+    </frame>
+    <frame id="3:225" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:226" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:227" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:228" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:229" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:230" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:231" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:232" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:233" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:234" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:235" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:236" name="Frame 867" x="1535" y="5283" width="837" height="470">
+    <vector id="3:237" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:238" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <text id="3:239" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:240" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:241" name="Group 645" x="284" y="125" width="499.5" height="102">
+      <text id="3:242" name="Каталог приложения" x="284" y="125" width="175" height="20" />
+      <frame id="3:243" name="Group 642" x="284" y="152" width="499.5" height="36">
+        <text id="3:244" name="1" x="284" y="162" width="6" height="16" />
+        <frame id="3:245" name="Group 616" x="310" y="156" width="369.5" height="27">
+          <vector id="3:246" name="Vector 423" x="310.5" y="170.5" width="369" height="0" />
+          <vector id="3:247" name="Vector 428" x="310" y="156" width="0.0000011802039807662368" height="27" />
+        </frame>
+        <text id="3:248" name="10" x="699.5" y="162" width="15" height="16" />
+        <frame id="3:249" name="Frame 847" x="734.5" y="152" width="49" height="36">
+          <text id="3:250" name="10" x="17" y="10" width="15" height="16" />
+        </frame>
+      </frame>
+      <text id="3:251" name="Количество одновременно скачиваемых файлов. Уменьшите, если скачивание работает нестабильно. Требуется перезапуск." x="284" y="195" width="449" height="32" />
+    </frame>
+    <frame id="3:252" name="Group 644" x="284" y="241" width="501.5" height="102">
+      <text id="3:253" name="Лимит одновременных записей" x="284" y="241" width="263" height="20" />
+      <frame id="3:254" name="Group 643" x="284" y="268" width="501.5" height="36">
+        <text id="3:255" name="1" x="284" y="278" width="6" height="16" />
+        <frame id="3:256" name="Group 616" x="310" y="272" width="369.5" height="27">
+          <vector id="3:257" name="Vector 423" x="310.5" y="286.5" width="369" height="0" />
+          <vector id="3:258" name="Vector 428" x="310" y="272" width="0.0000011802039807662368" height="27" />
+        </frame>
+        <text id="3:259" name="50" x="699.5" y="278" width="17" height="16" />
+        <frame id="3:260" name="Frame 847" x="734.5" y="268" width="51" height="36">
+          <text id="3:261" name="50" x="17" y="10" width="17" height="16" />
+        </frame>
+      </frame>
+      <text id="3:262" name="Количество одновременно записываемых на диск файлов. Уменьшите, если есть ошибки ввода-вывода. Требуется перезапуск." x="284" y="311" width="449" height="32" />
+    </frame>
+    <frame id="3:263" name="Group 646" x="284" y="357" width="449" height="95">
+      <text id="3:264" name="Резервные копии базы данных" x="284" y="357" width="259" height="20" />
+      <text id="3:265" name="Здесь хранятся резервные копии важных данных приложения на случай их утери." x="284" y="420" width="449" height="32" />
+      <frame id="3:266" name="Frame 883" x="284" y="384" width="237" height="29">
+        <vector id="3:267" name="Vector (Stroke)" x="7" y="7" width="15" height="15" />
+        <text id="3:268" name="Открыть папку резервных копий" x="32" y="7" width="198" height="15" />
+      </frame>
+    </frame>
+    <frame id="3:269" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:270" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:271" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:272" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:273" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:274" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:275" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:276" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:277" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:278" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:279" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:280" name="Frame 860" x="-209" y="4763" width="837" height="470">
+    <vector id="3:281" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:282" name="Vector 422" x="251" y="128" width="0.000013331970180274766" height="305" />
+    <text id="3:283" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:284" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <text id="3:285" name="Окно" x="284" y="123" width="49" height="23" />
+    <text id="3:286" name="Java и память" x="284" y="309" width="130" height="23" />
+    <frame id="3:287" name="Group 639" x="284" y="345" width="506" height="82">
+      <frame id="3:288" name="Group 622" x="284" y="345" width="396" height="20">
+        <frame id="3:289" name="Frame 858" x="284" y="345" width="396" height="20">
+          <text id="3:290" name="Выделенная память" x="0" y="0" width="396" height="20" />
+        </frame>
+      </frame>
+      <text id="3:291" name="Максимальный объем памяти, выделяемый игре" x="284" y="411" width="396" height="16" />
+      <frame id="3:292" name="Frame 859" x="284" y="370" width="506" height="36">
+        <text id="3:293" name="512 MB" x="0" y="10" width="45" height="16" />
+        <frame id="3:294" name="Group 616" x="64.5" y="4.5" width="284.5" height="27">
+          <vector id="3:295" name="Vector 423" x="64.5" y="18.5" width="284.5" height="0" />
+          <vector id="3:296" name="Vector 424" x="81" y="10.5" width="0" height="15.5" />
+          <vector id="3:297" name="Vector 428" x="64.5" y="4.5" width="0.000001180203923922818" height="27" />
+          <vector id="3:298" name="Vector 425" x="107.5" y="10.5" width="0" height="15.5" />
+          <vector id="3:299" name="Vector 426" x="156.5" y="10.5" width="0" height="15.5" />
+          <vector id="3:300" name="Vector 427" x="255.5" y="10.5" width="0" height="15.5" />
+        </frame>
+        <text id="3:301" name="23.9 GB" x="368.5" y="10" width="49" height="16" />
+        <frame id="3:302" name="Frame 847" x="437" y="0" width="68" height="36">
+          <text id="3:303" name="6200" x="17" y="10" width="34" height="16" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:304" name="Group 619" x="284" y="160" width="506" height="36">
+      <frame id="3:305" name="Frame 855" x="284" y="160" width="396" height="36">
+        <text id="3:306" name="Полноэкранный режим" x="0" y="0" width="396" height="20" />
+        <text id="3:307" name="Запускать игру в полноэкранном режиме (через options.txt)." x="0" y="20" width="396" height="16" />
+      </frame>
+      <frame id="3:308" name="Group 609" x="746" y="165.79804611206055" width="44.000003814697266" height="24.20000457763672" />
+    </frame>
+    <frame id="3:312" name="Group 620" x="284" y="210" width="506" height="36">
+      <frame id="3:313" name="Group 604" x="520" y="213" width="270" height="29">
+        <rounded-rectangle id="3:314" name="Rectangle 146730" x="520" y="213" width="270" height="29" />
+        <text id="3:315" name="854" x="534" y="218" width="26" height="18" />
+      </frame>
+      <frame id="3:316" name="Frame 856" x="284" y="210" width="211" height="36">
+        <text id="3:317" name="Ширина" x="0" y="0" width="211" height="20" />
+        <text id="3:318" name="Ширина окна игры при запуске." x="0" y="20" width="211" height="16" />
+      </frame>
+    </frame>
+    <frame id="3:319" name="Group 621" x="284" y="260" width="506" height="36">
+      <frame id="3:320" name="Group 614" x="520" y="263" width="270" height="29">
+        <frame id="3:321" name="Group 608" x="520" y="263" width="270" height="29">
+          <rounded-rectangle id="3:322" name="Rectangle 146730" x="520" y="263" width="270" height="29" />
+          <text id="3:323" name="480" x="534" y="268" width="27" height="18" />
+        </frame>
+      </frame>
+      <frame id="3:324" name="Frame 857" x="284" y="260" width="203" height="36">
+        <text id="3:325" name="Высота" x="0" y="0" width="203" height="20" />
+        <frame id="3:326" name="Group 614" x="0" y="20" width="203" height="16">
+          <text id="3:327" name="Высота окна игры при запуске." x="0" y="20" width="203" height="16" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:328" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:329" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:330" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:331" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:332" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:333" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:334" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:335" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:336" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:337" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:338" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:339" name="Frame 861" x="-209" y="5330" width="837" height="470">
+    <vector id="3:340" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:341" name="Vector 422" x="251" y="128" width="0.000013331970180274766" height="305" />
+    <text id="3:342" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:343" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:344" name="Frame 873" x="284" y="124" width="506" height="79">
+      <text id="3:345" name="Аргументы Java" x="0" y="0" width="133" height="20" />
+      <frame id="3:346" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:347" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:348" name="Введите аргументы Java..." x="14" y="32" width="185" height="18" />
+      </frame>
+      <text id="3:349" name="Аргументы, передаваемые Java при запуске игры." x="0" y="63" width="331" height="16" />
+    </frame>
+    <frame id="3:350" name="Frame 874" x="284" y="217" width="506" height="79">
+      <text id="3:351" name="Переменные среды" x="0" y="0" width="163" height="20" />
+      <frame id="3:352" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:353" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:354" name="Введите переменные среды..." x="14" y="32" width="209" height="18" />
+      </frame>
+      <text id="3:355" name="Переменные среды при запуске игры." x="0" y="63" width="249" height="16" />
+    </frame>
+    <frame id="3:356" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:357" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:358" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:359" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:360" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:361" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:362" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:363" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:364" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:365" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:366" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:367" name="Frame 862" x="-209" y="5839" width="837" height="470">
+    <vector id="3:368" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:369" name="Vector 422" x="251" y="128" width="0.000013331970180274766" height="305" />
+    <text id="3:370" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:371" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:372" name="Frame 873" x="285" y="165" width="506" height="79">
+      <text id="3:373" name="Перед запуском" x="0" y="0" width="135" height="20" />
+      <frame id="3:374" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:375" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:376" name="Введите команду перед запуском..." x="14" y="32" width="250" height="18" />
+      </frame>
+      <text id="3:377" name="Выполняется перед запуском игры." x="0" y="63" width="232" height="16" />
+    </frame>
+    <frame id="3:378" name="Frame 874" x="285" y="258" width="506" height="79">
+      <text id="3:379" name="Обёртка" x="0" y="0" width="71" height="20" />
+      <frame id="3:380" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:381" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:382" name="Введите команду-обёртку..." x="14" y="32" width="195" height="18" />
+      </frame>
+      <text id="3:383" name="Команда-обёртка для запуска Minecraft." x="0" y="63" width="270" height="16" />
+    </frame>
+    <frame id="3:384" name="Frame 875" x="285" y="351" width="506" height="79">
+      <text id="3:385" name="После выхода" x="0" y="0" width="117" height="20" />
+      <frame id="3:386" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:387" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:388" name="Введите команду после выхода..." x="14" y="32" width="235" height="18" />
+      </frame>
+      <text id="3:389" name="Выполняется после выхода из игры." x="0" y="63" width="236" height="16" />
+    </frame>
+    <text id="3:390" name="Команды запуска" x="285" y="128" width="167" height="23" />
+    <frame id="3:391" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:392" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:393" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:394" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:395" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:396" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:397" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:398" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:399" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:400" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:401" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:402" name="Frame 863" x="-209" y="6406" width="837" height="470">
+    <vector id="3:403" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <vector id="3:404" name="Vector 422" x="251" y="128" width="0.000013331970180274766" height="305" />
+    <text id="3:405" name="Настройки" x="32" y="35" width="99" height="22" />
+    <vector id="3:406" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    <frame id="3:407" name="Frame 876" x="284" y="124" width="370" height="126">
+      <frame id="3:408" name="Frame 856" x="0" y="0" width="211" height="16">
+        <text id="3:409" name="Команды выполняются в рабочем каталоге сборки. Переменные:" x="0" y="0" width="429" height="16" />
+      </frame>
+      <text id="3:410" name="·$INST_NAME: название сборки ·$INST_ID: имя папки сборки ·$INST_DIR: абсолютный путь к папке сборки ·$INST_MC_DIR: аналог $INST_DIR ·$INST_JAVA: абсолютный путь к Java ·$INST_JAVA_ARGS: аргументы JVM, передаваемые игре" x="0" y="30" width="370" height="96" />
+    </frame>
+    <frame id="3:411" name="Group 648" x="28" y="125" width="196" height="110">
+      <text id="3:412" name="Сборки" x="28" y="125" width="166" height="20" />
+      <frame id="3:413" name="Frame 889" x="28" y="157" width="196" height="18">
+        <vector id="3:414" name="Vector" x="0" y="2.5" width="15" height="13" />
+        <text id="3:415" name="Глобальные настройки" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:416" name="Frame 890" x="28" y="187" width="196" height="18">
+        <vector id="3:417" name="Vector (Stroke)" x="0" y="3" width="15" height="15" />
+        <text id="3:418" name="Расположение Java" x="30" y="0" width="166" height="18" />
+      </frame>
+      <frame id="3:419" name="Frame 891" x="28" y="217" width="196" height="18">
+        <vector id="3:420" name="Vector (Stroke)" x="0" y="3" width="15" height="12" />
+        <text id="3:421" name="Управление ресурсами" x="30" y="0" width="166" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:422" name="Frame 840" x="-2012" y="4767" width="837" height="470">
+    <vector id="3:423" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <frame id="3:424" name="Frame 869" x="285" y="122" width="518" height="330">
+      <frame id="3:425" name="Frame 866" x="0" y="0" width="505" height="199">
+        <text id="3:426" name="Сведения об установке" x="0" y="0" width="505" height="20" />
+        <frame id="3:427" name="Group 628" x="0" y="27" width="505" height="91">
+          <rounded-rectangle id="3:428" name="Rectangle 146730" x="0" y="27" width="505" height="91" />
+          <frame id="3:429" name="Group 603" x="23" y="39" width="459" height="66">
+            <frame id="3:430" name="Frame 844" x="23" y="39" width="108" height="66">
+              <text id="3:431" name="Платформа" x="0" y="0" width="83" height="18" />
+              <text id="3:432" name="Версия игры" x="0" y="24" width="88" height="18" />
+              <text id="3:433" name="Версия Fabric" x="0" y="48" width="96" height="18" />
+            </frame>
+            <frame id="3:434" name="Frame 846" x="432" y="39" width="50" height="66">
+              <text id="3:435" name="Fabric" x="3" y="0" width="44" height="18" />
+              <text id="3:436" name="1.21.11" x="5" y="24" width="40" height="18" />
+              <text id="3:437" name="0.18.6" x="5" y="48" width="40" height="18" />
+            </frame>
+          </frame>
+        </frame>
+        <frame id="3:438" name="Frame 841" x="0" y="125" width="105" height="35">
+          <vector id="3:439" name="Vector (Stroke)" x="10" y="10" width="15" height="15" />
+          <text id="3:440" name="Изменить" x="35" y="10" width="60" height="15" />
+        </frame>
+        <frame id="3:441" name="Frame 867" x="0" y="167" width="477" height="32">
+          <vector id="3:442" name="Vector (Stroke)" x="0" y="6" width="20" height="20" />
+          <text id="3:443" name="Не рекомендуется изменять установку после добавления контента. Это может привести к ошибкам" x="28" y="0" width="449" height="32" />
+        </frame>
+      </frame>
+      <frame id="3:444" name="Frame 868" x="0" y="213" width="518" height="117">
+        <text id="3:445" name="Исправление сборки" x="0" y="0" width="174" height="20" />
+        <frame id="3:446" name="Frame 845" x="0" y="27" width="112" height="35">
+          <vector id="3:447" name="Vector (Stroke)" x="10" y="10" width="15" height="15" />
+          <text id="3:448" name="Исправить" x="35" y="10" width="67" height="15" />
+        </frame>
+        <text id="3:449" name="Переустанавливает зависимости Minecraft и восстанавливает поврежденные файлы. Может устранить проблемы с запуском из-за ошибок лаунчера." x="0" y="69" width="453" height="48" />
+      </frame>
+    </frame>
+    <frame id="3:450" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:451" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:452" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:453" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:454" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <vector id="3:455" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <frame id="3:456" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:457" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:458" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:459" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:460" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:461" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:462" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <frame id="3:463" name="Frame 841" x="-2012" y="5829" width="837" height="470">
+    <vector id="3:464" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <frame id="3:465" name="Frame 860" x="279" y="122" width="506" height="302">
+      <frame id="3:466" name="Group 618" x="0" y="0" width="506" height="52">
+        <frame id="3:467" name="Group 617" x="0" y="0" width="365" height="52">
+          <text id="3:468" name="Переопределение настроек окна" x="0" y="0" width="277" height="20" />
+          <text id="3:469" name="Настройка полноэкранного режима и разрешения при запуске для этой сборки." x="0" y="20" width="365" height="32" />
+        </frame>
+        <frame id="3:470" name="Group 616" x="462" y="13.799217224121094" width="44.000003814697266" height="24.20000457763672" />
+      </frame>
+      <frame id="3:474" name="Group 619" x="0" y="66" width="506" height="36">
+        <frame id="3:475" name="Frame 855" x="0" y="66" width="396" height="36">
+          <text id="3:476" name="Полноэкранный режим" x="0" y="0" width="396" height="20" />
+          <text id="3:477" name="Запускать игру в полноэкранном режиме (через options.txt)." x="0" y="20" width="396" height="16" />
+        </frame>
+        <frame id="3:478" name="Group 609" x="462" y="71.7992172241211" width="44.000003814697266" height="24.20000457763672" />
+      </frame>
+      <frame id="3:482" name="Group 620" x="0" y="116" width="506" height="36">
+        <frame id="3:483" name="Group 604" x="236" y="119" width="270" height="29">
+          <rounded-rectangle id="3:484" name="Rectangle 146730" x="236" y="119" width="270" height="29" />
+          <text id="3:485" name="854" x="250" y="124" width="26" height="18" />
+        </frame>
+        <frame id="3:486" name="Frame 856" x="0" y="116" width="211" height="36">
+          <text id="3:487" name="Ширина" x="0" y="0" width="211" height="20" />
+          <text id="3:488" name="Ширина окна игры при запуске." x="0" y="20" width="211" height="16" />
+        </frame>
+      </frame>
+      <frame id="3:489" name="Group 621" x="0" y="166" width="506" height="36">
+        <frame id="3:490" name="Group 614" x="236" y="169" width="270" height="29">
+          <frame id="3:491" name="Group 608" x="236" y="169" width="270" height="29">
+            <rounded-rectangle id="3:492" name="Rectangle 146730" x="236" y="169" width="270" height="29" />
+            <text id="3:493" name="480" x="250" y="174" width="27" height="18" />
+          </frame>
+        </frame>
+        <frame id="3:494" name="Frame 857" x="0" y="166" width="203" height="36">
+          <text id="3:495" name="Высота" x="0" y="0" width="203" height="20" />
+          <frame id="3:496" name="Group 614" x="0" y="20" width="203" height="16">
+            <text id="3:497" name="Высота окна игры при запуске." x="0" y="20" width="203" height="16" />
+          </frame>
+        </frame>
+      </frame>
+      <frame id="3:498" name="Group 622" x="0" y="216" width="506" height="36">
+        <frame id="3:499" name="Frame 858" x="0" y="216" width="396" height="36">
+          <text id="3:500" name="Переопределение выделенной памяти" x="0" y="0" width="396" height="20" />
+          <text id="3:501" name="Настройка выделения памяти отдельно для этой сборки." x="0" y="20" width="396" height="16" />
+        </frame>
+        <frame id="3:502" name="Group 565" x="462" y="222" width="44" height="24.200000762939453" />
+      </frame>
+      <frame id="3:505" name="Frame 859" x="0" y="266" width="506" height="36">
+        <text id="3:506" name="512 MB" x="0" y="10" width="45" height="16" />
+        <frame id="3:507" name="Group 616" x="64.5" y="4.5" width="284.5" height="27">
+          <vector id="3:508" name="Vector 423" x="64.5" y="18.5" width="284.5" height="0" />
+          <vector id="3:509" name="Vector 424" x="81" y="10.5" width="0" height="15.5" />
+          <vector id="3:510" name="Vector 428" x="64.5" y="4.5" width="0.0000011802039807662368" height="27" />
+          <vector id="3:511" name="Vector 425" x="107.5" y="10.5" width="0" height="15.5" />
+          <vector id="3:512" name="Vector 426" x="156.5" y="10.5" width="0" height="15.5" />
+          <vector id="3:513" name="Vector 427" x="255.5" y="10.5" width="0" height="15.5" />
+        </frame>
+        <text id="3:514" name="23.9 GB" x="368.5" y="10" width="49" height="16" />
+        <frame id="3:515" name="Frame 847" x="437" y="0" width="68" height="36">
+          <text id="3:516" name="6200" x="17" y="10" width="34" height="16" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:517" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:518" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:519" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:520" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:521" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <vector id="3:522" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <frame id="3:523" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:524" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:525" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:526" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:527" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:528" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:529" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <frame id="3:530" name="Frame 856" x="-2008" y="6364" width="837" height="470">
+    <vector id="3:531" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <rounded-rectangle id="3:532" name="Rectangle 146730" x="280" y="178" width="505" height="109" />
+    <frame id="3:533" name="Group 622" x="279" y="126" width="506" height="36">
+      <frame id="3:534" name="Frame 858" x="279" y="126" width="396" height="36">
+        <text id="3:535" name="Переопределение расположения Java" x="0" y="0" width="396" height="20" />
+        <text id="3:536" name="Выбрать другую установку Java в сборке." x="0" y="20" width="396" height="16" />
+      </frame>
+      <frame id="3:537" name="Group 565" x="741" y="132" width="44" height="24.200000762939453" />
+    </frame>
+    <frame id="3:540" name="Group 630" x="298" y="199" width="468" height="66">
+      <frame id="3:541" name="Frame 870" x="298" y="236" width="105" height="29">
+        <vector id="3:542" name="Vector" x="7" y="7" width="15" height="15" />
+        <text id="3:543" name="Обнаружить" x="32" y="8" width="66" height="13" />
+      </frame>
+      <frame id="3:544" name="Frame 871" x="411" y="236" width="80" height="29">
+        <vector id="3:545" name="Vector (Stroke)" x="7" y="7" width="15" height="15" />
+        <text id="3:546" name="Указать" x="32" y="8" width="41" height="13" />
+      </frame>
+      <frame id="3:547" name="Group 629" x="298" y="199" width="468" height="29">
+        <frame id="3:548" name="Group 604" x="298" y="199" width="437" height="29">
+          <rounded-rectangle id="3:549" name="Rectangle 146730" x="298" y="199" width="437" height="29" />
+          <text id="3:550" name="C:\Program Files\Java\jdk-22\bin\javaw.exe" x="312" y="204" width="303" height="18" />
+        </frame>
+        <vector id="3:551" name="Vector (Stroke)" x="746" y="203" width="20" height="20" />
+      </frame>
+    </frame>
+    <frame id="3:552" name="Frame 872" x="279" y="296" width="506" height="158">
+      <frame id="3:553" name="Group 631" x="0" y="0" width="506.000244140625" height="72">
+        <frame id="3:554" name="Group 604" x="1" y="43" width="505" height="29">
+          <rounded-rectangle id="3:555" name="Rectangle 146730" x="1" y="43" width="505" height="29" />
+          <text id="3:556" name="Введите аргументы Java..." x="15" y="48" width="185" height="18" />
+        </frame>
+        <frame id="3:557" name="Frame 856" x="0" y="0" width="211" height="36">
+          <text id="3:558" name="Переопределение аргументов Java" x="0" y="0" width="294" height="20" />
+          <text id="3:559" name="Настройка аргументов Java отдельно для этой сборки." x="0" y="20" width="360" height="16" />
+        </frame>
+        <frame id="3:560" name="Group 609" x="462.000244140625" y="5.798435211181641" width="44.000003814697266" height="24.20000457763672" />
+      </frame>
+      <frame id="3:564" name="Group 632" x="0" y="86" width="506.000244140625" height="72">
+        <frame id="3:565" name="Group 604" x="1" y="129" width="505" height="29">
+          <rounded-rectangle id="3:566" name="Rectangle 146730" x="1" y="129" width="505" height="29" />
+          <text id="3:567" name="Введите переменные среды..." x="15" y="134" width="209" height="18" />
+        </frame>
+        <frame id="3:568" name="Frame 856" x="0" y="86" width="211" height="36">
+          <text id="3:569" name="Переопределение переменных среды" x="0" y="0" width="317" height="20" />
+          <text id="3:570" name="Настройка переменных среды отдельно для этой сборки." x="0" y="20" width="377" height="16" />
+        </frame>
+        <frame id="3:571" name="Group 609" x="462.000244140625" y="91.80058288574219" width="44.000003814697266" height="24.20000457763672" />
+      </frame>
+    </frame>
+    <frame id="3:575" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:576" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:577" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:578" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:579" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <vector id="3:580" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <frame id="3:581" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:582" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:583" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:584" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:585" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:586" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:587" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <frame id="3:588" name="Frame 857" x="-2008" y="6863" width="837" height="470">
+    <vector id="3:589" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <frame id="3:590" name="Group 631" x="279" y="126" width="506.000244140625" height="52">
+      <frame id="3:591" name="Frame 856" x="279" y="126" width="211" height="52">
+        <text id="3:592" name="Переопределение команд запуска игры" x="0" y="0" width="334" height="20" />
+        <text id="3:593" name="Выполнение системных команд конкретной сборки до и после запуска игры." x="0" y="20" width="371" height="32" />
+      </frame>
+      <frame id="3:594" name="Group 609" x="741.000244140625" y="131.7986297607422" width="44.000003814697266" height="24.20000457763672" />
+    </frame>
+    <frame id="3:598" name="Frame 873" x="279" y="182" width="506" height="79">
+      <text id="3:599" name="Перед запуском" x="0" y="0" width="135" height="20" />
+      <frame id="3:600" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:601" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:602" name="Введите команду перед запуском..." x="14" y="32" width="250" height="18" />
+      </frame>
+      <text id="3:603" name="Выполняется перед запуском игры." x="0" y="63" width="232" height="16" />
+    </frame>
+    <frame id="3:604" name="Frame 874" x="279" y="271" width="506" height="79">
+      <text id="3:605" name="Обёртка" x="0" y="0" width="71" height="20" />
+      <frame id="3:606" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:607" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:608" name="Введите команду-обёртку..." x="14" y="32" width="195" height="18" />
+      </frame>
+      <text id="3:609" name="Команда-обёртка для запуска Minecraft." x="0" y="63" width="270" height="16" />
+    </frame>
+    <frame id="3:610" name="Frame 875" x="279" y="366" width="506" height="79">
+      <text id="3:611" name="После выхода" x="0" y="0" width="117" height="20" />
+      <frame id="3:612" name="Group 604" x="0" y="27" width="505" height="29">
+        <rounded-rectangle id="3:613" name="Rectangle 146730" x="0" y="27" width="505" height="29" />
+        <text id="3:614" name="Введите команду после выхода..." x="14" y="32" width="235" height="18" />
+      </frame>
+      <text id="3:615" name="Выполняется после выхода из игры." x="0" y="63" width="236" height="16" />
+    </frame>
+    <frame id="3:616" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:617" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:618" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:619" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:620" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <vector id="3:621" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <frame id="3:622" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:623" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:624" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:625" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:626" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:627" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:628" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <frame id="3:629" name="Frame 858" x="-2008" y="7362" width="837" height="470">
+    <vector id="3:630" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <frame id="3:631" name="Frame 876" x="279" y="126" width="370" height="126">
+      <frame id="3:632" name="Frame 856" x="0" y="0" width="211" height="16">
+        <text id="3:633" name="Команды выполняются в рабочем каталоге сборки. Переменные:" x="0" y="0" width="429" height="16" />
+      </frame>
+      <text id="3:634" name="·$INST_NAME: название сборки ·$INST_ID: имя папки сборки ·$INST_DIR: абсолютный путь к папке сборки ·$INST_MC_DIR: аналог $INST_DIR ·$INST_JAVA: абсолютный путь к Java ·$INST_JAVA_ARGS: аргументы JVM, передаваемые игре" x="0" y="30" width="370" height="96" />
+    </frame>
+    <frame id="3:635" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:636" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:637" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:638" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:639" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <vector id="3:640" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <frame id="3:641" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:642" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:643" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:644" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:645" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:646" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:647" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <frame id="3:648" name="Frame 854" x="-2008" y="5307" width="837" height="470">
+    <vector id="3:649" name="Vector 421" x="0" y="92" width="878" height="0" />
+    <frame id="3:650" name="Frame 861" x="279" y="122" width="505" height="314">
+      <text id="3:651" name="Включить принудительное разделение, чтобы хранить синхронизированные настройки отдельно для этой сборки." x="0" y="0" width="505" height="48" />
+      <frame id="3:652" name="Group 623" x="0" y="62" width="505" height="52">
+        <frame id="3:653" name="Group 609" x="425" y="75" width="80" height="27" />
+        <frame id="3:658" name="Frame 848" x="0" y="62" width="487" height="52">
+          <text id="3:659" name="Рассинхронизация настроек игры" x="0" y="0" width="487" height="20" />
+          <text id="3:660" name="Оставить options.txt этой сборки отдельно от синхронизированной копии." x="0" y="20" width="487" height="32" />
+        </frame>
+      </frame>
+      <frame id="3:661" name="Group 624" x="0" y="128" width="505" height="36">
+        <frame id="3:662" name="Group 610" x="425" y="132" width="80" height="27" />
+        <frame id="3:667" name="Frame 850" x="0" y="128" width="269" height="36">
+          <text id="3:668" name="Рассинхронизация серверов" x="0" y="0" width="269" height="20" />
+          <text id="3:669" name="Оставить серверы этой сборки отдельно." x="0" y="20" width="269" height="16" />
+        </frame>
+      </frame>
+      <frame id="3:670" name="Group 625" x="0" y="178" width="505" height="36">
+        <frame id="3:671" name="Group 611" x="425" y="182" width="80" height="27" />
+        <frame id="3:676" name="Frame 851" x="0" y="178" width="327" height="36">
+          <text id="3:677" name="Рассинхронизация наборов ресурсов" x="0" y="0" width="327" height="20" />
+          <text id="3:678" name="Оставить наборы ресурсов этой сборки отдельно." x="0" y="20" width="327" height="16" />
+        </frame>
+      </frame>
+      <frame id="3:679" name="Group 626" x="0" y="228" width="505" height="36">
+        <frame id="3:680" name="Group 612" x="425" y="232" width="80" height="27" />
+        <frame id="3:685" name="Frame 852" x="0" y="228" width="323" height="36">
+          <text id="3:686" name="Рассинхронизация истории команд" x="0" y="0" width="323" height="20" />
+          <text id="3:687" name="Оставить историю команд этой сборки отдельно." x="0" y="20" width="323" height="16" />
+        </frame>
+      </frame>
+      <frame id="3:688" name="Group 627" x="0" y="278" width="505" height="36">
+        <frame id="3:689" name="Group 566" x="505" y="308" width="44.00000211563133" height="24.200004609541793" />
+        <frame id="3:692" name="Frame 853" x="0" y="278" width="394" height="36">
+          <text id="3:693" name="Рассинхронизация сохранённых инструментов" x="0" y="0" width="394" height="20" />
+          <text id="3:694" name="Оставить сохраненные инструменты этой сборки отдельно." x="0" y="20" width="394" height="16" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:695" name="Frame 870" x="624" y="124" width="160" height="28">
+      <vector id="3:696" name="Vector" x="7" y="7" width="16" height="14" />
+      <text id="3:697" name="Глобальные настройки" x="33" y="7.5" width="120" height="13" />
+    </frame>
+    <frame id="3:698" name="Group 633" x="32" y="31" width="772.9998779296875" height="29">
+      <text id="3:699" name="Настройки" x="185" y="35" width="99" height="22" />
+      <text id="3:700" name="GY 1.21.11" x="71" y="34" width="79" height="23" />
+      <rounded-rectangle id="3:701" name="Frame 529 2" x="32" y="31" width="29" height="29" />
+      <vector id="3:702" name="Vector" x="791" y="39" width="13.9998779296875" height="13.999849319458008" />
+    </frame>
+    <vector id="3:703" name="Vector 422" x="251" y="128" width="0.00001333197019448562" height="305" />
+    <frame id="3:704" name="Group 647" x="26" y="120" width="196" height="80">
+      <text id="3:705" name="Основные" x="56" y="120" width="166" height="20" />
+      <text id="3:706" name="Установка" x="56" y="150" width="166" height="20" />
+      <text id="3:707" name="Переопределения" x="56" y="180" width="166" height="20" />
+      <vector id="3:708" name="Vector" x="26" y="152" width="15" height="15" />
+      <vector id="3:709" name="Vector" x="26" y="122" width="15" height="15" />
+      <vector id="3:710" name="Vector (Stroke)" x="26" y="183" width="15" height="14" />
+    </frame>
+  </frame>
+  <rounded-rectangle id="3:711" name="image 286" x="-3930" y="1230" width="1179" height="647" />
+  <rounded-rectangle id="3:712" name="image 287" x="-3865" y="4721" width="1280" height="804" />
+  <frame id="3:713" name="Frame 807" x="-2181" y="2615" width="1280" height="720">
+    <rounded-rectangle id="3:714" name="avatarHead3 (53) 1" x="22" y="32" width="42" height="42" />
+    <text id="3:715" name="LIikholesye Аккаунт Microsoft" x="85" y="34" width="109" height="38" />
+    <text id="3:716" name="urodlauncher" x="984" y="47" width="130" height="25" />
+    <rounded-rectangle id="3:717" name="Rectangle 146728" x="115" y="115" width="686" height="605" />
+    <rounded-rectangle id="3:718" name="Rectangle 146733" x="795" y="122" width="5" height="26" />
+    <vector id="3:719" name="Arrow 1 (Stroke)" x="795" y="119" width="5.000000174855813" height="3.9999999801511876" />
+    <vector id="3:720" name="Arrow 1 (Stroke)" x="800" y="716" width="5.000000174845582" height="3.9999999801384547" />
+    <vector id="3:721" name="Arrow 1 (Stroke)" x="800" y="770" width="5.000000174845582" height="3.9999999801384547" />
+    <frame id="3:722" name="Group 572" x="150" y="642" width="132" height="43">
+      <text id="3:723" name="GY 1.21.11" x="203" y="646" width="70" height="20" />
+      <text id="3:724" name="Fabric 1.21.11" x="203" y="664" width="79" height="16" />
+      <rounded-rectangle id="3:725" name="Frame 529 2" x="150" y="642" width="43" height="43" />
+    </frame>
+    <rounded-rectangle id="3:726" name="Frame 529 3" x="47" y="328" width="21" height="21" />
+    <rounded-rectangle id="3:727" name="Frame 529 4" x="47" y="384" width="21" height="21" />
+    <rounded-rectangle id="3:728" name="Frame 529 5" x="47" y="440" width="21" height="21" />
+    <rounded-rectangle id="3:729" name="Frame 529 6" x="47" y="496" width="21" height="21" />
+    <text id="3:730" name="Названия (А-Я)" x="150" y="201" width="92" height="15" />
+    <text id="3:731" name="Всё" x="267" y="201" width="21" height="15" />
+    <text id="3:732" name="Моды" x="308" y="201" width="36" height="15" />
+    <text id="3:733" name="Шейдеры" x="365" y="201" width="60" height="15" />
+    <text id="3:734" name="Наборы ресурсов" x="448" y="201" width="107" height="15" />
+    <frame id="3:735" name="Frame 810" x="640" y="162" width="122" height="24">
+      <text id="3:736" name="Добавить файлы" x="18" y="5.5" width="86" height="13" />
+    </frame>
+    <frame id="3:737" name="Frame 809" x="524" y="631" width="241" height="65">
+      <text id="3:738" name="ИГРАТЬ" x="50" y="10" width="141" height="45" />
+    </frame>
+    <rounded-rectangle id="3:739" name="Rectangle 146730" x="150" y="162" width="458" height="24" />
+    <text id="3:740" name="Поиск" x="162" y="167" width="33" height="14" />
+    <frame id="3:741" name="Group 562" x="150" y="226" width="615" height="60">
+      <rounded-rectangle id="3:742" name="Rectangle 146731" x="150" y="226" width="615" height="60" />
+      <frame id="3:743" name="Group 563" x="203" y="246" width="137" height="21">
+        <text id="3:744" name="[EMF] Entity Model Features" x="203" y="246" width="137" height="13" />
+        <text id="3:745" name="Traben" x="203" y="257" width="28" height="10" />
+      </frame>
+      <frame id="3:746" name="Group 564" x="402" y="246" width="178" height="21">
+        <text id="3:747" name="3.0.17-fabric-1.21.11" x="402" y="246" width="90" height="13" />
+        <text id="3:748" name="entity_model_features_1.21.11-fabric-3.0.17.jar" x="402" y="257" width="178" height="10" />
+      </frame>
+      <rounded-rectangle id="3:749" name="Rectangle 146732" x="164" y="240" width="33" height="33" />
+      <frame id="3:750" name="Group 566" x="661" y="250.662109375" width="7" height="11.375" />
+      <frame id="3:753" name="Group 565" x="677" y="247" width="34" height="18.700000762939453" />
+      <vector id="3:756" name="Vector (Stroke)" x="720" y="248.349609375" width="15" height="16" />
+      <vector id="3:757" name="Vector" x="744" y="249.849609375" width="4" height="13" />
+    </frame>
+    <frame id="3:758" name="Group 564" x="150" y="346" width="615" height="60">
+      <rounded-rectangle id="3:759" name="Rectangle 146731" x="150" y="346" width="615" height="60" />
+      <frame id="3:760" name="Group 563" x="203" y="366" width="137" height="21">
+        <text id="3:761" name="[EMF] Entity Model Features" x="203" y="366" width="137" height="13" />
+        <text id="3:762" name="Traben" x="203" y="377" width="28" height="10" />
+      </frame>
+      <frame id="3:763" name="Group 564" x="402" y="366" width="178" height="21">
+        <text id="3:764" name="3.0.17-fabric-1.21.11" x="402" y="366" width="90" height="13" />
+        <text id="3:765" name="entity_model_features_1.21.11-fabric-3.0.17.jar" x="402" y="377" width="178" height="10" />
+      </frame>
+      <rounded-rectangle id="3:766" name="Rectangle 146732" x="164" y="360" width="33" height="33" />
+      <frame id="3:767" name="Group 566" x="661" y="370.662109375" width="7" height="11.375" />
+      <frame id="3:770" name="Group 565" x="677" y="367" width="34" height="18.700000762939453" />
+      <vector id="3:773" name="Vector (Stroke)" x="720" y="368.349609375" width="15" height="16" />
+      <vector id="3:774" name="Vector" x="744" y="369.849609375" width="4" height="13" />
+    </frame>
+    <frame id="3:775" name="Group 566" x="150" y="466" width="615" height="60">
+      <rounded-rectangle id="3:776" name="Rectangle 146731" x="150" y="466" width="615" height="60" />
+      <frame id="3:777" name="Group 563" x="203" y="486" width="137" height="21">
+        <text id="3:778" name="[EMF] Entity Model Features" x="203" y="486" width="137" height="13" />
+        <text id="3:779" name="Traben" x="203" y="497" width="28" height="10" />
+      </frame>
+      <frame id="3:780" name="Group 564" x="402" y="486" width="178" height="21">
+        <text id="3:781" name="3.0.17-fabric-1.21.11" x="402" y="486" width="90" height="13" />
+        <text id="3:782" name="entity_model_features_1.21.11-fabric-3.0.17.jar" x="402" y="497" width="178" height="10" />
+      </frame>
+      <rounded-rectangle id="3:783" name="Rectangle 146732" x="164" y="480" width="33" height="33" />
+      <frame id="3:784" name="Group 566" x="661" y="490.662109375" width="7" height="11.375" />
+      <frame id="3:787" name="Group 565" x="677" y="487" width="34" height="18.700000762939453" />
+      <vector id="3:790" name="Vector (Stroke)" x="720" y="488.349609375" width="15" height="16" />
+      <vector id="3:791" name="Vector" x="744" y="489.849609375" width="4" height="13" />
+    </frame>
+    <frame id="3:792" name="Group 563" x="150" y="286" width="615" height="60">
+      <rounded-rectangle id="3:793" name="Rectangle 146731" x="150" y="286" width="615" height="60" />
+      <frame id="3:794" name="Group 563" x="203" y="306" width="137" height="21">
+        <text id="3:795" name="[EMF] Entity Model Features" x="203" y="306" width="137" height="13" />
+        <text id="3:796" name="Traben" x="203" y="317" width="28" height="10" />
+      </frame>
+      <frame id="3:797" name="Group 564" x="402" y="306" width="178" height="21">
+        <text id="3:798" name="3.0.17-fabric-1.21.11" x="402" y="306" width="90" height="13" />
+        <text id="3:799" name="entity_model_features_1.21.11-fabric-3.0.17.jar" x="402" y="317" width="178" height="10" />
+      </frame>
+      <rounded-rectangle id="3:800" name="Rectangle 146732" x="164" y="300" width="33" height="33" />
+      <frame id="3:801" name="Group 566" x="661" y="310.662109375" width="7" height="11.375" />
+      <frame id="3:804" name="Group 565" x="677" y="307" width="34" height="18.700000762939453" />
+      <vector id="3:807" name="Vector (Stroke)" x="720" y="308.349609375" width="15" height="16" />
+      <vector id="3:808" name="Vector" x="744" y="309.849609375" width="4" height="13" />
+    </frame>
+    <frame id="3:809" name="Group 565" x="150" y="406" width="615" height="60">
+      <rounded-rectangle id="3:810" name="Rectangle 146731" x="150" y="406" width="615" height="60" />
+      <frame id="3:811" name="Group 563" x="203" y="426" width="137" height="21">
+        <text id="3:812" name="[EMF] Entity Model Features" x="203" y="426" width="137" height="13" />
+        <text id="3:813" name="Traben" x="203" y="437" width="28" height="10" />
+      </frame>
+      <frame id="3:814" name="Group 564" x="402" y="426" width="178" height="21">
+        <text id="3:815" name="3.0.17-fabric-1.21.11" x="402" y="426" width="90" height="13" />
+        <text id="3:816" name="entity_model_features_1.21.11-fabric-3.0.17.jar" x="402" y="437" width="178" height="10" />
+      </frame>
+      <rounded-rectangle id="3:817" name="Rectangle 146732" x="164" y="420" width="33" height="33" />
+      <frame id="3:818" name="Group 566" x="661" y="430.662109375" width="7" height="11.375" />
+      <frame id="3:821" name="Group 565" x="677" y="427" width="34" height="18.700000762939453" />
+      <vector id="3:824" name="Vector (Stroke)" x="720" y="428.349609375" width="15" height="16" />
+      <vector id="3:825" name="Vector" x="744" y="429.849609375" width="4" height="13" />
+    </frame>
+    <frame id="3:826" name="Group 567" x="150" y="526" width="615" height="60">
+      <rounded-rectangle id="3:827" name="Rectangle 146731" x="150" y="526" width="615" height="60" />
+      <frame id="3:828" name="Group 563" x="203" y="546" width="137" height="21">
+        <text id="3:829" name="[EMF] Entity Model Features" x="203" y="546" width="137" height="13" />
+        <text id="3:830" name="Traben" x="203" y="557" width="28" height="10" />
+      </frame>
+      <frame id="3:831" name="Group 564" x="402" y="546" width="178" height="21">
+        <text id="3:832" name="3.0.17-fabric-1.21.11" x="402" y="546" width="90" height="13" />
+        <text id="3:833" name="entity_model_features_1.21.11-fabric-3.0.17.jar" x="402" y="557" width="178" height="10" />
+      </frame>
+      <rounded-rectangle id="3:834" name="Rectangle 146732" x="164" y="540" width="33" height="33" />
+      <frame id="3:835" name="Group 566" x="661" y="550.662109375" width="7" height="11.375" />
+      <frame id="3:838" name="Group 565" x="677" y="547" width="34" height="18.700000762939453" />
+      <vector id="3:841" name="Vector (Stroke)" x="720" y="548.349609375" width="15" height="16" />
+      <vector id="3:842" name="Vector" x="744" y="549.849609375" width="4" height="13" />
+    </frame>
+    <vector id="3:843" name="Vector" x="47" y="115" width="21" height="21" />
+    <vector id="3:844" name="🎨-Color" x="46" y="171" width="23" height="11" />
+    <vector id="3:845" name="Vector" x="49" y="217" width="17" height="20" />
+    <vector id="3:846" name="Vector" x="47" y="272" width="21" height="21" />
+    <vector id="3:847" name="Vector" x="50" y="654" width="21" height="21" />
+    <frame id="3:848" name="Frame 811" x="469" y="642" width="43" height="43">
+      <vector id="3:849" name="Vector" x="10" y="10" width="23" height="23" />
+    </frame>
+    <rounded-rectangle id="3:850" name="Rectangle 146725" x="801" y="115" width="364" height="605" />
+    <frame id="3:851" name="Group 574" x="816" y="138" width="335" height="81">
+      <rounded-rectangle id="3:852" name="Rectangle 146734" x="816" y="138" width="222" height="24" />
+      <text id="3:853" name="Поиск" x="828" y="143" width="33" height="14" />
+      <text id="3:854" name="&gt;_ КОНСОЛЬ" x="822" y="206" width="105" height="13" />
+      <frame id="3:855" name="Frame 812" x="822" y="178" width="321" height="15">
+        <text id="3:856" name="Всё" x="0" y="0" width="21" height="15" />
+        <text id="3:857" name="Ошибки" x="42" y="0" width="50" height="15" />
+        <text id="3:858" name="Предупреждения" x="113" y="0" width="107" height="15" />
+        <text id="3:859" name="Информация" x="241" y="0" width="80" height="15" />
+      </frame>
+      <frame id="3:860" name="Group 570" x="1058" y="138" width="93" height="24">
+        <rounded-rectangle id="3:861" name="Rectangle 146735" x="1058" y="138" width="93" height="24" />
+        <frame id="3:862" name="Group 569" x="1080" y="143" width="58" height="13">
+          <text id="3:863" name="Live Log" x="1080" y="143" width="40" height="13" />
+          <vector id="3:864" name="Vector 418" x="1131" y="149" width="7" height="3" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="3:865" name="Frame 813" x="881" y="51" width="65" height="17">
+      <vector id="3:866" name="Vector 419 (Stroke)" x="0" y="0" width="12" height="17" />
+      <vector id="3:867" name="Vector 419 (Stroke)" x="65" y="0" width="12" height="17" />
+    </frame>
+    <vector id="3:868" name="+" x="47" y="552" width="21" height="21" />
+    <frame id="3:869" name="Group 571" x="1124" y="43" width="32" height="32" />
+    <frame id="3:874" name="Group 587" x="1187" y="52.676513671875" width="63.000030517578125" height="15.64708423614502" />
+    <frame id="3:878" name="Frame 887" x="151" y="131" width="227" height="18">
+      <frame id="3:879" name="Frame 884" x="0" y="0" width="76" height="18">
+        <vector id="3:880" name="Vector (Stroke)" x="0" y="1.5" width="15" height="15" />
+        <text id="3:881" name="Контент" x="19" y="0" width="57" height="18" />
+      </frame>
+      <frame id="3:882" name="Frame 885" x="87" y="0" width="68" height="18">
+        <vector id="3:883" name="Vector (Stroke)" x="0" y="1.5" width="15" height="15" />
+        <text id="3:884" name="Файлы" x="19" y="0" width="49" height="18" />
+      </frame>
+      <frame id="3:885" name="Frame 886" x="166" y="0" width="61" height="18">
+        <vector id="3:886" name="Vector (Stroke)" x="0" y="1.5" width="15" height="15" />
+        <text id="3:887" name="Миры" x="19" y="0" width="42" height="18" />
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:888" name="Frame 824" x="-2181" y="3415" width="1280" height="720">
+    <rounded-rectangle id="3:889" name="avatarHead3 (53) 1" x="22" y="32" width="42" height="42" />
+    <text id="3:890" name="LIikholesye Аккаунт Microsoft" x="85" y="34" width="109" height="38" />
+    <text id="3:891" name="urodlauncher" x="984" y="47" width="130" height="25" />
+    <rounded-rectangle id="3:892" name="Rectangle 146728" x="115" y="115" width="831" height="605" />
+    <rounded-rectangle id="3:893" name="Rectangle 146733" x="940" y="122" width="5" height="106" />
+    <vector id="3:894" name="Arrow 1 (Stroke)" x="940" y="119" width="5.000000174855813" height="3.9999999801511876" />
+    <vector id="3:895" name="Arrow 1 (Stroke)" x="945" y="716" width="5.000000174845582" height="3.9999999801384547" />
+    <vector id="3:896" name="Arrow 1 (Stroke)" x="800" y="770" width="5.000000174845582" height="3.9999999801384547" />
+    <frame id="3:897" name="Group 572" x="150" y="642" width="132" height="43">
+      <text id="3:898" name="GY 1.21.11" x="203" y="646" width="70" height="20" />
+      <text id="3:899" name="Fabric 1.21.11" x="203" y="664" width="79" height="16" />
+      <rounded-rectangle id="3:900" name="Frame 529 2" x="150" y="642" width="43" height="43" />
+    </frame>
+    <rounded-rectangle id="3:901" name="Frame 529 3" x="47" y="328" width="21" height="21" />
+    <rounded-rectangle id="3:902" name="Frame 529 4" x="47" y="384" width="21" height="21" />
+    <rounded-rectangle id="3:903" name="Frame 529 5" x="47" y="440" width="21" height="21" />
+    <rounded-rectangle id="3:904" name="Frame 529 6" x="47" y="496" width="21" height="21" />
+    <text id="3:905" name="Моды" x="150" y="132" width="42" height="18" />
+    <text id="3:906" name="Наборы ресурсов" x="211" y="132" width="125" height="18" />
+    <text id="3:907" name="Дата паки" x="355" y="132" width="74" height="18" />
+    <text id="3:908" name="шейдеры" x="448" y="132" width="67" height="18" />
+    <frame id="3:909" name="Frame 888" x="619" y="162" width="293" height="24">
+      <frame id="3:910" name="Frame 810" x="0" y="0" width="147" height="24">
+        <vector id="3:911" name="Vector (Stroke)" x="18" y="4.5" width="15" height="15" />
+        <text id="3:912" name="Добавить файлы" x="43" y="5.5" width="86" height="13" />
+      </frame>
+      <frame id="3:913" name="Frame 830" x="155" y="0" width="138" height="24">
+        <vector id="3:914" name="Vector" x="18" y="4.5" width="15" height="15" />
+        <text id="3:915" name="Найти проекты" x="43" y="5.5" width="77" height="13" />
+      </frame>
+    </frame>
+    <rounded-rectangle id="3:916" name="Rectangle 146730" x="150" y="162" width="458" height="24" />
+    <text id="3:917" name="Поиск" x="162" y="167" width="33" height="14" />
+    <vector id="3:918" name="Vector" x="47" y="115" width="21" height="21" />
+    <vector id="3:919" name="🎨-Color" x="46" y="171" width="23" height="11" />
+    <vector id="3:920" name="Vector" x="49" y="217" width="17" height="20" />
+    <vector id="3:921" name="Vector" x="47" y="272" width="21" height="21" />
+    <vector id="3:922" name="Vector" x="50" y="654" width="21" height="21" />
+    <frame id="3:923" name="Frame 813" x="881" y="51" width="65" height="17">
+      <vector id="3:924" name="Vector 419 (Stroke)" x="0" y="0" width="12" height="17" />
+      <vector id="3:925" name="Vector 419 (Stroke)" x="65" y="0" width="12" height="17" />
+    </frame>
+    <vector id="3:926" name="+" x="47" y="552" width="21" height="21" />
+    <frame id="3:927" name="Group 571" x="1124" y="43" width="32" height="32" />
+    <frame id="3:932" name="Group 587" x="1187" y="52.676513671875" width="63.000030517578125" height="15.64708423614502" />
+    <frame id="3:936" name="Group 588" x="150" y="194" width="228" height="24">
+      <rounded-rectangle id="3:937" name="Rectangle 146734" x="150" y="194" width="228" height="24" />
+      <text id="3:938" name="Сортировать по: Актуальности" x="162" y="199" width="169" height="14" />
+      <vector id="3:939" name="Vector 419 (Stroke)" x="359" y="209" width="8.000000218557034" height="4.999999872854005" />
+    </frame>
+    <rounded-rectangle id="3:940" name="Rectangle 146731" x="150" y="242" width="762" height="80" />
+    <text id="3:941" name="[EMF] Entity Model Features" x="226" y="256" width="165" height="15" />
+    <text id="3:942" name="Fabric API is the library for essential hooks and interoperability mechanisms for Fabric mods. Examples include:" x="226" y="274" width="362" height="20" />
+    <text id="3:943" name="by Traben" x="397" y="260" width="39" height="10" />
+    <rounded-rectangle id="3:944" name="Rectangle 146732" x="164" y="256" width="53" height="53" />
+    <frame id="3:945" name="Frame 829" x="826" y="256" width="67" height="19">
+      <text id="3:946" name="+ Установить" x="10" y="5" width="47" height="9" />
+    </frame>
+    <frame id="3:947" name="Group 591" x="821" y="284" width="72" height="9">
+      <frame id="3:948" name="Group 590" x="821" y="284" width="39" height="9">
+        <text id="3:949" name="100.93M" x="830" y="284" width="30" height="9" />
+        <vector id="3:950" name="Vector" x="821" y="285" width="5" height="7" />
+      </frame>
+      <frame id="3:951" name="Group 589" x="867" y="284" width="26" height="9">
+        <text id="3:952" name="87M" x="878" y="284" width="15" height="9" />
+        <vector id="3:953" name="Vector" x="867" y="285" width="8" height="7" />
+      </frame>
+    </frame>
+    <frame id="3:954" name="Group 592" x="833" y="301" width="60" height="8">
+      <vector id="3:955" name="Vector" x="833" y="301" width="10" height="8" />
+      <text id="3:956" name="3 недели назад" x="846" y="301" width="47" height="8" />
+    </frame>
+    <rounded-rectangle id="3:957" name="Rectangle 146731" x="150" y="422" width="762" height="80" />
+    <text id="3:958" name="[EMF] Entity Model Features" x="226" y="436" width="165" height="15" />
+    <text id="3:959" name="Fabric API is the library for essential hooks and interoperability mechanisms for Fabric mods. Examples include:" x="226" y="454" width="362" height="20" />
+    <text id="3:960" name="by Traben" x="397" y="440" width="39" height="10" />
+    <rounded-rectangle id="3:961" name="Rectangle 146732" x="164" y="436" width="53" height="53" />
+    <frame id="3:962" name="Frame 829" x="826" y="436" width="67" height="19">
+      <text id="3:963" name="+ Установить" x="10" y="5" width="47" height="9" />
+    </frame>
+    <frame id="3:964" name="Group 591" x="821" y="464" width="72" height="9">
+      <frame id="3:965" name="Group 590" x="821" y="464" width="39" height="9">
+        <text id="3:966" name="100.93M" x="830" y="464" width="30" height="9" />
+        <vector id="3:967" name="Vector" x="821" y="465" width="5" height="7" />
+      </frame>
+      <frame id="3:968" name="Group 589" x="867" y="464" width="26" height="9">
+        <text id="3:969" name="87M" x="878" y="464" width="15" height="9" />
+        <vector id="3:970" name="Vector" x="867" y="465" width="8" height="7" />
+      </frame>
+    </frame>
+    <frame id="3:971" name="Group 594" x="833" y="481" width="60" height="8">
+      <vector id="3:972" name="Vector" x="833" y="481" width="10" height="8" />
+      <text id="3:973" name="3 недели назад" x="846" y="481" width="47" height="8" />
+    </frame>
+    <rounded-rectangle id="3:974" name="Rectangle 146731" x="150" y="332" width="762" height="80" />
+    <text id="3:975" name="[EMF] Entity Model Features" x="226" y="346" width="165" height="15" />
+    <text id="3:976" name="Fabric API is the library for essential hooks and interoperability mechanisms for Fabric mods. Examples include:" x="226" y="364" width="362" height="20" />
+    <text id="3:977" name="by Traben" x="397" y="350" width="39" height="10" />
+    <rounded-rectangle id="3:978" name="Rectangle 146732" x="164" y="346" width="53" height="53" />
+    <frame id="3:979" name="Frame 829" x="826" y="346" width="67" height="19">
+      <text id="3:980" name="+ Установить" x="10" y="5" width="47" height="9" />
+    </frame>
+    <frame id="3:981" name="Group 591" x="821" y="374" width="72" height="9">
+      <frame id="3:982" name="Group 590" x="821" y="374" width="39" height="9">
+        <text id="3:983" name="100.93M" x="830" y="374" width="30" height="9" />
+        <vector id="3:984" name="Vector" x="821" y="375" width="5" height="7" />
+      </frame>
+      <frame id="3:985" name="Group 589" x="867" y="374" width="26" height="9">
+        <text id="3:986" name="87M" x="878" y="374" width="15" height="9" />
+        <vector id="3:987" name="Vector" x="867" y="375" width="8" height="7" />
+      </frame>
+    </frame>
+    <frame id="3:988" name="Group 593" x="833" y="391" width="60" height="8">
+      <vector id="3:989" name="Vector" x="833" y="391" width="10" height="8" />
+      <text id="3:990" name="3 недели назад" x="846" y="391" width="47" height="8" />
+    </frame>
+    <rounded-rectangle id="3:991" name="Rectangle 146731" x="150" y="512" width="762" height="80" />
+    <text id="3:992" name="[EMF] Entity Model Features" x="226" y="526" width="165" height="15" />
+    <text id="3:993" name="Fabric API is the library for essential hooks and interoperability mechanisms for Fabric mods. Examples include:" x="226" y="544" width="362" height="20" />
+    <text id="3:994" name="by Traben" x="397" y="530" width="39" height="10" />
+    <rounded-rectangle id="3:995" name="Rectangle 146732" x="164" y="526" width="53" height="53" />
+    <frame id="3:996" name="Frame 829" x="826" y="526" width="67" height="19">
+      <text id="3:997" name="+ Установить" x="10" y="5" width="47" height="9" />
+    </frame>
+    <frame id="3:998" name="Group 591" x="821" y="554" width="72" height="9">
+      <frame id="3:999" name="Group 590" x="821" y="554" width="39" height="9">
+        <text id="3:1000" name="100.93M" x="830" y="554" width="30" height="9" />
+        <vector id="3:1001" name="Vector" x="821" y="555" width="5" height="7" />
+      </frame>
+      <frame id="3:1002" name="Group 589" x="867" y="554" width="26" height="9">
+        <text id="3:1003" name="87M" x="878" y="554" width="15" height="9" />
+        <vector id="3:1004" name="Vector" x="867" y="555" width="8" height="7" />
+      </frame>
+    </frame>
+    <frame id="3:1005" name="Group 595" x="833" y="571" width="60" height="8">
+      <vector id="3:1006" name="Vector" x="833" y="571" width="10" height="8" />
+      <text id="3:1007" name="3 недели назад" x="846" y="571" width="47" height="8" />
+    </frame>
+    <rounded-rectangle id="3:1008" name="Rectangle 146734" x="946" y="115" width="219" height="1" />
+    <text id="3:1009" name="НОВОСТИ" x="959" y="133" width="102" height="25" />
+    <rounded-rectangle id="3:1010" name="Rectangle 146735" x="959" y="175" width="206" height="98" />
+    <text id="3:1011" name="Мы уничтожим каждую базу этой хуйни." x="959" y="287" width="206" height="44" />
+  </frame>
+  <frame id="3:1012" name="Frame 816" x="-849" y="2615" width="1280" height="720">
+    <rounded-rectangle id="3:1013" name="avatarHead3 (53) 1" x="22" y="32" width="42" height="42" />
+    <text id="3:1014" name="LIikholesye Аккаунт Microsoft" x="85" y="34" width="109" height="38" />
+    <text id="3:1015" name="urodlauncher" x="984" y="47" width="130" height="25" />
+    <rounded-rectangle id="3:1016" name="Rectangle 146728" x="115" y="115" width="831" height="605" />
+    <rounded-rectangle id="3:1017" name="Rectangle 146733" x="940" y="122" width="5" height="26" />
+    <vector id="3:1018" name="Arrow 1 (Stroke)" x="940" y="119" width="5.000000174855799" height="3.9999999801511876" />
+    <vector id="3:1019" name="Arrow 1 (Stroke)" x="945" y="716" width="5.000000174845539" height="3.9999999801384547" />
+    <vector id="3:1020" name="Arrow 1 (Stroke)" x="800" y="770" width="5.000000174845539" height="3.9999999801384547" />
+    <rounded-rectangle id="3:1021" name="Frame 529 3" x="47" y="328" width="21" height="21" />
+    <rounded-rectangle id="3:1022" name="Frame 529 4" x="47" y="384" width="21" height="21" />
+    <rounded-rectangle id="3:1023" name="Frame 529 5" x="47" y="440" width="21" height="21" />
+    <rounded-rectangle id="3:1024" name="Frame 529 6" x="47" y="496" width="21" height="21" />
+    <vector id="3:1025" name="Vector" x="47" y="115" width="21" height="21" />
+    <vector id="3:1026" name="🎨-Color" x="46" y="171" width="23" height="11" />
+    <vector id="3:1027" name="Vector" x="49" y="217" width="17" height="20" />
+    <vector id="3:1028" name="Vector" x="47" y="272" width="21" height="21" />
+    <vector id="3:1029" name="Vector" x="50" y="654" width="21" height="21" />
+    <rounded-rectangle id="3:1030" name="Rectangle 146725" x="946" y="115" width="219" height="1" />
+    <frame id="3:1031" name="Frame 813" x="881" y="51" width="65" height="17">
+      <vector id="3:1032" name="Vector 419 (Stroke)" x="0" y="0" width="12" height="17" />
+      <vector id="3:1033" name="Vector 419 (Stroke)" x="65" y="0" width="12" height="17" />
+    </frame>
+    <vector id="3:1034" name="Vector 419 (Stroke)" x="358" y="153" width="17.00000052453663" height="12.000000743093551" />
+    <vector id="3:1035" name="+" x="47" y="552" width="21" height="21" />
+    <frame id="3:1036" name="Group 571" x="1124" y="43" width="32" height="32" />
+    <text id="3:1041" name="Выбор скина" x="153" y="147" width="132" height="25" />
+    <text id="3:1042" name="Сохраненные скины" x="371" y="147" width="209" height="25" />
+    <frame id="3:1043" name="Group 583" x="140" y="194" width="782" height="395">
+      <frame id="3:1044" name="Group 581" x="140" y="222" width="158.69921875" height="367">
+        <rounded-rectangle id="3:1045" name="avatarBody3 (5) 1" x="161" y="272" width="120" height="257" />
+        <frame id="3:1046" name="Frame 817" x="149" y="222" width="142" height="36">
+          <text id="3:1047" name="Likholesye" x="19" y="10" width="104" height="16" />
+        </frame>
+        <frame id="3:1048" name="Frame 818" x="170" y="564" width="99" height="25">
+          <vector id="3:1049" name="Vector" x="12" y="6" width="13" height="13" />
+          <text id="3:1050" name="Изменить" x="28" y="5" width="59" height="15" />
+        </frame>
+        <frame id="3:1051" name="Group 575" x="140" y="538" width="158.69921875" height="11">
+          <frame id="3:1052" name="Frame 819" x="140" y="539" width="15.699165344238281" height="9">
+            <vector id="3:1053" name="Arrow 3 (Stroke)" x="4.349582672119141" y="1.9228780269622803" width="4.349582672119141" height="5.1542439460754395" />
+            <vector id="3:1054" name="Vector 420 (Stroke)" x="7.349582672119141" y="0" width="1" height="9" />
+            <vector id="3:1055" name="Arrow 3 (Stroke)" x="11.34958267211914" y="1.9228780269622803" width="4.349582672119141" height="5.1542439460754395" />
+          </frame>
+          <text id="3:1056" name="Перетащите, чтобы повернуть" x="160.69921875" y="538" width="138" height="11" />
+        </frame>
+      </frame>
+      <frame id="3:1057" name="Group 582" x="336" y="194" width="586" height="366">
+        <frame id="3:1058" name="Frame 820" x="336" y="194" width="586" height="176">
+          <frame id="3:1059" name="Group 580" x="0" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1060" name="Rectangle 146737" x="0" y="0" width="136" height="176" />
+            <frame id="3:1061" name="Group 576" x="23" y="52" width="91" height="72">
+              <vector id="3:1062" name="+" x="56" y="52" width="25" height="25" />
+              <text id="3:1063" name="Добавить скин" x="23" y="98" width="91" height="15" />
+              <text id="3:1064" name="Ператащите сюда" x="24" y="112" width="90" height="12" />
+            </frame>
+          </frame>
+          <frame id="3:1065" name="Group 577" x="150" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1066" name="Rectangle 146738" x="150" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1067" name="avatarBody3 (5) 2" x="166" y="8" width="107" height="167" />
+          </frame>
+          <frame id="3:1068" name="Group 578" x="300" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1069" name="Rectangle 146738" x="300" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1070" name="avatarBody3 (5) 2" x="316" y="8" width="107" height="167" />
+          </frame>
+          <frame id="3:1071" name="Group 579" x="450" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1072" name="Rectangle 146738" x="450" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1073" name="avatarBody3 (5) 2" x="466" y="8" width="107" height="167" />
+          </frame>
+        </frame>
+        <frame id="3:1074" name="Frame 821" x="336" y="384" width="586" height="176">
+          <frame id="3:1075" name="Group 577" x="0" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1076" name="Rectangle 146738" x="0" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1077" name="avatarBody3 (5) 2" x="16" y="8" width="107" height="167" />
+          </frame>
+          <frame id="3:1078" name="Group 580" x="150" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1079" name="Rectangle 146738" x="150" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1080" name="avatarBody3 (5) 2" x="166" y="8" width="107" height="167" />
+          </frame>
+          <frame id="3:1081" name="Group 578" x="300" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1082" name="Rectangle 146738" x="300" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1083" name="avatarBody3 (5) 2" x="316" y="8" width="107" height="167" />
+          </frame>
+          <frame id="3:1084" name="Group 579" x="450" y="0" width="136" height="176">
+            <rounded-rectangle id="3:1085" name="Rectangle 146738" x="450" y="0" width="136" height="176" />
+            <rounded-rectangle id="3:1086" name="avatarBody3 (5) 2" x="466" y="8" width="107" height="167" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <text id="3:1087" name="НОВОСТИ" x="959" y="133" width="102" height="25" />
+    <rounded-rectangle id="3:1088" name="Rectangle 146573" x="959" y="175" width="206" height="98" />
+    <text id="3:1089" name="Мы уничтожим каждую базу этой хуйни." x="959" y="287" width="206" height="44" />
+    <frame id="3:1090" name="Group 587" x="1187" y="52.676513671875" width="63.000030517578125" height="15.64708423614502" />
+  </frame>
+  <frame id="3:1094" name="Frame 825" x="483" y="2615" width="1280" height="720">
+    <rounded-rectangle id="3:1095" name="avatarHead3 (53) 1" x="22" y="32" width="42" height="42" />
+    <text id="3:1096" name="LIikholesye Аккаунт Microsoft" x="85" y="34" width="109" height="38" />
+    <text id="3:1097" name="urodlauncher" x="984" y="47" width="130" height="25" />
+    <rounded-rectangle id="3:1098" name="Rectangle 146728" x="115" y="115" width="831" height="605" />
+    <rounded-rectangle id="3:1099" name="Rectangle 146733" x="940" y="122" width="5" height="26" />
+    <vector id="3:1100" name="Arrow 1 (Stroke)" x="940" y="119" width="5.000000174855813" height="3.9999999801511876" />
+    <vector id="3:1101" name="Arrow 1 (Stroke)" x="945" y="716" width="5.000000174845582" height="3.9999999801384547" />
+    <vector id="3:1102" name="Arrow 1 (Stroke)" x="800" y="770" width="5.000000174845582" height="3.9999999801384547" />
+    <rounded-rectangle id="3:1103" name="Frame 529 3" x="47" y="328" width="21" height="21" />
+    <rounded-rectangle id="3:1104" name="Frame 529 4" x="47" y="384" width="21" height="21" />
+    <rounded-rectangle id="3:1105" name="Frame 529 5" x="47" y="440" width="21" height="21" />
+    <rounded-rectangle id="3:1106" name="Frame 529 6" x="47" y="496" width="21" height="21" />
+    <vector id="3:1107" name="Vector" x="47" y="115" width="21" height="21" />
+    <vector id="3:1108" name="🎨-Color" x="46" y="171" width="23" height="11" />
+    <vector id="3:1109" name="Vector" x="49" y="217" width="17" height="20" />
+    <vector id="3:1110" name="Vector" x="47" y="272" width="21" height="21" />
+    <vector id="3:1111" name="Vector" x="50" y="654" width="21" height="21" />
+    <rounded-rectangle id="3:1112" name="Rectangle 146725" x="946" y="115" width="219" height="1" />
+    <frame id="3:1113" name="Frame 813" x="881" y="51" width="65" height="17">
+      <vector id="3:1114" name="Vector 419 (Stroke)" x="0" y="0" width="12" height="17" />
+      <vector id="3:1115" name="Vector 419 (Stroke)" x="65" y="0" width="12" height="17" />
+    </frame>
+    <vector id="3:1116" name="+" x="47" y="552" width="21" height="21" />
+    <frame id="3:1117" name="Group 571" x="1124" y="43" width="32" height="32" />
+    <text id="3:1122" name="Галерея" x="153" y="147" width="83" height="25" />
+    <text id="3:1123" name="НОВОСТИ" x="959" y="133" width="102" height="25" />
+    <rounded-rectangle id="3:1124" name="Rectangle 146573" x="959" y="175" width="206" height="98" />
+    <text id="3:1125" name="Мы уничтожим каждую базу этой хуйни." x="959" y="287" width="206" height="44" />
+    <frame id="3:1126" name="Group 587" x="1187" y="52.676513671875" width="63.000030517578125" height="15.64708423614502" />
+    <frame id="3:1130" name="Group 597" x="331" y="141" width="225" height="39">
+      <text id="3:1131" name="Сборка" x="331" y="152" width="57" height="19" />
+      <frame id="3:1132" name="Frame 830" x="403" y="141" width="153" height="39">
+        <text id="3:1133" name="Все" x="10" y="10" width="27" height="19" />
+        <vector id="3:1134" name="Vector 419 (Stroke)" x="133" y="22.5" width="10.000000262268259" height="5.999999960276909" />
+      </frame>
+    </frame>
+    <frame id="3:1135" name="Group 596" x="582" y="141" width="299" height="39">
+      <text id="3:1136" name="Сортировка" x="582" y="152" width="92" height="19" />
+      <frame id="3:1137" name="Frame 831" x="689" y="141" width="192" height="39">
+        <text id="3:1138" name="Сначала новые" x="10" y="10" width="119" height="19" />
+        <vector id="3:1139" name="Vector 419 (Stroke)" x="172" y="22.5" width="10.000000262268259" height="5.999999960276909" />
+      </frame>
+    </frame>
+    <frame id="3:1140" name="Frame 832" x="153" y="201" width="733" height="132">
+      <rounded-rectangle id="3:1141" name="Rectangle 146741" x="0" y="0" width="235" height="132" />
+      <rounded-rectangle id="3:1142" name="Rectangle 146742" x="249" y="0" width="235" height="132" />
+      <rounded-rectangle id="3:1143" name="Rectangle 146743" x="498" y="0" width="235" height="132" />
+    </frame>
+    <frame id="3:1144" name="Frame 833" x="153" y="347" width="733" height="132">
+      <rounded-rectangle id="3:1145" name="Rectangle 146741" x="0" y="0" width="235" height="132" />
+      <rounded-rectangle id="3:1146" name="Rectangle 146742" x="249" y="0" width="235" height="132" />
+      <rounded-rectangle id="3:1147" name="Rectangle 146743" x="498" y="0" width="235" height="132" />
+    </frame>
+    <frame id="3:1148" name="Frame 834" x="153" y="493" width="733" height="132">
+      <rounded-rectangle id="3:1149" name="Rectangle 146741" x="0" y="0" width="235" height="132" />
+      <rounded-rectangle id="3:1150" name="Rectangle 146742" x="249" y="0" width="235" height="132" />
+      <rounded-rectangle id="3:1151" name="Rectangle 146743" x="498" y="0" width="235" height="132" />
+    </frame>
+  </frame>
+  <frame id="3:1152" name="Frame 826" x="483" y="3407" width="1280" height="720">
+    <rounded-rectangle id="3:1153" name="avatarHead3 (53) 1" x="22" y="32" width="42" height="42" />
+    <text id="3:1154" name="LIikholesye Аккаунт Microsoft" x="85" y="34" width="109" height="38" />
+    <text id="3:1155" name="urodlauncher" x="984" y="47" width="130" height="25" />
+    <rounded-rectangle id="3:1156" name="Rectangle 146728" x="115" y="115" width="831" height="605" />
+    <rounded-rectangle id="3:1157" name="Rectangle 146733" x="940" y="122" width="5" height="26" />
+    <vector id="3:1158" name="Arrow 1 (Stroke)" x="940" y="119" width="5.000000174855813" height="3.9999999801511876" />
+    <vector id="3:1159" name="Arrow 1 (Stroke)" x="945" y="716" width="5.000000174845582" height="3.9999999801384547" />
+    <vector id="3:1160" name="Arrow 1 (Stroke)" x="800" y="770" width="5.000000174845582" height="3.9999999801384547" />
+    <rounded-rectangle id="3:1161" name="Frame 529 3" x="47" y="328" width="21" height="21" />
+    <rounded-rectangle id="3:1162" name="Frame 529 4" x="47" y="384" width="21" height="21" />
+    <rounded-rectangle id="3:1163" name="Frame 529 5" x="47" y="440" width="21" height="21" />
+    <rounded-rectangle id="3:1164" name="Frame 529 6" x="47" y="496" width="21" height="21" />
+    <vector id="3:1165" name="Vector" x="47" y="115" width="21" height="21" />
+    <vector id="3:1166" name="🎨-Color" x="46" y="171" width="23" height="11" />
+    <vector id="3:1167" name="Vector" x="49" y="217" width="17" height="20" />
+    <vector id="3:1168" name="Vector" x="47" y="272" width="21" height="21" />
+    <vector id="3:1169" name="Vector" x="50" y="654" width="21" height="21" />
+    <rounded-rectangle id="3:1170" name="Rectangle 146725" x="946" y="115" width="219" height="1" />
+    <frame id="3:1171" name="Frame 813" x="881" y="51" width="65" height="17">
+      <vector id="3:1172" name="Vector 419 (Stroke)" x="0" y="0" width="12" height="17" />
+      <vector id="3:1173" name="Vector 419 (Stroke)" x="65" y="0" width="12" height="17" />
+    </frame>
+    <vector id="3:1174" name="+" x="47" y="552" width="21" height="21" />
+    <frame id="3:1175" name="Group 571" x="1124" y="43" width="32" height="32" />
+    <text id="3:1180" name="Библиотека" x="153" y="147" width="121" height="25" />
+    <text id="3:1181" name="НОВОСТИ" x="959" y="133" width="102" height="25" />
+    <rounded-rectangle id="3:1182" name="Rectangle 146573" x="959" y="175" width="206" height="98" />
+    <text id="3:1183" name="Мы уничтожим каждую базу этой хуйни." x="959" y="287" width="206" height="44" />
+    <frame id="3:1184" name="Group 587" x="1187" y="52.676513671875" width="63.000030517578125" height="15.64708423614502" />
+    <frame id="3:1188" name="Frame 810" x="627" y="189" width="117" height="24">
+      <text id="3:1189" name="+ Новая Сборка" x="18" y="5.5" width="81" height="13" />
+    </frame>
+    <rounded-rectangle id="3:1190" name="Rectangle 146730" x="153" y="189" width="458" height="24" />
+    <text id="3:1191" name="Поиск" x="165" y="194" width="33" height="14" />
+    <frame id="3:1192" name="Frame 836" x="153" y="224" width="106" height="24">
+      <text id="3:1193" name="Название" x="17" y="5" width="54" height="14" />
+      <vector id="3:1194" name="Vector 419 (Stroke)" x="81" y="14.5" width="8.00000021855692" height="4.999999872854005" />
+    </frame>
+    <frame id="3:1195" name="Frame 837" x="153" y="264" width="749.921142578125" height="175.748046875">
+      <frame id="3:1196" name="Group 598" x="0" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1197" name="Rectangle 146744" x="0" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1198" name="Rectangle 146746" x="9.000842094421387" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1199" name="GY 1.21.11" x="40.99846649169922" y="133.46240234375" width="53" height="15" />
+        <text id="3:1200" name="Fabric 1.21.11" x="39.99850082397461" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1201" name="Group 599" x="153.7842254638672" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1202" name="Rectangle 146744" x="153.7842254638672" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1203" name="Rectangle 146746" x="162.78506755828857" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1204" name="GY 1.21.11" x="194.7826919555664" y="133.46240234375" width="53" height="15" />
+        <text id="3:1205" name="Fabric 1.21.11" x="193.7827262878418" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1206" name="Group 600" x="307.5684509277344" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1207" name="Rectangle 146744" x="307.5684509277344" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1208" name="Rectangle 146746" x="316.56929302215576" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1209" name="GY 1.21.11" x="348.5669174194336" y="133.46240234375" width="53" height="15" />
+        <text id="3:1210" name="Fabric 1.21.11" x="347.566951751709" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1211" name="Group 601" x="461.3526611328125" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1212" name="Rectangle 146744" x="461.3526611328125" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1213" name="Rectangle 146746" x="470.3535032272339" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1214" name="GY 1.21.11" x="502.3511276245117" y="133.46240234375" width="53" height="15" />
+        <text id="3:1215" name="Fabric 1.21.11" x="501.3511619567871" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1216" name="Group 602" x="615.1369018554688" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1217" name="Rectangle 146744" x="615.1369018554688" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1218" name="Rectangle 146746" x="624.1377439498901" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1219" name="GY 1.21.11" x="656.135368347168" y="133.46240234375" width="53" height="15" />
+        <text id="3:1220" name="Fabric 1.21.11" x="655.1354026794434" y="150.6404266357422" width="55" height="11" />
+      </frame>
+    </frame>
+    <frame id="3:1221" name="Frame 838" x="153" y="458.748046875" width="749.921142578125" height="175.748046875">
+      <frame id="3:1222" name="Group 598" x="0" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1223" name="Rectangle 146744" x="0" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1224" name="Rectangle 146746" x="9.000842094421387" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1225" name="GY 1.21.11" x="40.99846649169922" y="133.46240234375" width="53" height="15" />
+        <text id="3:1226" name="Fabric 1.21.11" x="39.99850082397461" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1227" name="Group 599" x="153.7842254638672" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1228" name="Rectangle 146744" x="153.7842254638672" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1229" name="Rectangle 146746" x="162.78506755828857" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1230" name="GY 1.21.11" x="194.7826919555664" y="133.46240234375" width="53" height="15" />
+        <text id="3:1231" name="Fabric 1.21.11" x="193.7827262878418" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1232" name="Group 600" x="307.5684509277344" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1233" name="Rectangle 146744" x="307.5684509277344" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1234" name="Rectangle 146746" x="316.56929302215576" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1235" name="GY 1.21.11" x="348.5669174194336" y="133.46240234375" width="53" height="15" />
+        <text id="3:1236" name="Fabric 1.21.11" x="347.566951751709" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1237" name="Group 601" x="461.3526611328125" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1238" name="Rectangle 146744" x="461.3526611328125" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1239" name="Rectangle 146746" x="470.3535032272339" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1240" name="GY 1.21.11" x="502.3511276245117" y="133.46240234375" width="53" height="15" />
+        <text id="3:1241" name="Fabric 1.21.11" x="501.3511619567871" y="150.6404266357422" width="55" height="11" />
+      </frame>
+      <frame id="3:1242" name="Group 602" x="615.1369018554688" y="0" width="134.7842254638672" height="175.748046875">
+        <rounded-rectangle id="3:1243" name="Rectangle 146744" x="615.1369018554688" y="0" width="134.7842254638672" height="175.748046875" />
+        <vector id="3:1244" name="Rectangle 146746" x="624.1377439498901" y="10.570802688598633" width="116.284423828125" height="116.284423828125" />
+        <text id="3:1245" name="GY 1.21.11" x="656.135368347168" y="133.46240234375" width="53" height="15" />
+        <text id="3:1246" name="Fabric 1.21.11" x="655.1354026794434" y="150.6404266357422" width="55" height="11" />
+      </frame>
+    </frame>
+  </frame>
+  <rounded-rectangle id="3:1247" name="image 279" x="-3658" y="3993" width="1210" height="774" />
+  <text id="3:1248" name="30 Декабря 2024" x="-884" y="2455" width="100.93058776855469" height="11.911063194274902" />
+  <frame id="3:1249" name="Frame 814" x="-1200" y="2431" width="115" height="115" />
+  <frame id="3:1254" name="Frame 815" x="-1073" y="2431" width="115" height="115" />
+  <frame id="3:1259" name="Frame 822" x="-849" y="3924" width="500" height="489">
+    <vector id="3:1260" name="Vector 421" x="0" y="92" width="500" height="0" />
+    <frame id="3:1261" name="Group 586" x="31" y="39" width="438" height="424">
+      <frame id="3:1262" name="Frame 823" x="31" y="39" width="437.9998779296875" height="20">
+        <text id="3:1263" name="Редактирование скина" x="0" y="0" width="236" height="20" />
+        <vector id="3:1264" name="Vector" x="424" y="3.000075340270996" width="13.9998779296875" height="13.999849319458008" />
+      </frame>
+      <rounded-rectangle id="3:1265" name="avatarBody3 (5) 1" x="59" y="106" width="120" height="257" />
+      <frame id="3:1266" name="Group 575" x="40" y="363" width="158.69921875" height="11">
+        <frame id="3:1267" name="Frame 819" x="40" y="364" width="15.699165344238281" height="9">
+          <vector id="3:1268" name="Arrow 3 (Stroke)" x="4.349582672119141" y="1.9228780269622803" width="4.349582672119141" height="5.1542439460754395" />
+          <vector id="3:1269" name="Vector 420 (Stroke)" x="7.349582672119141" y="0" width="1" height="9" />
+          <vector id="3:1270" name="Arrow 3 (Stroke)" x="11.34958267211914" y="1.9228780269622803" width="4.349582672119141" height="5.1542439460754395" />
+        </frame>
+        <text id="3:1271" name="Перетащите, чтобы повернуть" x="60.69921875" y="363" width="138" height="11" />
+      </frame>
+      <text id="3:1272" name="Текстура" x="250" y="116" width="78" height="21" />
+      <frame id="3:1273" name="Frame 824" x="250" y="150" width="149.3101348876953" height="33">
+        <frame id="3:1274" name="Group 566" x="16" y="10.112944602966309" width="10.310135841369629" height="12.774110794067383" />
+        <text id="3:1277" name="Заменить текстуру" x="36.31013488769531" y="10" width="97" height="13" />
+      </frame>
+      <text id="3:1278" name="Стиль рук" x="250" y="196" width="85" height="21" />
+      <text id="3:1279" name="Плащ" x="250" y="263" width="52" height="21" />
+      <frame id="3:1280" name="Group 584" x="250" y="229" width="114" height="14">
+        <text id="3:1281" name="Стив" x="270" y="230" width="24" height="13" />
+        <text id="3:1282" name="Алекс" x="333" y="230" width="31" height="13" />
+        <ellipse id="3:1283" name="Ellipse 159" x="252" y="231" width="9" height="9" />
+        <ellipse id="3:1284" name="Ellipse 160" x="250" y="229" width="13" height="13" />
+        <ellipse id="3:1285" name="Ellipse 162" x="313" y="229" width="13" height="13" />
+      </frame>
+      <rounded-rectangle id="3:1286" name="Rectangle 146739" x="250" y="290" width="52" height="83" />
+      <frame id="3:1287" name="Group 585" x="266" y="318" width="20" height="26">
+        <vector id="3:1288" name="Vector" x="270" y="318" width="11" height="11" />
+        <text id="3:1289" name="НЕТ" x="266" y="331" width="20" height="13" />
+      </frame>
+      <frame id="3:1290" name="Frame 827" x="148" y="433" width="319" height="30">
+        <frame id="3:1291" name="Frame 825" x="0" y="0" width="123" height="30">
+          <vector id="3:1292" name="Vector" x="10" y="8.5" width="13" height="13" />
+          <text id="3:1293" name="Отменить" x="33" y="5" width="80" height="20" />
+        </frame>
+        <frame id="3:1294" name="Frame 826" x="144" y="0" width="175" height="30">
+          <vector id="3:1295" name="Vector (Stroke)" x="10" y="7.5" width="15" height="15" />
+          <text id="3:1296" name="Сохранить скин" x="35" y="5" width="130" height="20" />
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <frame id="3:1297" name="Frame 823" x="-849" y="3395" width="500" height="489">
+    <vector id="3:1298" name="Vector 421" x="0" y="92" width="500" height="0" />
+    <frame id="3:1299" name="Group 586" x="31" y="39" width="438" height="424">
+      <frame id="3:1300" name="Frame 823" x="31" y="39" width="437.9998779296875" height="20">
+        <text id="3:1301" name="Добавить скин" x="0" y="0" width="152" height="20" />
+        <vector id="3:1302" name="Vector" x="424" y="3.000075340270996" width="13.9998779296875" height="13.999849319458008" />
+      </frame>
+      <rounded-rectangle id="3:1303" name="avatarBody3 (5) 1" x="59" y="106" width="120" height="257" />
+      <frame id="3:1304" name="Group 575" x="40" y="363" width="158.69921875" height="11">
+        <frame id="3:1305" name="Frame 819" x="40" y="364" width="15.699165344238281" height="9">
+          <vector id="3:1306" name="Arrow 3 (Stroke)" x="4.349582672119141" y="1.9228780269622803" width="4.349582672119141" height="5.1542439460754395" />
+          <vector id="3:1307" name="Vector 420 (Stroke)" x="7.349582672119141" y="0" width="1" height="9" />
+          <vector id="3:1308" name="Arrow 3 (Stroke)" x="11.34958267211914" y="1.9228780269622803" width="4.349582672119141" height="5.1542439460754395" />
+        </frame>
+        <text id="3:1309" name="Перетащите, чтобы повернуть" x="60.69921875" y="363" width="138" height="11" />
+      </frame>
+      <text id="3:1310" name="Стиль рук" x="250" y="116" width="85" height="21" />
+      <text id="3:1311" name="Плащ" x="250" y="183" width="52" height="21" />
+      <frame id="3:1312" name="Group 584" x="250" y="149" width="114" height="14">
+        <text id="3:1313" name="Стив" x="270" y="150" width="24" height="13" />
+        <text id="3:1314" name="Алекс" x="333" y="150" width="31" height="13" />
+        <ellipse id="3:1315" name="Ellipse 159" x="252" y="151" width="9" height="9" />
+        <ellipse id="3:1316" name="Ellipse 160" x="250" y="149" width="13" height="13" />
+        <ellipse id="3:1317" name="Ellipse 162" x="313" y="149" width="13" height="13" />
+      </frame>
+      <rounded-rectangle id="3:1318" name="Rectangle 146739" x="250" y="210" width="52" height="83" />
+      <frame id="3:1319" name="Group 585" x="266" y="238" width="20" height="26">
+        <vector id="3:1320" name="Vector" x="270" y="238" width="11" height="11" />
+        <text id="3:1321" name="НЕТ" x="266" y="251" width="20" height="13" />
+      </frame>
+      <frame id="3:1322" name="Frame 827" x="150" y="433" width="319" height="30">
+        <frame id="3:1323" name="Frame 827" x="0" y="0" width="319" height="30">
+          <frame id="3:1324" name="Frame 825" x="0" y="0" width="123" height="30">
+            <vector id="3:1325" name="Vector" x="10" y="8.5" width="13" height="13" />
+            <text id="3:1326" name="Отменить" x="33" y="5" width="80" height="20" />
+          </frame>
+          <frame id="3:1327" name="Frame 826" x="144" y="0" width="175" height="30">
+            <vector id="3:1328" name="Vector (Stroke)" x="10" y="7.5" width="15" height="15" />
+            <text id="3:1329" name="Сохранить скин" x="35" y="5" width="130" height="20" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+  </frame>
+  <vector id="3:1330" name="Vector (Stroke)" x="-1114" y="4413" width="15" height="15" />
+</canvas>
+IMPORTANT: After you call this tool, you MUST call get_design_context if trying to implement the design, since this tool only returns metadata. If you do not call get_design_context, the agent will not be able to implement the design.
