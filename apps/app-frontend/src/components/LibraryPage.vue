@@ -77,6 +77,8 @@ const managed = ref<Instance | null>(null)
 const manageName = ref('')
 const manageMemory = ref(4096)
 const manageJava = ref('')
+const manageJavaEnabled = ref(false)
+const manageJavaMessage = ref('')
 const manageWindowEnabled = ref(false)
 const manageWindowWidth = ref(854)
 const manageWindowHeight = ref(480)
@@ -330,6 +332,8 @@ function showManage(instance: Instance, action: 'rename' | 'duplicate' | 'delete
 	manageName.value = action === 'duplicate' ? `${instance.name} — копия` : instance.name
 	manageMemory.value = instance.memory_mb
 	manageJava.value = instance.java_path || ''
+	manageJavaEnabled.value = !!instance.java_path
+	manageJavaMessage.value = ''
 	manageWindowEnabled.value = instance.window_width != null && instance.window_height != null
 	manageWindowWidth.value = instance.window_width ?? props.settings.window_width ?? 854
 	manageWindowHeight.value = instance.window_height ?? props.settings.window_height ?? 480
@@ -347,7 +351,23 @@ async function pickManagedJava() {
 	if (!managed.value) return
 	try {
 		const runtime = await gameApi.pickJava(managed.value.id)
-		if (runtime) manageJava.value = runtime.path
+		if (runtime) {
+			manageJava.value = runtime.path
+			manageJavaEnabled.value = true
+		}
+	} catch (reason) {
+		error.value = displayError(reason)
+	}
+}
+async function detectManagedJava() {
+	if (!managed.value) return
+	try {
+		const runtime = await gameApi.detectInstanceJava(managed.value.id)
+		if (runtime) {
+			manageJava.value = runtime.path
+			manageJavaEnabled.value = true
+			manageJavaMessage.value = `Найдена Java ${runtime.major}. Сохраните настройку.`
+		} else manageJavaMessage.value = 'Подходящая Java не найдена на устройстве.'
 	} catch (reason) {
 		error.value = displayError(reason)
 	}
@@ -355,6 +375,10 @@ async function pickManagedJava() {
 async function manageInstance() {
 	const instance = managed.value
 	if (!instance) return
+	if (manageAction.value === 'configure' && manageJavaEnabled.value && !manageJava.value.trim()) {
+		error.value = 'Укажите исполняемый файл Java или отключите переопределение.'
+		return
+	}
 	if (
 		manageAction.value === 'configure' &&
 		manageWindowEnabled.value &&
@@ -381,7 +405,7 @@ async function manageInstance() {
 					memory_mb: manageMemory.value,
 					window_width: manageWindowEnabled.value ? manageWindowWidth.value : null,
 					window_height: manageWindowEnabled.value ? manageWindowHeight.value : null,
-					java_path: manageJava.value.trim() || null,
+					java_path: manageJavaEnabled.value ? manageJava.value.trim() : null,
 				})
 			else await gameApi.edit(instance.id, requestFor(instance, manageName.value.trim()))
 		},
@@ -1354,20 +1378,118 @@ onUnmounted(() => {
 							>
 						</section>
 						<section class="figma-pack-java-override" data-figma-node="3:530">
-							<strong>Переопределение расположения Java</strong
-							><label class="figma-pack-field"
-								><span>Путь Java для этой сборки</span
-								><input
-									v-model="manageJava"
+							<div class="figma-pack-override-intro">
+								<div>
+									<strong>Переопределение расположения Java</strong>
+									<p>Выбрать другую установку Java в сборке.</p>
+								</div>
+								<button
+									class="figma-settings-switch"
+									:class="{ on: manageJavaEnabled }"
+									:aria-pressed="manageJavaEnabled"
+									aria-label="Переопределить Java для сборки"
 									:disabled="busy"
-									placeholder="Автоматический выбор Java" /></label
-							><button class="figma-pack-button" :disabled="busy" @click="pickManagedJava">
-								Выбрать Java вручную
-							</button>
+									@click="manageJavaEnabled = !manageJavaEnabled"
+								/>
+							</div>
+							<div class="figma-pack-java-card">
+								<div class="figma-pack-java-path">
+									<input
+										v-model="manageJava"
+										:disabled="busy || !manageJavaEnabled"
+										placeholder="Автоматический выбор Java"
+										aria-label="Путь Java для этой сборки"
+									/><img v-if="manageJavaEnabled && manageJava" src="/figma/c00b7.svg" alt="" />
+								</div>
+								<div class="figma-pack-java-actions">
+									<button :disabled="busy" @click="detectManagedJava">
+										<img src="/figma/2c95b.svg" alt="" />Обнаружить</button
+									><button :disabled="busy" @click="pickManagedJava">
+										<img src="/figma/8c998.svg" alt="" />Указать
+									</button>
+								</div>
+							</div>
+							<p v-if="manageJavaMessage" class="figma-pack-java-message" role="status">
+								{{ manageJavaMessage }}
+							</p>
+							<div class="figma-pack-override-field">
+								<div class="figma-pack-override-intro">
+									<div>
+										<strong>Переопределение аргументов Java</strong>
+										<p>Настройка аргументов Java отдельно для этой сборки.</p>
+									</div>
+									<span class="figma-settings-switch" aria-label="Аргументы Java пока недоступны" />
+								</div>
+								<input
+									disabled
+									placeholder="Введите аргументы Java..."
+									title="Пользовательские аргументы Java пока недоступны"
+								/>
+							</div>
+							<div class="figma-pack-override-field">
+								<div class="figma-pack-override-intro">
+									<div>
+										<strong>Переопределение переменных среды</strong>
+										<p>Настройка переменных среды отдельно для этой сборки.</p>
+									</div>
+									<span
+										class="figma-settings-switch"
+										aria-label="Переменные среды пока недоступны"
+									/>
+								</div>
+								<input
+									disabled
+									placeholder="Введите переменные среды..."
+									title="Переменные среды пока недоступны"
+								/>
+							</div>
 						</section>
-						<div class="figma-pack-unsupported" data-figma-node="3:588,3:629">
-							<strong>Аргументы Java и команды запуска</strong><span>Пока недоступно</span>
-						</div>
+						<section class="figma-pack-command-override" data-figma-node="3:588">
+							<div class="figma-pack-override-intro">
+								<div>
+									<strong>Переопределение команд запуска игры</strong>
+									<p>Выполнение системных команд конкретной сборки до и после запуска игры.</p>
+								</div>
+								<span class="figma-settings-switch" aria-label="Команды запуска пока недоступны" />
+							</div>
+							<label class="figma-settings-field"
+								><strong>Перед запуском</strong
+								><input
+									disabled
+									placeholder="Введите команду перед запуском..."
+									title="Команды перед запуском пока недоступны"
+								/><small>Выполняется перед запуском игры.</small></label
+							><label class="figma-settings-field"
+								><strong>Обёртка</strong
+								><input
+									disabled
+									placeholder="Введите команду-обёртку..."
+									title="Команда-обёртка пока недоступна"
+								/><small>Команда-обёртка для запуска Minecraft.</small></label
+							><label class="figma-settings-field"
+								><strong>После выхода</strong
+								><input
+									disabled
+									placeholder="Введите команду после выхода..."
+									title="Команды после выхода пока недоступны"
+								/><small>Выполняется после выхода из игры.</small></label
+							>
+						</section>
+						<section
+							class="figma-pack-command-help"
+							data-figma-node="3:629"
+							aria-label="Справка по командам запуска; ввод команд пока недоступен"
+						>
+							<p>Команды выполняются в рабочем каталоге сборки. Переменные:</p>
+							<div>
+								<p>·$INST_NAME: название сборки</p>
+								<p>·$INST_ID: имя папки сборки</p>
+								<p>·$INST_DIR: абсолютный путь к папке сборки</p>
+								<p>·$INST_MC_DIR: аналог $INST_DIR</p>
+								<p>·$INST_JAVA: абсолютный путь к Java</p>
+								<p>·$INST_JAVA_ARGS: аргументы JVM, передаваемые игре</p>
+							</div>
+						</section>
 						<button class="figma-pack-button red" :disabled="busy" @click="manageInstance">
 							Сохранить
 						</button>

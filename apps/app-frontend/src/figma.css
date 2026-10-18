@@ -255,6 +255,7 @@
 .figma-pack-body.figma-pack-body-overrides {
 	left: 279px;
 	right: 52px;
+	bottom: 10px;
 }
 .figma-pack-main,
 .figma-pack-install,
@@ -412,6 +413,169 @@
 .figma-pack-window-section > .figma-settings-window-row {
 	min-height: 50px;
 	padding-top: 0;
+}
+.figma-pack-override-intro {
+	width: 100%;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 14px;
+}
+.figma-pack-override-intro strong {
+	display: block;
+	color: var(--figma-text);
+	font:
+		600 16px/1.2 Geologica,
+		sans-serif;
+}
+.figma-pack-override-intro p {
+	max-width: 405px;
+	margin: 2px 0 0;
+	color: var(--figma-muted);
+	font:
+		400 13px/1.2 Geologica,
+		sans-serif;
+}
+.figma-pack-override-intro .figma-settings-switch {
+	flex-basis: 44px;
+	width: 44px;
+	margin-top: 4px;
+}
+.figma-pack-java-override,
+.figma-pack-command-override,
+.figma-pack-command-help {
+	width: 100%;
+	max-width: 505px;
+	min-height: 310px;
+}
+.figma-pack-java-override {
+	gap: 9px;
+	padding-top: 5px;
+}
+.figma-pack-java-card {
+	margin-top: 5px;
+}
+.figma-pack-java-card {
+	width: 100%;
+	min-height: 109px;
+	padding: 21px 19px;
+	border-radius: 20px;
+	background: var(--figma-panel);
+}
+.figma-pack-java-path {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.figma-pack-java-path input {
+	width: min(437px, 100%);
+	height: 29px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 20px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font:
+		400 14px Geologica,
+		sans-serif;
+}
+.figma-pack-java-path input:disabled,
+.figma-pack-java-path input::placeholder {
+	color: var(--figma-muted);
+}
+.figma-pack-java-path img {
+	width: 20px;
+	height: 20px;
+}
+.figma-pack-java-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
+}
+.figma-pack-java-actions button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 29px;
+	padding: 0 7px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font:
+		600 10px Geologica,
+		sans-serif;
+	cursor: pointer;
+}
+.figma-pack-java-actions button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+.figma-pack-java-actions img {
+	width: 15px;
+	height: 15px;
+}
+.figma-pack-java-message {
+	margin: 0;
+	color: var(--figma-muted);
+	font:
+		400 12px Geologica,
+		sans-serif;
+}
+.figma-pack-override-field {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+}
+.figma-pack-override-field + .figma-pack-override-field {
+	margin-top: 4px;
+}
+.figma-pack-override-field input {
+	width: 100%;
+	height: 29px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 20px;
+	background: var(--figma-border);
+	color: var(--figma-muted);
+	font:
+		400 14px Geologica,
+		sans-serif;
+}
+.figma-pack-command-override {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.figma-pack-command-override > .figma-pack-override-intro {
+	margin-bottom: 1px;
+}
+.figma-pack-command-override .figma-settings-field {
+	width: 100%;
+	gap: 6px;
+}
+.figma-pack-command-override .figma-settings-field + .figma-settings-field {
+	margin-top: 2px;
+}
+.figma-pack-command-override .figma-settings-field:nth-of-type(2) {
+	margin-top: 5px;
+}
+.figma-pack-command-override .figma-settings-field:last-child {
+	margin-top: 11px;
+}
+.figma-pack-command-help {
+	color: var(--figma-muted);
+	padding-top: 5px;
+	font:
+		400 13px/16px Geologica,
+		sans-serif;
+}
+.figma-pack-command-help > p {
+	margin: 0 0 12px;
+}
+.figma-pack-command-help div p {
+	margin: 0;
 }
 .figma-pack-window-section > .figma-settings-window-row + .figma-settings-window-row,
 .figma-pack-window-section > .figma-settings-window-row + .figma-pack-window-intro {

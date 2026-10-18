@@ -814,6 +814,22 @@ pub async fn core_java_runtimes(
 		.map_err(core_error)
 }
 #[tauri::command]
+pub async fn core_detect_instance_java(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	instance_id: String,
+) -> Result<Option<urod_launcher_core::JavaRuntime>> {
+	let engine = engine(&window, &state).await?;
+	let required = engine
+		.required_java(&instance_id)
+		.await
+		.map_err(core_error)?;
+	let runtimes = engine.java_runtimes().await.map_err(core_error)?;
+	Ok(runtimes
+		.into_iter()
+		.find(|runtime| runtime.major == required))
+}
+#[tauri::command]
 pub async fn core_pick_java(
 	window: tauri::WebviewWindow,
 	app: tauri::AppHandle,

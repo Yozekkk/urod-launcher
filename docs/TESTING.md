@@ -4,8 +4,8 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 
 | Command or scenario | Outcome |
 | --- | --- |
-| `pnpm check` in `apps/app-frontend` | Pass after the selected-pack content changes: Vue typecheck, ESLint, Prettier, 18 unit tests |
-| `pnpm build` | Pass after the settings UI changes; Vite warns that the lazy skin viewer chunk exceeds 500 kB |
+| `pnpm check` in `apps/app-frontend` | Pass after pack Java settings: Vue typecheck, ESLint, Prettier, 18 unit tests |
+| `pnpm build` | Pass after pack Java settings; Vite warns that the lazy skin viewer chunk exceeds 500 kB |
 | `node scripts/check-stage2-boundary.mjs` | Pass after the latest settings UI changes |
 | `node --test scripts/release-assets.test.mjs` | Pass |
 | `pnpm audit --prod` | Pass after overriding transitive `source-map-js` to 1.2.2; no known production advisories reported |
@@ -21,7 +21,7 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | Release binary launch | Pass: `target/release/UrodLauncher` opened a native window with `XDG_DATA_HOME=/tmp/urod-release-smoke-data`; [capture](screenshots/figma-rc/release-binary-home-physical.png) shows the production WebView |
 | Arch candidate package | `makepkg --force --nodeps --nocheck` passed for 0.1.0-1; package contains binary, desktop entry, Figma icon, LICENSE and NOTICE. `pacman -U` and `pacman -R` succeeded inside an isolated `/tmp/urod-package-root` with `-dd` because that root has no system dependency database. This does not verify launch after a normal system install. |
 | [CI run 39104625372](https://github.com/Yozekkk/urod-launcher/actions/runs/39104625372) | Pass: verification, Debian package build and apt installation, Windows NSIS build, Arch package build and pacman installation. Packages still carry 0.1.0 metadata. CI did not execute the Windows app or launch installed Linux packages. |
-| [CI run 39127043838](https://github.com/Yozekkk/urod-launcher/actions/runs/39127043838) | Pass on the pushed game-journal commit: frontend/backend verification and the existing desktop package build matrix. The later window-size changes are verified locally and await a new CI run after push. |
+| [CI run 39128404867](https://github.com/Yozekkk/urod-launcher/actions/runs/39128404867) | Pass on the pushed per-pack window commit: frontend/backend verification and the existing desktop package build matrix. The pack Java changes are verified locally and await a new CI run after push. |
 | Real Tauri at 1280×720 | Library, gallery, skins, dialogs, global settings and pack settings captured from the running app under [figma-rc](screenshots/figma-rc) |
 | Skin save/edit/restart | Pass: known 64×64 PNG saved; Steve/Alex changed; state remained after WebView reload |
 | Settings persistence | Pass: global RAM set to 6144 MB and survived WebView reload; pack RAM set to 6144 MB, name changed and a copy created through the Figma style native dialog |
@@ -39,6 +39,9 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | Compact journal at 860×620 | Pass: the journal button opened a 364 px drawer, close control was visible, and the document had no horizontal overflow. [Native capture](screenshots/figma-rc/pack-content-game-log-860x620.png). |
 | Window dimensions in native Tauri | Pass: UI saved 1024×576; the native snapshot returned the same pair. Launching Fabric 1.21.1 produced a child process whose argv contained `--width 1024 --height 576`; a Minecraft window opened and stop succeeded. [Figma-sized capture](screenshots/figma-rc/settings-window-memory-837x470.png). |
 | Per-pack window override | Pass: pack settings saved 1280×720 while global settings remained 1024×576. Fabric's actual process argv contained the pack pair; a Minecraft window opened and stop succeeded. Disabling the pack switch stored null/null and a subsequent launch argv contained the global pair. [Figma-sized native capture](screenshots/figma-rc/settings-pack-window-837x470.png). |
+| Per-pack Java detection, persistence and launch | Pass: native `Обнаружить` returned Java 21 for the Fabric 1.21.1 QA pack. Saving `/usr/bin/java` persisted it in `core_instances`; disabling and saving the switch cleared `java_path` to null. A separate path `/usr/lib/jvm/java-21-openjdk/bin/java` was then saved through the UI; the actual Fabric process used it as argv[0], opened a Minecraft 1.21.1 window, and stopped successfully. [Native capture](screenshots/figma-rc/settings-pack-java-837x470.png). |
+| Pack launch commands and help | Native captures of Figma `3:588` and `3:629` compare at 4.37 and 2.58/255 mean RGB difference. Shell command inputs are disabled; this is a visual check, not a command-execution pass. |
+| Pack Java dialog at 860×620 | Pass: the 836×470 dialog, Java card and last environment field remain within the viewport; document width equals viewport width. [Native screenshot](screenshots/figma-rc/settings-pack-java-860-physical-125pct.png). |
 | Additional global settings frames | Native captures for `3:339`, `3:367`, and `3:402` were compared with the corresponding Figma screenshots; mean absolute RGB errors were 2.77, 4.66 and 3.57/255. Input fields are disabled, so visual checks do not count as functional support. |
 | 860×620 native resize | Pass for library, gallery, skins, selected-pack browser and resource settings: no document horizontal overflow; resource form and close button remain visible. Other settings subframes remain to be checked. |
 | 1240×820 at 125% monitor scale | DOM viewport had no document overflow; full visual inspection remains open because the host panel clipped the bottom of the native window |
