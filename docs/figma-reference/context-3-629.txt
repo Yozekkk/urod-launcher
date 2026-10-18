@@ -1,0 +1,87 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/2100a855-fe44-48df-a005-902deb83b851";
+const imgFrame5292 = `${assetPathPrefix}/8aecb.png`;
+const imgVector421 = `${assetPathPrefix}/83a6f.svg`;
+const imgVector = `${assetPathPrefix}/20469.svg`;
+const imgVector422 = `${assetPathPrefix}/a355e.svg`;
+const imgVector1 = `${assetPathPrefix}/2de22.svg`;
+const imgVector2 = `${assetPathPrefix}/10e4c.svg`;
+const imgVectorStroke = `${assetPathPrefix}/d0c6a.svg`;
+
+export default function Frame858() {
+  return (
+    <div className="bg-[#202020] overflow-clip relative rounded-[27px] size-full" data-node-id="3:629">
+      <div className="absolute h-0 left-0 top-[92px] w-[878px]" data-node-id="3:630">
+        <div className="absolute inset-[-0.75px_0]">
+          <img alt="" className="block max-w-none size-full" src={imgVector421} />
+        </div>
+      </div>
+      <div className="absolute content-stretch flex flex-col gap-[14px] items-start left-[279px] top-[126px] w-[370px]" data-node-id="3:631">
+        <div className="content-stretch flex flex-col items-start relative shrink-0 w-[211px]" data-node-id="3:632">
+          <p className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#848488] text-[13px] whitespace-nowrap" data-node-id="3:633" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Команды выполняются в рабочем каталоге сборки. Переменные:
+          </p>
+        </div>
+        <div className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[0] min-w-full not-italic relative shrink-0 text-[#848488] text-[13px] w-[min-content]" data-node-id="3:634" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          <p className="leading-[normal] mb-0">·$INST_NAME: название сборки</p>
+          <p className="leading-[normal] mb-0">·$INST_ID: имя папки сборки</p>
+          <p className="leading-[normal] mb-0">·$INST_DIR: абсолютный путь к папке сборки</p>
+          <p className="leading-[normal] mb-0">·$INST_MC_DIR: аналог $INST_DIR</p>
+          <p className="leading-[normal] mb-0">·$INST_JAVA: абсолютный путь к Java</p>
+          <p className="leading-[normal]">·$INST_JAVA_ARGS: аргументы JVM, передаваемые игре</p>
+        </div>
+      </div>
+      <div className="absolute contents left-[32px] top-[31px]" data-node-id="3:635">
+        <p className="[word-break:break-word] absolute font-['Inter:Semi_Bold'] font-semibold leading-[normal] left-[185px] not-italic text-[18px] text-white top-[35px] whitespace-nowrap" data-node-id="3:636">
+          Настройки
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[71px] not-italic text-[#848488] text-[18px] top-[34px] whitespace-nowrap" data-node-id="3:637" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          GY 1.21.11
+        </p>
+        <div className="absolute left-[32px] size-[29px] top-[31px]" data-node-id="3:638" data-name="Frame 529 2">
+          <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgFrame5292} />
+        </div>
+        <div className="absolute left-[791px] size-[14px] top-[39px]" data-node-id="3:639" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector} />
+        </div>
+      </div>
+      <div className="absolute flex h-[305px] items-center justify-center left-[251px] top-[128px] w-0" data-node-id="3:640">
+        <div className="flex-none rotate-90">
+          <div className="h-0 relative w-[305px]">
+            <div className="absolute inset-[-0.75px_0]">
+              <img alt="" className="block max-w-none size-full" src={imgVector422} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute contents left-[26px] top-[120px]" data-node-id="3:641">
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[56px] not-italic text-[#848488] text-[16px] top-[120px] w-[166px]" data-node-id="3:642" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Основные
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[56px] not-italic text-[#848488] text-[16px] top-[150px] w-[166px]" data-node-id="3:643" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Установка
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[56px] not-italic text-[#c12926] text-[16px] top-[180px] w-[166px]" data-node-id="3:644" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Переопределения
+        </p>
+        <div className="-translate-y-1/2 absolute aspect-[683.9025268554688/685.7142333984375] left-[3.11%] right-[95.1%] top-[calc(50%-75.5px)]" data-node-id="3:645" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector1} />
+        </div>
+        <div className="absolute left-[26px] size-[15px] top-[122px]" data-node-id="3:646" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector2} />
+        </div>
+        <div className="absolute h-[14px] left-[26px] top-[183px] w-[15px]" data-node-id="3:647" data-name="Vector (Stroke)">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVectorStroke} />
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

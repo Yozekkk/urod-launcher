@@ -2,6 +2,8 @@
 
 Version 0.1.0 is a development version. Do not label it Stable or publish a release until Windows, Debian and Arch jobs pass and their installers are inspected on each platform.
 
+The current 1.0.0 preparation branch is blocked. See [STABLE_1.0.0_AUDIT.md](STABLE_1.0.0_AUDIT.md) and [TESTING.md](TESTING.md) for actual evidence and outstanding gates. Do not create the `v1.0.0` tag from this worktree while they remain open.
+
 ## Local checks
 
 ```bash

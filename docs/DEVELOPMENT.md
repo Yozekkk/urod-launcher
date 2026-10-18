@@ -15,6 +15,6 @@ The debug-only `UROD_TEST_DATA_DIR` environment variable selects an isolated abs
 
 ## Checks
 
-Run `pnpm prepr:frontend:app`, `pnpm build`, Rust fmt/check/clippy/test, and the native boundary audit from [RELEASE.md](RELEASE.md). Check visual changes in the running Tauri app at both 860 px and 1240 px. The screenshot reference for this project is [here](screenshots/urod-0.1.0/home.png).
+Run `pnpm prepr:frontend:app`, `pnpm build`, Rust fmt/check/clippy/test, and the native boundary audit from [RELEASE.md](RELEASE.md). Check visual changes in the running Tauri app at both 860 px and 1240 px. Current Figma comparisons and real Tauri screenshots are recorded in [FIGMA_IMPLEMENTATION_MAP.md](FIGMA_IMPLEMENTATION_MAP.md); historical 0.1.0 screenshots remain under `screenshots/urod-0.1.0`.
 
 Application data lives in a separate `urod-launcher` directory. Native credentials use a separate UrodLauncher service. No automatic import from NCreate is performed. The community pack and signed auto-updates remain unavailable until UrodLauncher has real manifests and its own signing key.

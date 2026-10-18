@@ -15,15 +15,17 @@
   <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-arch.svg" alt="Arch Linux downloads" width="290"></a>
 </p>
 
-> These buttons lead to the release page. Version 0.1.0 installers were built in [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), but no release has been published; direct release file links are therefore unavailable. Version 0.1.0 is not declared Stable.
+> These buttons lead to the release page. The Figma redesign is still under verification; version 1.0.0 Stable has not been released. See the [readiness audit](docs/STABLE_1.0.0_AUDIT.md) for blockers. Version 0.1.0 installers were built in [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), but no release has been published.
 
-<p align="center"><img src="docs/screenshots/urod-0.1.0/home.png" alt="Real UrodLauncher home screen" width="1000"></p>
+<p align="center"><img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Real UrodLauncher library window during Figma implementation" width="1000"></p>
+
+This image was captured from the running Tauri app at 1280×720. The empty library reflects the isolated test profile. See the [Figma implementation map and comparison](docs/FIGMA_IMPLEMENTATION_MAP.md).
 
 ## Features
 
 - Microsoft Minecraft, Ely.by and Offline accounts, with multiple profiles.
 - Separate Vanilla, Fabric, Forge, NeoForge and Quilt instances; pack import and export, including `.mrpack`.
-- Public Modrinth mod and modpack catalog; Java, memory and JVM settings; downloads and game logs.
+- Public Modrinth mod and modpack catalog; Java and memory controls, downloads and game logs. Custom JVM arguments are not yet available in the interface.
 - Download integrity checks, managed file updates and rollback where supported by the inherited engine.
 - Persistent local PNG skin library with 3D preview and Classic/Slim variants. Applying a skin to a Microsoft account sends it to the official Minecraft Services API from the native process and checks the profile afterwards. This still needs verification with a real licensed account.
 - 40 customization controls for themes, colors, background, motion and layout, with presets and JSON import/export. The language control changes the document language and primary navigation; a complete English interface translation remains to be done.
@@ -31,15 +33,11 @@
 
 | Library | Catalog |
 | --- | --- |
-| <img src="docs/screenshots/urod-0.1.0/library.png" alt="UrodLauncher Library"> | <img src="docs/screenshots/urod-0.1.0/content.png" alt="UrodLauncher catalog"> |
-| Accounts | Skins |
-| <img src="docs/screenshots/urod-0.1.0/accounts.png" alt="UrodLauncher Accounts"> | <img src="docs/screenshots/urod-0.1.0/skins.png" alt="UrodLauncher skin library"> |
+| <img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Library during Figma implementation"> | <img src="docs/screenshots/figma-rc/gallery-1280x720.png" alt="Live Modrinth catalog in the new layout"> |
+| Skins | Edit skin dialog |
+| <img src="docs/screenshots/figma-rc/skins-1280x720.png" alt="Skin library with a test PNG"> | <img src="docs/screenshots/figma-rc/edit-skin-1280x720.png" alt="Edit skin dialog"> |
 
-<p align="center"><img src="docs/screenshots/urod-0.1.0/settings.png" alt="UrodLauncher settings" width="1000"></p>
-
-[Customization screen](docs/screenshots/urod-0.1.0/customization.png)
-
-These are screenshots of the native application on EndeavourOS, using a test Offline account and test skins. [Small window](docs/screenshots/urod-0.1.0/home-small.png).
+The new screenshots were captured from the native app on EndeavourOS with an isolated skin test profile. [Historical 0.1.0 screenshots](docs/screenshots/urod-0.1.0/home.png) are kept separately. Settings still need full transfer and visual verification.
 
 ## Installation
 

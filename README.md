@@ -15,15 +15,17 @@
   <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-arch.svg" alt="Загрузки Arch Linux" width="290"></a>
 </p>
 
-> Кнопки ведут на страницу релизов. Установщики 0.1.0 собраны в [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), но релиз ещё не опубликован; поэтому прямых ссылок на файлы релиза нет. Версия 0.1.0 не объявлена Stable.
+> Кнопки ведут на страницу релизов. Редизайн по Figma ещё проходит проверки; версия 1.0.0 Stable не выпущена. Текущее состояние и блокирующие пункты перечислены в [аудите](docs/STABLE_1.0.0_AUDIT.md). Установщики 0.1.0 собирались в [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), но опубликованного релиза нет.
 
-<p align="center"><img src="docs/screenshots/urod-0.1.0/home.png" alt="Настоящий снимок главной страницы UrodLauncher" width="1000"></p>
+<p align="center"><img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Настоящий снимок библиотеки UrodLauncher с переносом Figma, в работе" width="1000"></p>
+
+Снимок сделан с работающего Tauri-приложения в окне 1280×720. Пустая библиотека отражает реальные данные тестового профиля. [Карта переноса и сравнение с Figma](docs/FIGMA_IMPLEMENTATION_MAP.md).
 
 ## Возможности
 
 - Аккаунты Microsoft Minecraft, Ely.by и Offline, переключение между несколькими профилями.
 - Отдельные инстансы Vanilla, Fabric, Forge, NeoForge и Quilt; импорт и экспорт сборок, включая `.mrpack`.
-- Поиск модов и модпаков через публичный каталог Modrinth, управление Java, памятью и параметрами JVM, загрузками и логами.
+- Поиск модов и модпаков через публичный каталог Modrinth, управление Java и памятью, загрузками и логами. Пользовательские аргументы JVM пока недоступны в интерфейсе.
 - Проверка целостности загрузок, обновление управляемых файлов и откат там, где это поддерживает исходная система.
 - Локальная библиотека PNG-скинов с трёхмерным просмотром, вариантами Classic/Slim и сохранением между запусками. Для Microsoft-аккаунта действие «Применить» обращается к официальному Minecraft Services API с токеном, остающимся в нативном процессе. Реальная смена лицензионного скина требует входа в действительный аккаунт и отдельной проверки.
 - 40 элементов кастомизации: темы, цвета, фон, анимации, плотность и компоновка, пресеты, импорт и экспорт JSON. Переключатель языка меняет язык документа и основных элементов навигации; полный перевод интерфейса ещё не завершён.
@@ -31,15 +33,11 @@
 
 | Библиотека | Каталог |
 | --- | --- |
-| <img src="docs/screenshots/urod-0.1.0/library.png" alt="Библиотека UrodLauncher"> | <img src="docs/screenshots/urod-0.1.0/content.png" alt="Каталог UrodLauncher"> |
-| Аккаунты | Скины |
-| <img src="docs/screenshots/urod-0.1.0/accounts.png" alt="Аккаунты UrodLauncher"> | <img src="docs/screenshots/urod-0.1.0/skins.png" alt="Библиотека скинов UrodLauncher"> |
+| <img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Библиотека UrodLauncher, перенос Figma в работе"> | <img src="docs/screenshots/figma-rc/gallery-1280x720.png" alt="Каталог Modrinth в новом оформлении"> |
+| Скины | Диалог редактирования |
+| <img src="docs/screenshots/figma-rc/skins-1280x720.png" alt="Библиотека скинов с тестовым PNG"> | <img src="docs/screenshots/figma-rc/edit-skin-1280x720.png" alt="Диалог редактирования скина"> |
 
-<p align="center"><img src="docs/screenshots/urod-0.1.0/settings.png" alt="Настройки UrodLauncher" width="1000"></p>
-
-[Экран кастомизации](docs/screenshots/urod-0.1.0/customization.png)
-
-Снимки сделаны в нативном приложении на EndeavourOS с тестовым Offline-аккаунтом и тестовыми скинами. [Небольшое окно](docs/screenshots/urod-0.1.0/home-small.png).
+Новые скриншоты сделаны в нативном приложении на EndeavourOS; скин импортирован в изолированный тестовый профиль. [Исторические снимки 0.1.0](docs/screenshots/urod-0.1.0/home.png) сохранены отдельно. Настройки ещё требуют полного переноса и визуальной сверки.
 
 ## Установка
 
