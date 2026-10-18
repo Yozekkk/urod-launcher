@@ -80,6 +80,18 @@ const launcherUpdateNotes = computed(() =>
 	renderProjectMarkdown(launcherUpdates.candidate.value?.notes || ''),
 )
 const routeDetail = ref<string | null>(null)
+const packLogSearch = ref('')
+const packLogFilter = ref<'all' | 'errors' | 'information'>('all')
+const visiblePackOperations = computed(() =>
+	operations.active.value.filter((job) => {
+		if (job.instance_id !== routeDetail.value) return false
+		if (packLogFilter.value === 'errors' && !job.error) return false
+		if (packLogFilter.value === 'information' && job.error) return false
+		return operationMessage(job)
+			.toLocaleLowerCase()
+			.includes(packLogSearch.value.toLocaleLowerCase())
+	}),
+)
 const snapshot = ref<Snapshot | null>(null)
 const draft = ref<Settings | null>(null)
 let customizationTimer: ReturnType<typeof setTimeout> | undefined
@@ -691,6 +703,7 @@ onUnmounted(() => {
 			'no-blur': snapshot?.settings.blur === false,
 			'is-home': page === 'home',
 			'is-settings': page === 'settings',
+			'is-pack-detail': page === 'library' && !!routeDetail,
 		}"
 	>
 		<a href="#main-content" class="skip-link" @click.prevent="focusMain">Перейти к содержимому</a>
@@ -1516,12 +1529,45 @@ onUnmounted(() => {
 		<aside
 			v-if="page === 'library' || page === 'content' || page === 'skins'"
 			class="figma-news"
-			aria-label="Новости сообщества"
+			:class="{ 'figma-pack-log': page === 'library' && !!routeDetail }"
+			:aria-label="page === 'library' && routeDetail ? 'Операции сборки' : 'Новости сообщества'"
 		>
-			<h2>НОВОСТИ</h2>
-			<a href="https://t.me/YrodNews" target="_blank" rel="noopener noreferrer"
-				>Открыть официальный канал новостей</a
-			>
+			<template v-if="page === 'library' && routeDetail">
+				<div class="figma-pack-log-controls">
+					<input
+						v-model="packLogSearch"
+						type="search"
+						aria-label="Поиск операций"
+						placeholder="Поиск"
+					/><span title="Состояние операций сборки">Операции</span>
+				</div>
+				<div class="figma-pack-log-filters">
+					<button :class="{ selected: packLogFilter === 'all' }" @click="packLogFilter = 'all'">
+						Всё</button
+					><button
+						:class="{ selected: packLogFilter === 'errors' }"
+						@click="packLogFilter = 'errors'"
+					>
+						Ошибки</button
+					><button disabled title="Уровень предупреждений пока недоступен">Предупреждения</button
+					><button
+						:class="{ selected: packLogFilter === 'information' }"
+						@click="packLogFilter = 'information'"
+					>
+						Информация
+					</button>
+				</div>
+				<div class="figma-pack-log-lines" role="log" aria-label="Операции сборки">
+					<p v-for="job in visiblePackOperations" :key="job.id">&gt; {{ operationMessage(job) }}</p>
+					<p v-if="!visiblePackOperations.length">&gt;_консоль</p>
+				</div>
+			</template>
+			<template v-else>
+				<h2>НОВОСТИ</h2>
+				<a href="https://t.me/YrodNews" target="_blank" rel="noopener noreferrer"
+					>Открыть официальный канал новостей</a
+				>
+			</template>
 		</aside>
 		<dialog
 			ref="offlineDialog"

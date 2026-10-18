@@ -146,42 +146,45 @@ function pickJava() {
 					Выбрать Java вручную
 				</button>
 			</div>
-			<div v-else class="figma-settings-panel" data-figma-node="3:162,3:236">
-				<label class="figma-settings-field">
+			<div v-else class="figma-settings-panel figma-resource-panel" data-figma-node="3:199">
+				<label class="figma-resource-section figma-resource-location">
 					<strong>Каталог приложения</strong>
 					<input :value="dataDir" readonly title="Каталог приложения" />
-					<small>Здесь хранятся данные лаунчера. Изменение пути после установки недоступно.</small>
+					<small
+						>Здесь UrodLauncher хранит сборки и другие файлы. Каталог доступен только для
+						просмотра.</small
+					>
 				</label>
-				<div class="figma-settings-row">
+				<div class="figma-resource-section figma-resource-report">
 					<div>
 						<strong>Отчёты на всех этапах установки</strong>
-						<p>Детальные отчёты доступны в журнале операций.</p>
+						<p>
+							Показывать кнопку «Получить отчёт» на всех этапах установки. Для прерванных установок
+							кнопка видна всегда.
+						</p>
 					</div>
 					<button
-						class="figma-settings-switch"
+						class="figma-resource-switch"
 						disabled
 						title="Расширенные отчёты пока недоступны"
 						aria-label="Расширенные отчёты пока недоступны"
-					/>
+					>
+						<img src="/figma/7c452.svg" alt="" />
+					</button>
 				</div>
-				<div class="figma-settings-field">
+				<div class="figma-resource-section figma-resource-cache">
 					<strong>Кеш приложения</strong>
 					<button
-						class="figma-settings-action"
+						class="figma-settings-action figma-resource-clear"
 						disabled
 						title="Безопасная очистка кеша ещё не поддерживается"
 					>
-						Очистить кеш — недоступно
+						<img src="/figma/94db2.svg" alt="" /> Очистить кеш
 					</button>
-				</div>
-				<div class="figma-settings-field">
-					<strong>Лимит одновременных загрузок</strong>
-					<input
-						type="number"
-						value="10"
-						disabled
-						aria-label="Лимит одновременных загрузок пока недоступен"
-					/>
+					<p>
+						Удаляет кешированные данные и повторно скачивает их с urodlauncher. Приложение может
+						замедлиться, пока кеш не восстановится.
+					</p>
 				</div>
 			</div>
 		</div>

@@ -67,7 +67,8 @@ function resetFilters() {
 function applyInstanceFilter() {
 	const instance = targetInstance.value
 	gameVersion.value = instance?.game_version || ''
-	loader.value = instance?.loader === 'vanilla' ? '' : instance?.loader || ''
+	loader.value =
+		kind.value !== 'mod' || instance?.loader === 'vanilla' ? '' : instance?.loader || ''
 	void search(true)
 }
 const dates = new Intl.DateTimeFormat('ru', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -76,7 +77,9 @@ const updatedAt = (value: string) =>
 const targetInstance = computed(() =>
 	instances.value.find((instance) => instance.id === target.value),
 )
-const compatible = computed(() => compatibleVersions(versions.value, targetInstance.value))
+const compatible = computed(() =>
+	compatibleVersions(versions.value, targetInstance.value, project.value?.project_type),
+)
 const availableVersions = computed(() =>
 	(project.value?.project_type === 'modpack' ? versions.value : compatible.value).filter(
 		(version) => props.releaseChannel === 'beta' || version.version_type === 'release',
@@ -86,7 +89,7 @@ const compatibleTargets = computed(() =>
 	instances.value.filter(
 		(instance) =>
 			!['running', 'installing'].includes(instance.status) &&
-			compatibleVersions(versions.value, instance).length > 0,
+			compatibleVersions(versions.value, instance, project.value?.project_type).length > 0,
 	),
 )
 const selectedVersionInfo = computed(() =>
@@ -98,18 +101,22 @@ const projectBody = computed(() => renderProjectMarkdown(project.value?.body || 
 const loaders: Loader[] = ['fabric', 'forge', 'neoforge', 'quilt']
 function syncFilters() {
 	const params = new URLSearchParams(location.hash.split('?')[1] || '')
-	kind.value = params.get('type') === 'modpack' ? 'modpack' : 'mod'
+	const contentType = params.get('type')
+	kind.value =
+		contentType === 'modpack' || contentType === 'resourcepack' || contentType === 'shader'
+			? contentType
+			: 'mod'
 	query.value = params.get('q') || ''
 	category.value = params.get('category') || ''
 	gameVersion.value = params.get('version') || ''
 	loader.value = params.get('loader') || ''
-	sort.value = params.get('sort') || 'newest'
+	sort.value = params.get('sort') || (params.get('instance') ? 'relevance' : 'newest')
 	offset.value = Math.max(0, Number.parseInt(params.get('offset') || '0', 10) || 0)
-	if (params.get('instance')) target.value = params.get('instance') || ''
+	target.value = params.get('instance') || ''
 }
 function filterHash(detail: string | null = null) {
 	const params = new URLSearchParams()
-	if (kind.value === 'modpack') params.set('type', 'modpack')
+	if (kind.value !== 'mod') params.set('type', kind.value)
 	if (query.value) params.set('q', query.value)
 	if (category.value) params.set('category', category.value)
 	if (gameVersion.value) params.set('version', gameVersion.value)
@@ -156,8 +163,10 @@ async function setKind(value: ContentKind) {
 	if (kind.value === value) return
 	kind.value = value
 	category.value = ''
+	loader.value = ''
 	await loadTaxonomy()
-	await search(true)
+	if (target.value) applyInstanceFilter()
+	else await search(true)
 }
 async function loadProject(id: string) {
 	const generation = ++detailGeneration
@@ -193,6 +202,10 @@ async function prepareInstall(hit: SearchHit) {
 }
 async function install() {
 	const currentProject = project.value
+	if (currentProject && currentProject.project_type !== kind.value) {
+		error.value = 'Тип проекта не соответствует выбранному разделу.'
+		return
+	}
 	if (!currentProject || !selectedVersion.value || !selectedVersionInfo.value) {
 		error.value = 'Выберите совместимую версию проекта.'
 		return
@@ -215,7 +228,7 @@ async function install() {
 						target.value,
 						currentProject.id,
 						selectedVersion.value,
-						'mod',
+						kind.value,
 					)
 		await props.operations.track(jobId)
 		installDialog.value?.close()
@@ -234,13 +247,23 @@ function openInstallDialog() {
 	selectedHit.value = null
 	installDialog.value?.showModal()
 }
+async function openTargetFolder() {
+	if (!targetInstance.value) return
+	try {
+		await gameApi.openFolder(targetInstance.value.id)
+		notice.value = 'Открыта папка сборки. Добавьте файлы вручную и обновите список.'
+	} catch (reason) {
+		error.value = displayError(reason)
+	}
+}
 function onHash() {
 	if (
 		!parseLauncherRoute(location.hash).detail &&
 		parseLauncherRoute(location.hash).page === 'content'
 	) {
 		syncFilters()
-		void search()
+		if (target.value) applyInstanceFilter()
+		else void search()
 	}
 }
 watch(target, () => {
@@ -269,7 +292,18 @@ onMounted(() => {
 		})
 		.catch(() => {})
 	if (props.detail) void loadProject(props.detail)
-	else void search()
+	else
+		void gameApi
+			.instances()
+			.then((values) => {
+				if (alive) instances.value = values
+			})
+			.catch(() => {})
+			.finally(() => {
+				if (!alive) return
+				if (target.value) applyInstanceFilter()
+				else void search()
+			})
 })
 onUnmounted(() => {
 	alive = false
@@ -280,7 +314,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<section class="page content-page">
+	<section class="page content-page" :class="{ 'figma-instance-gallery': !!target && !detail }">
 		<div class="page-heading">
 			<div>
 				<h1>{{ detail && project ? project.title : 'Галерея' }}</h1>
@@ -296,7 +330,7 @@ onUnmounted(() => {
 				><AppIcon name="folder" :size="18" />Моя библиотека</a
 			>
 		</div>
-		<div v-if="!detail" class="figma-gallery-controls">
+		<div v-if="!detail && !target" class="figma-gallery-controls">
 			<label for="gallery-instance">Сборка</label>
 			<select id="gallery-instance" v-model="target" @change="applyInstanceFilter">
 				<option value="">Все</option>
@@ -340,6 +374,37 @@ onUnmounted(() => {
 			@cancel="operations.cancel(job.id)"
 		/>
 		<template v-if="!detail">
+			<div v-if="target" class="figma-project-browser">
+				<nav aria-label="Тип контента">
+					<button :class="{ selected: kind === 'mod' }" @click="setKind('mod')">Моды</button>
+					<button :class="{ selected: kind === 'resourcepack' }" @click="setKind('resourcepack')">
+						Наборы ресурсов
+					</button>
+					<button disabled title="Каталог датапаков пока недоступен">Дата паки</button>
+					<button :class="{ selected: kind === 'shader' }" @click="setKind('shader')">
+						шейдеры
+					</button>
+				</nav>
+				<div class="figma-project-browser-search">
+					<form @submit.prevent="search(true)">
+						<input
+							v-model="query"
+							type="search"
+							aria-label="Поиск проектов"
+							placeholder="Поиск"
+						/><button><img src="/figma/02d89.svg" alt="" />Найти проекты</button>
+					</form>
+					<button class="figma-project-browser-folder" @click="openTargetFolder">
+						<img src="/figma/8c998.svg" alt="" />Добавить файлы
+					</button>
+				</div>
+				<select v-model="sort" aria-label="Сортировка проектов" @change="search(true)">
+					<option value="relevance">Сортировать по: Актуальности</option>
+					<option value="downloads">Сортировать по: Загрузкам</option>
+					<option value="updated">Сортировать по: Обновлению</option>
+					<option value="newest">Сортировать по: Новизне</option>
+				</select>
+			</div>
 			<details class="gallery-advanced">
 				<summary aria-label="Поиск и фильтры" title="Поиск и фильтры">Фильтры</summary>
 				<div class="content-tabs" role="tablist" aria-label="Тип контента">
@@ -357,6 +422,20 @@ onUnmounted(() => {
 						@click="setKind('modpack')"
 					>
 						Модпаки</button
+					><button
+						role="tab"
+						:aria-selected="kind === 'resourcepack'"
+						:class="{ active: kind === 'resourcepack' }"
+						@click="setKind('resourcepack')"
+					>
+						Наборы ресурсов</button
+					><button
+						role="tab"
+						:aria-selected="kind === 'shader'"
+						:class="{ active: kind === 'shader' }"
+						@click="setKind('shader')"
+					>
+						Шейдеры</button
 					><span>Данные каталога · Modrinth</span>
 				</div>
 				<form class="content-search" @submit.prevent="search(true)">
@@ -367,9 +446,7 @@ onUnmounted(() => {
 						name="content-query"
 						autocomplete="off"
 						:placeholder="
-							kind === 'mod'
-								? 'Найти мод: оптимизация, механизмы, новые миры…'
-								: 'Найти готовую сборку…'
+							kind === 'modpack' ? 'Найти готовую сборку…' : 'Найти совместимый контент…'
 						"
 					/><button class="button primary"><AppIcon name="arrow" :size="18" />Найти</button>
 				</form>
@@ -425,6 +502,28 @@ onUnmounted(() => {
 				<h2>Ничего не нашлось</h2>
 				<p>Попробуй другой запрос или убери часть фильтров.</p>
 				<button class="button secondary" @click="resetFilters">Сбросить фильтры</button>
+			</div>
+			<div v-else-if="target" class="figma-project-list">
+				<article v-for="hit in result.hits" :key="hit.project_id" class="figma-project-row">
+					<a :href="filterHash(hit.project_id)" class="figma-project-row-icon"
+						><img
+							v-if="hit.icon_url?.startsWith('https://')"
+							:src="hit.icon_url"
+							alt=""
+							loading="lazy"
+					/></a>
+					<div class="figma-project-row-copy">
+						<a :href="filterHash(hit.project_id)">{{ hit.title }}</a
+						><small>by {{ hit.author }}</small>
+						<p>{{ hit.description }}</p>
+					</div>
+					<div class="figma-project-row-actions">
+						<button :disabled="busy || detailLoading" @click="prepareInstall(hit)">
+							+ Установить</button
+						><small>{{ formatCount(hit.downloads) }} загрузок</small
+						><small>{{ updatedAt(hit.date_modified) }}</small>
+					</div>
+				</article>
 			</div>
 			<div v-else class="project-grid">
 				<article v-for="hit in result.hits" :key="hit.project_id" class="project-card">
@@ -501,7 +600,13 @@ onUnmounted(() => {
 					/><span v-else class="project-icon-fallback"><AppIcon name="game" :size="40" /></span>
 					<div>
 						<span class="quiet-badge">{{
-							project.project_type === 'modpack' ? 'Модпак' : 'Мод'
+							project.project_type === 'modpack'
+								? 'Модпак'
+								: project.project_type === 'resourcepack'
+									? 'Набор ресурсов'
+									: project.project_type === 'shader'
+										? 'Шейдер'
+										: 'Мод'
 						}}</span>
 						<p>{{ project.description }}</p>
 						<small

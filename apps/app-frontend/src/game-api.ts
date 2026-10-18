@@ -56,7 +56,7 @@ export type InstalledContent = {
 	managed: boolean
 	source_url: string | null
 }
-export type ContentKind = 'mod' | 'modpack'
+export type ContentKind = 'mod' | 'modpack' | 'resourcepack' | 'shader'
 export type SearchRequest = {
 	query: string
 	kind: ContentKind
@@ -238,12 +238,13 @@ export const gameApi = {
 export function compatibleVersions(
 	versions: ProjectVersion[],
 	instance: Instance | undefined,
+	kind: string = 'mod',
 ): ProjectVersion[] {
 	if (!instance) return []
 	return versions.filter(
 		(version) =>
 			version.game_versions.includes(instance.game_version) &&
-			version.loaders.includes(instance.loader),
+			(kind !== 'mod' || version.loaders.includes(instance.loader)),
 	)
 }
 export function statusLabel(status: string): string {

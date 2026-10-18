@@ -81,6 +81,7 @@ const packSettingsTab = ref<'main' | 'installation' | 'overrides'>('main')
 const removingMod = ref<InstalledContent | null>(null)
 const selectedUpdateIds = ref<string[]>([])
 const modFilter = ref('')
+const modCategory = ref<'all' | 'mod' | 'shader' | 'resourcepack'>('all')
 let metadataGeneration = 0
 let contentGeneration = 0
 let mounted = true
@@ -93,7 +94,10 @@ const visibleVersions = computed(() =>
 	versions.value.filter((version) => includeSnapshots.value || version.type === 'release'),
 )
 const visibleMods = computed(() =>
-	mods.value.filter((mod) => mod.name.toLowerCase().includes(modFilter.value.toLowerCase())),
+	mods.value
+		.filter((mod) => mod.name.toLowerCase().includes(modFilter.value.toLowerCase()))
+		.filter((mod) => modCategory.value === 'all' || mod.kind === modCategory.value)
+		.sort((a, b) => a.name.localeCompare(b.name, 'ru')),
 )
 const libraryInstances = computed(() =>
 	[...instances.value]
@@ -510,7 +514,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<section class="page library-page">
+	<section class="page library-page" :class="{ 'figma-pack-page': !!current }">
 		<div class="page-heading">
 			<div>
 				<h1>
@@ -573,253 +577,310 @@ onUnmounted(() => {
 		</div>
 		<template v-else-if="current">
 			<a class="back-link" href="#/library"><AppIcon name="arrow" :size="16" />Все сборки</a>
-			<div class="instance-hero">
-				<img v-if="current.icon" :src="current.icon" width="90" height="90" alt="Иконка сборки" />
-				<div v-else class="instance-icon"><AppIcon name="game" :size="38" /></div>
-				<div class="instance-hero-copy">
-					<span v-if="current.kind === 'official'" class="official-library-badge"
-						><AppIcon name="check" :size="12" />Сообщество</span
-					>
-					<span class="quiet-badge">{{
-						current.kind === 'official' && !current.manifest_version
-							? 'Требуется завершить установку'
-							: statusLabel(current.status)
-					}}</span>
-					<p>
-						{{ modCountLabel(current.mod_count ?? mods.length) }} ·
-						{{ (current.memory_mb / 1024).toFixed(1) }} ГБ RAM
-					</p>
-					<small>{{ lastPlayed(current) }}</small>
+			<div class="figma-pack-content">
+				<nav class="figma-pack-tabs" aria-label="Разделы сборки">
+					<span class="selected"><img src="/figma/6d925.svg" alt="" />Контент</span>
+					<button @click="operation(() => gameApi.openFolder(current!.id))">
+						<img src="/figma/8c998.svg" alt="" />Файлы
+					</button>
+					<button disabled title="Просмотр миров внутри лаунчера пока недоступен">
+						<img src="/figma/46b9c.svg" alt="" />Миры
+					</button>
+				</nav>
+				<div class="figma-pack-search-row">
+					<input
+						v-model="modFilter"
+						type="search"
+						aria-label="Поиск контента сборки"
+						placeholder="Поиск"
+					/>
+					<a :href="`#/content?instance=${current.id}`">Добавить файлы</a>
 				</div>
-				<button
-					class="button primary"
-					:disabled="
-						busy ||
-						instanceBusy(current.id) ||
-						(current.status === 'ready' &&
-							(current.kind !== 'official' || !!current.manifest_version) &&
-							!accountName)
-					"
-					@click="installOrPlay(current)"
-				>
-					<AppIcon name="game" />{{
-						current.status === 'running'
-							? 'Остановить'
-							: current.status === 'ready' &&
-								  (current.kind !== 'official' || !!current.manifest_version)
-								? 'Играть'
-								: current.kind === 'official'
-									? 'Завершить установку'
-									: 'Установить Minecraft'
-					}}
-				</button>
-			</div>
-			<p v-if="!accountName" class="instance-account-note">
-				Для запуска выбери <a href="#/accounts">аккаунт Minecraft</a>. Устанавливать файлы можно уже
-				сейчас.
-			</p>
-			<p
-				v-if="current.kind === 'official' && officialUpdateStatus[current.id]"
-				class="official-update-inline"
-				role="status"
-			>
-				{{
-					officialUpdateStatus[current.id].phase === 'checking'
-						? 'Проверяем обновления сборки…'
-						: officialUpdateStatus[current.id].phase === 'available'
-							? `Доступно обновление ${officialUpdateStatus[current.id].version}`
-							: officialUpdateStatus[current.id].phase === 'current'
-								? 'Сборка актуальна'
-								: 'Не удалось проверить обновления сборки'
-				}}
-			</p>
-			<div class="instance-toolbar">
-				<button
-					class="button subtle"
-					:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
-					@click="showManage(current, 'configure')"
-				>
-					<AppIcon name="settings" :size="16" />Параметры
-				</button>
-				<button
-					v-if="current.kind === 'official'"
-					class="button secondary"
-					:disabled="busy || instanceBusy(current.id)"
-					@click="checkOfficialUpdate"
-				>
-					<AppIcon name="refresh" :size="16" />Обновления сборки сообщества
-				</button>
-				<button
-					class="button subtle"
-					:disabled="busy || instanceBusy(current.id)"
-					@click="showManage(current, 'rename')"
-				>
-					Переименовать</button
-				><button
-					class="button subtle"
-					:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
-					@click="chooseIcon(current)"
-				>
-					Иконка</button
-				><button class="button subtle" @click="operation(() => gameApi.openFolder(current!.id))">
-					<AppIcon name="folder" :size="16" />Папка</button
-				><button
-					class="button subtle"
-					:disabled="busy || instanceBusy(current.id)"
-					@click="showManage(current, 'duplicate')"
-				>
-					Дублировать</button
-				><button
-					class="button subtle"
-					:disabled="busy || instanceBusy(current.id)"
-					@click="exportPack(current)"
-				>
-					Экспорт .mrpack</button
-				><button
-					class="button delete-button"
-					:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
-					@click="showManage(current, 'delete')"
-				>
-					Удалить
-				</button>
-			</div>
-			<div class="content-section-heading">
-				<div>
-					<h2>
-						Моды сборки <span>{{ mods.length }}</span>
-					</h2>
-					<p>
-						{{
-							current.kind === 'official'
-								? 'Официальные файлы обновляются отдельно. Свои моды можно добавлять и удалять.'
-								: 'Включай, обновляй и управляй установленным контентом.'
-						}}
-					</p>
-				</div>
-				<div class="heading-actions">
-					<a class="button secondary" :href="`#/content?instance=${current.id}`"
-						><AppIcon name="plus" :size="17" />Добавить моды</a
-					><button
-						class="button secondary"
-						:disabled="busy || instanceBusy(current.id)"
-						@click="checkUpdates"
+				<div class="figma-pack-categories" aria-label="Категории контента">
+					<span>Названия (А-Я)</span>
+					<button
+						v-for="entry in [
+							['all', 'Всё'],
+							['mod', 'Моды'],
+							['shader', 'Шейдеры'],
+							['resourcepack', 'Наборы ресурсов'],
+						] as const"
+						:key="entry[0]"
+						:class="{ selected: modCategory === entry[0] }"
+						@click="modCategory = entry[0]"
 					>
-						<AppIcon name="refresh" :size="17" />Проверить обновления
+						{{ entry[1] }}
 					</button>
 				</div>
-			</div>
-			<div v-if="updates.length" class="update-summary">
-				<AppIcon name="refresh" :size="20" /><span
-					>Доступно совместимых обновлений: {{ updates.length }}</span
-				><button
-					class="button primary"
-					:disabled="busy || instanceBusy(current.id)"
-					@click="showUpdates(updates.map((update) => update.content_id))"
-				>
-					Обновить все
-				</button>
-			</div>
-			<div v-if="!mods.length" class="empty-state compact-empty">
-				<AppIcon name="game" :size="34" />
-				<h2>Чистый мир возможностей</h2>
-				<p v-if="current.kind === 'official'">
-					Официальные файлы появятся здесь после установки. Свои моды можно добавить отдельно.
-				</p>
-				<p v-else>В этой сборке ещё нет модов.<br />Открой каталог и выбери совместимый контент.</p>
-				<a class="button secondary" :href="`#/content?instance=${current.id}`"
-					>Перейти к модам<AppIcon name="arrow" :size="16"
-				/></a>
-			</div>
-			<template v-else
-				><label class="sr-only" for="mod-filter">Найти установленный мод</label
-				><input
-					id="mod-filter"
-					v-model="modFilter"
-					class="mod-filter"
-					name="mod-filter"
-					placeholder="Найти мод в сборке…"
-					autocomplete="off"
-				/>
-				<div class="installed-mod-list">
+				<div class="figma-pack-list" aria-label="Установленный контент">
 					<div
 						v-for="mod in visibleMods"
 						:key="mod.id"
-						class="installed-mod"
+						class="figma-pack-item"
 						:class="{ disabled: !mod.enabled }"
 					>
-						<div class="mod-monogram" aria-hidden="true">
-							{{ mod.name.charAt(0).toUpperCase() }}
-						</div>
-						<div class="mod-description">
+						<img src="/figma/268b2.png" alt="" />
+						<div class="figma-pack-item-name">
 							<a v-if="mod.project_id" :href="`#/content/${mod.project_id}`">{{ mod.name }}</a
-							><strong v-else>{{ mod.name }}</strong>
-							<p>
-								{{
-									mod.version_number ||
-									(mod.version_id ? `Версия ${mod.version_id.slice(0, 8)}` : 'Локальный файл')
-								}}
-								· {{ mod.enabled ? 'Включён' : 'Выключен'
-								}}<span v-if="updates.some((update) => update.content_id === mod.id)">
-									· Есть обновление</span
-								><span v-if="mod.managed"> · Управляется UrodLauncher</span>
-							</p>
+							><strong v-else>{{ mod.name }}</strong
+							><small>{{ mod.managed ? 'Файл сборки сообщества' : 'Установленный файл' }}</small>
+						</div>
+						<div class="figma-pack-item-version">
+							<span>{{ mod.version_number || 'Локальная версия' }}</span
+							><small>{{ mod.path.split(/[\\/]/).pop() }}</small>
 						</div>
 						<button
-							v-if="updates.some((update) => update.content_id === mod.id)"
-							class="button subtle"
+							class="figma-pack-item-update"
 							:disabled="
-								mod.managed || busy || instanceBusy(current.id) || current.status === 'running'
+								!updates.some((update) => update.content_id === mod.id) ||
+								mod.managed ||
+								busy ||
+								instanceBusy(current.id) ||
+								current.status === 'running'
 							"
+							:title="
+								updates.some((update) => update.content_id === mod.id)
+									? 'Установить обновление'
+									: 'Обновление не найдено'
+							"
+							:aria-label="`Обновить ${mod.name}`"
 							@click="showUpdates([mod.id])"
 						>
-							Обновить</button
-						><button
+							<img src="/figma/3d4ee.svg" alt="" />
+						</button>
+						<button
 							class="switch"
 							:class="{ on: mod.enabled }"
 							role="switch"
 							:aria-checked="mod.enabled"
-							:aria-label="
-								mod.managed
-									? `${mod.name}: управляется сборкой сообщества`
-									: `${mod.enabled ? 'Выключить' : 'Включить'} ${mod.name}`
-							"
-							:title="mod.managed ? 'Управляется сборкой сообщества' : undefined"
+							:aria-label="`${mod.enabled ? 'Выключить' : 'Включить'} ${mod.name}`"
 							:disabled="
 								mod.managed || busy || instanceBusy(current.id) || current.status === 'running'
 							"
 							@click="toggleMod(mod)"
 						>
-							<span /></button
-						><button
-							class="icon-button"
-							:aria-label="
-								mod.managed ? `${mod.name}: управляется сборкой сообщества` : `Удалить ${mod.name}`
-							"
-							:title="mod.managed ? 'Управляется сборкой сообщества' : undefined"
+							<img v-if="mod.enabled" src="/figma/f8869.svg" alt="" /><span v-else />
+						</button>
+						<button
+							class="figma-pack-item-delete"
+							:aria-label="`Удалить ${mod.name}`"
 							:disabled="
 								mod.managed || busy || instanceBusy(current.id) || current.status === 'running'
 							"
 							@click="showRemoveMod(mod)"
 						>
-							<AppIcon name="trash" :size="17" />
+							<img src="/figma/dc443.svg" alt="" />
+						</button>
+					</div>
+					<p v-if="!visibleMods.length" class="figma-pack-empty">
+						{{
+							mods.length
+								? 'По запросу контент не найден'
+								: 'В сборке пока нет установленного контента'
+						}}
+					</p>
+				</div>
+				<div class="figma-pack-bottom">
+					<img v-if="current.icon" :src="current.icon" alt="" /><img
+						v-else
+						src="/figma/8aecb.png"
+						alt=""
+					/><span
+						><strong>{{ current.name }}</strong
+						><small>{{ loaderNames[current.loader] }} {{ current.game_version }}</small></span
+					><button
+						class="figma-pack-settings-trigger"
+						aria-label="Настройки сборки"
+						:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
+						@click="showManage(current, 'configure')"
+					>
+						<img src="/figma/bd7df.svg" alt="" /></button
+					><button
+						class="figma-pack-play"
+						:disabled="
+							busy ||
+							instanceBusy(current.id) ||
+							(current.status === 'ready' &&
+								(current.kind !== 'official' || !!current.manifest_version) &&
+								!accountName)
+						"
+						@click="installOrPlay(current)"
+					>
+						{{
+							current.status === 'running'
+								? 'СТОП'
+								: current.status === 'ready'
+									? 'ИГРАТЬ'
+									: 'УСТАНОВИТЬ'
+						}}
+					</button>
+				</div>
+			</div>
+			<details class="figma-pack-advanced">
+				<summary
+					aria-label="Дополнительные действия и сведения о сборке"
+					title="Дополнительные действия и сведения о сборке"
+				>
+					⋯
+				</summary>
+				<div class="instance-hero">
+					<img v-if="current.icon" :src="current.icon" width="90" height="90" alt="Иконка сборки" />
+					<div v-else class="instance-icon"><AppIcon name="game" :size="38" /></div>
+					<div class="instance-hero-copy">
+						<span v-if="current.kind === 'official'" class="official-library-badge"
+							><AppIcon name="check" :size="12" />Сообщество</span
+						>
+						<span class="quiet-badge">{{
+							current.kind === 'official' && !current.manifest_version
+								? 'Требуется завершить установку'
+								: statusLabel(current.status)
+						}}</span>
+						<p>
+							{{ modCountLabel(current.mod_count ?? mods.length) }} ·
+							{{ (current.memory_mb / 1024).toFixed(1) }} ГБ RAM
+						</p>
+						<small>{{ lastPlayed(current) }}</small>
+					</div>
+					<button
+						class="button primary"
+						:disabled="
+							busy ||
+							instanceBusy(current.id) ||
+							(current.status === 'ready' &&
+								(current.kind !== 'official' || !!current.manifest_version) &&
+								!accountName)
+						"
+						@click="installOrPlay(current)"
+					>
+						<AppIcon name="game" />{{
+							current.status === 'running'
+								? 'Остановить'
+								: current.status === 'ready' &&
+									  (current.kind !== 'official' || !!current.manifest_version)
+									? 'Играть'
+									: current.kind === 'official'
+										? 'Завершить установку'
+										: 'Установить Minecraft'
+						}}
+					</button>
+				</div>
+				<p v-if="!accountName" class="instance-account-note">
+					Для запуска выбери <a href="#/accounts">аккаунт Minecraft</a>. Устанавливать файлы можно
+					уже сейчас.
+				</p>
+				<p
+					v-if="current.kind === 'official' && officialUpdateStatus[current.id]"
+					class="official-update-inline"
+					role="status"
+				>
+					{{
+						officialUpdateStatus[current.id].phase === 'checking'
+							? 'Проверяем обновления сборки…'
+							: officialUpdateStatus[current.id].phase === 'available'
+								? `Доступно обновление ${officialUpdateStatus[current.id].version}`
+								: officialUpdateStatus[current.id].phase === 'current'
+									? 'Сборка актуальна'
+									: 'Не удалось проверить обновления сборки'
+					}}
+				</p>
+				<div class="instance-toolbar">
+					<button
+						class="button subtle"
+						:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
+						@click="showManage(current, 'configure')"
+					>
+						<AppIcon name="settings" :size="16" />Параметры
+					</button>
+					<button
+						v-if="current.kind === 'official'"
+						class="button secondary"
+						:disabled="busy || instanceBusy(current.id)"
+						@click="checkOfficialUpdate"
+					>
+						<AppIcon name="refresh" :size="16" />Обновления сборки сообщества
+					</button>
+					<button
+						class="button subtle"
+						:disabled="busy || instanceBusy(current.id)"
+						@click="showManage(current, 'rename')"
+					>
+						Переименовать</button
+					><button
+						class="button subtle"
+						:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
+						@click="chooseIcon(current)"
+					>
+						Иконка</button
+					><button class="button subtle" @click="operation(() => gameApi.openFolder(current!.id))">
+						<AppIcon name="folder" :size="16" />Папка</button
+					><button
+						class="button subtle"
+						:disabled="busy || instanceBusy(current.id)"
+						@click="showManage(current, 'duplicate')"
+					>
+						Дублировать</button
+					><button
+						class="button subtle"
+						:disabled="busy || instanceBusy(current.id)"
+						@click="exportPack(current)"
+					>
+						Экспорт .mrpack</button
+					><button
+						class="button delete-button"
+						:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
+						@click="showManage(current, 'delete')"
+					>
+						Удалить
+					</button>
+				</div>
+				<div class="content-section-heading">
+					<div>
+						<h2>
+							Моды сборки <span>{{ mods.length }}</span>
+						</h2>
+						<p>
+							{{
+								current.kind === 'official'
+									? 'Официальные файлы обновляются отдельно. Свои моды можно добавлять и удалять.'
+									: 'Включай, обновляй и управляй установленным контентом.'
+							}}
+						</p>
+					</div>
+					<div class="heading-actions">
+						<a class="button secondary" :href="`#/content?instance=${current.id}`"
+							><AppIcon name="plus" :size="17" />Добавить моды</a
+						><button
+							class="button secondary"
+							:disabled="busy || instanceBusy(current.id)"
+							@click="checkUpdates"
+						>
+							<AppIcon name="refresh" :size="17" />Проверить обновления
 						</button>
 					</div>
 				</div>
-				<p v-if="!visibleMods.length" class="list-empty" role="status">
-					По этому запросу модов не найдено.
-				</p></template
-			>
-			<div class="instance-footer">
-				<span>{{ current.directory }}</span
-				><button
-					v-if="rollbackAvailable"
-					class="button subtle"
-					:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
-					@click="rollbackDialog?.showModal()"
-				>
-					Восстановить предыдущую версию
-				</button>
-			</div>
+				<div v-if="updates.length" class="update-summary">
+					<AppIcon name="refresh" :size="20" /><span
+						>Доступно совместимых обновлений: {{ updates.length }}</span
+					><button
+						class="button primary"
+						:disabled="busy || instanceBusy(current.id)"
+						@click="showUpdates(updates.map((update) => update.content_id))"
+					>
+						Обновить все
+					</button>
+				</div>
+				<div class="instance-footer">
+					<span>{{ current.directory }}</span
+					><button
+						v-if="rollbackAvailable"
+						class="button subtle"
+						:disabled="busy || instanceBusy(current.id) || current.status === 'running'"
+						@click="rollbackDialog?.showModal()"
+					>
+						Восстановить предыдущую версию
+					</button>
+				</div>
+			</details>
 		</template>
 		<div v-else-if="detail" class="empty-state">
 			<AppIcon name="info" :size="36" />

@@ -41,6 +41,17 @@ test('compatible version selection requires both exact Minecraft version and loa
 		['wrong-loader'],
 	)
 })
+test('resource packs and shaders use Minecraft version without a mod loader constraint', () => {
+	assert.deepEqual(
+		compatibleVersions(versions, instance, 'resourcepack').map((v) => v.id),
+		['match', 'wrong-loader', 'multiloader'],
+	)
+	assert.deepEqual(
+		compatibleVersions(versions, { ...instance, loader: 'vanilla' }, 'shader').map((v) => v.id),
+		['match', 'wrong-loader', 'multiloader'],
+	)
+	assert.deepEqual(compatibleVersions(versions, undefined, 'shader'), [])
+})
 test('user status distinguishes installation, ready, running and recoverable failure', () => {
 	assert.equal(statusLabel('created'), 'Нужна установка')
 	assert.equal(statusLabel('running'), 'Игра запущена')
