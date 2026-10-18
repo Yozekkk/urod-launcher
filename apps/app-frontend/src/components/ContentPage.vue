@@ -99,6 +99,9 @@ const pageNumber = computed(() => Math.floor(offset.value / limit) + 1)
 const pages = computed(() => Math.max(1, Math.ceil(result.value.total_hits / limit)))
 const projectBody = computed(() => renderProjectMarkdown(project.value?.body || ''))
 const loaders: Loader[] = ['fabric', 'forge', 'neoforge', 'quilt']
+function isContentKind(value: string): value is ContentKind {
+	return value === 'mod' || value === 'modpack' || value === 'resourcepack' || value === 'shader'
+}
 function syncFilters() {
 	const params = new URLSearchParams(location.hash.split('?')[1] || '')
 	const contentType = params.get('type')
@@ -182,6 +185,7 @@ async function loadProject(id: string) {
 			gameApi.instances(),
 		])
 		if (!alive || generation !== detailGeneration) return
+		if (isContentKind(nextProject.project_type)) kind.value = nextProject.project_type
 		project.value = nextProject
 		versions.value = nextVersions
 		instances.value = nextInstances
@@ -202,8 +206,11 @@ async function prepareInstall(hit: SearchHit) {
 }
 async function install() {
 	const currentProject = project.value
-	if (currentProject && currentProject.project_type !== kind.value) {
-		error.value = 'Тип проекта не соответствует выбранному разделу.'
+	if (
+		currentProject &&
+		(!isContentKind(currentProject.project_type) || currentProject.project_type !== kind.value)
+	) {
+		error.value = 'Установка этого типа контента пока недоступна.'
 		return
 	}
 	if (!currentProject || !selectedVersion.value || !selectedVersionInfo.value) {

@@ -29,6 +29,7 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | NeoForge 1.21.1 | Pass: 21.1.250 installed, game PID 12562 launched, status remained running and stop passed in 47.10 seconds |
 | Selected-pack content | Pass: live Fabric API mod, Complementary Shaders resource, and Motschen’s Better Leaves pack installed and listed under their corresponding tabs; a resource pack toggle persisted through native backend. A `Fresh Animations` candidate without a stable compatible 1.21.1 release was correctly blocked. |
 | Selected-pack Modrinth browser | Pass: real mod, shader and resource pack results loaded; Minecraft 1.21.1 compatibility applied, while non-mod types did not incorrectly require Fabric loader metadata. First rows at y=242 and y=332 match Figma `3:888`. |
+| Direct installed-content link | Pass: opening `#/content/uvpymuxq` without a type parameter loaded the resource pack project, displayed its kind, kept installation available and produced a resource pack filtered return link. |
 | 860×620 native resize | Pass for library, gallery, skins, selected-pack browser and resource settings: no document horizontal overflow; resource form and close button remain visible. Other settings subframes remain to be checked. |
 | 1240×820 at 125% monitor scale | DOM viewport had no document overflow; full visual inspection remains open because the host panel clipped the bottom of the native window |
 
