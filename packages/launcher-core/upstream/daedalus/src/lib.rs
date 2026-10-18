@@ -24,13 +24,13 @@ pub fn get_path_from_artifact(artifact: &str) -> Result<String, Error> {
     let package = name_items.first().ok_or_else(|| {
         Error::ParseError(format!(
             "Unable to find package for library {}",
-            &artifact
+            artifact
         ))
     })?;
     let name = name_items.get(1).ok_or_else(|| {
         Error::ParseError(format!(
             "Unable to find name for library {}",
-            &artifact
+            artifact
         ))
     })?;
 
@@ -40,7 +40,7 @@ pub fn get_path_from_artifact(artifact: &str) -> Result<String, Error> {
             .ok_or_else(|| {
                 Error::ParseError(format!(
                     "Unable to find version for library {}",
-                    &artifact
+                    artifact
                 ))
             })?
             .split('@')
@@ -48,7 +48,7 @@ pub fn get_path_from_artifact(artifact: &str) -> Result<String, Error> {
         let version = version_ext.first().ok_or_else(|| {
             Error::ParseError(format!(
                 "Unable to find version for library {}",
-                &artifact
+                artifact
             ))
         })?;
         let ext = version_ext.get(1);
@@ -66,7 +66,7 @@ pub fn get_path_from_artifact(artifact: &str) -> Result<String, Error> {
         let version = name_items.get(2).ok_or_else(|| {
             Error::ParseError(format!(
                 "Unable to find version for library {}",
-                &artifact
+                artifact
             ))
         })?;
 
@@ -75,7 +75,7 @@ pub fn get_path_from_artifact(artifact: &str) -> Result<String, Error> {
             .ok_or_else(|| {
                 Error::ParseError(format!(
                     "Unable to find data for library {}",
-                    &artifact
+                    artifact
                 ))
             })?
             .split('@')
@@ -83,7 +83,7 @@ pub fn get_path_from_artifact(artifact: &str) -> Result<String, Error> {
         let data = data_ext.first().ok_or_else(|| {
             Error::ParseError(format!(
                 "Unable to find data for library {}",
-                &artifact
+                artifact
             ))
         })?;
         let ext = data_ext.get(1);

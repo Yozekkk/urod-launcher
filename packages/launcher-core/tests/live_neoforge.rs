@@ -1,4 +1,4 @@
-//! Manual network smoke test for the exact runtime used by the NCreate server pack.
+//! Manual network smoke test for a representative NeoForge runtime.
 //! Ignored in CI because it downloads Minecraft and NeoForge assets.
 
 #[tokio::test]
@@ -15,7 +15,7 @@ async fn install_neoforge_21_1_250() {
 	let engine = Engine::open(root, pool).await.expect("engine");
 	let instance = engine
 		.create_instance(CreateInstance {
-			name: "NCreate server runtime test".into(),
+			name: "NeoForge integration test".into(),
 			game_version: "1.21.1".into(),
 			loader: Loader::Neoforge,
 			loader_version: Some("21.1.250".into()),
@@ -28,14 +28,14 @@ async fn install_neoforge_21_1_250() {
 	let installed = engine
 		.install_game(&instance.id, &op)
 		.await
-		.expect("install NCreate NeoForge game runtime");
+		.expect("install NeoForge game runtime");
 	assert_eq!(installed.status, "ready");
 	if std::env::var_os("UROD_NEOFORGE_TEST_LAUNCH").is_some() {
 		let game = engine
 			.launch(
 				&instance.id,
 				LaunchIdentity {
-					nickname: "NCreateQA".into(),
+					nickname: "UrodQA".into(),
 					uuid: "88611cf2-09a6-3ea9-b10a-62faecf8157a".into(),
 					access_token: "0".into(),
 					user_type: "legacy".into(),

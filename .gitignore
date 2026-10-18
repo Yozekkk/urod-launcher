@@ -5,6 +5,7 @@ target/
 .env.*
 !*.example
 verification/
+.qa-runtime/
 release-assets/
 *.log
 .DS_Store
