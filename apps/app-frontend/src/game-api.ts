@@ -180,6 +180,7 @@ export const gameApi = {
 	selectJava: (instanceId: string, path: string) =>
 		invoke<JavaRuntime>('core_select_java', { instanceId, path }),
 	javaDownload: (major: number) => invoke<void>('core_java_download', { major }),
+	gameLogTail: (instanceId: string) => invoke<string>('core_game_log_tail', { instanceId }),
 	editions: (channel: 'stable' | 'beta') =>
 		invoke<EditionAvailability[]>('core_editions', { channel }),
 	installEdition: (editionId: string, channel: 'stable' | 'beta') =>

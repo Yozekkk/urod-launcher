@@ -26,6 +26,7 @@ const props = defineProps<{
 	accountName: string | null
 	operations: GameOperations
 }>()
+const emit = defineEmits<{ 'open-log': [] }>()
 const instances = ref<Instance[]>([])
 const mods = ref<InstalledContent[]>([])
 const updates = ref<ContentUpdate[]>([])
@@ -588,6 +589,7 @@ onUnmounted(() => {
 					<button disabled title="Просмотр миров внутри лаунчера пока недоступен">
 						<img src="/figma/46b9c.svg" alt="" />Миры
 					</button>
+					<button class="figma-pack-mobile-log" @click="emit('open-log')">Журнал</button>
 				</nav>
 				<div class="figma-pack-search-row">
 					<input

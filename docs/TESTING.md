@@ -14,6 +14,7 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | `cargo check --locked -p urod-launcher` | Pass |
 | `cargo clippy --locked -p urod-launcher --all-targets -- -D warnings` | Pass after correcting seven Daedalus warnings |
 | `cargo test --locked -p urod-launcher -p urod-launcher-core` | Pass after Java changes: 31 app tests and 49 core tests passed; 2 and 4 respectively ignored live/manual tests. Fabric/Quilt live integration remains ignored in the default run and passed when run explicitly earlier. |
+| `cargo test -p urod-launcher-core --lib` after journal changes | Pass: 52 tests, 4 ignored; includes readable Log4j conversion, common credential redaction, and offline token placeholder regression. |
 | `node scripts/build.mjs --no-bundle` | Pass: optimized Linux binary built with the current 0.1.0 metadata |
 | Release binary launch | Pass: `target/release/UrodLauncher` opened a native window with `XDG_DATA_HOME=/tmp/urod-release-smoke-data`; [capture](screenshots/figma-rc/release-binary-home-physical.png) shows the production WebView |
 | Arch candidate package | `makepkg --force --nodeps --nocheck` passed for 0.1.0-1; package contains binary, desktop entry, Figma icon, LICENSE and NOTICE. `pacman -U` and `pacman -R` succeeded inside an isolated `/tmp/urod-package-root` with `-dd` because that root has no system dependency database. This does not verify launch after a normal system install. |
@@ -31,6 +32,8 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | Direct installed-content link | Pass: opening `#/content/uvpymuxq` without a type parameter loaded the resource pack project, displayed its kind, kept installation available and produced a resource pack filtered return link. |
 | Java 21/25 settings | Pass: Java 21 detection found `/usr/bin/java`; setting persisted after reload. Saving `/usr/bin/java` as Java 25 was rejected with the actual detected major 21. A saved Java 21 path launched the Fabric 1.21.1 QA pack and opened a Minecraft window. A temporary alternate executable path was observed as argv[0] of the Java process, then removed; the pack's own `java_path` remained null after launch and stop. |
 | Java panel at 860×620 | Pass: no document horizontal overflow; both Java cards, actions and close button remain visible. |
+| Live game journal | Pass: native Fabric 1.21.1 launch opened a game window; the selected pack's journal displayed its actual loader/version lines without corrupting `0` digits. The Errors filter showed a real narrator error. Stop command returned success. [1280×720 capture](screenshots/figma-rc/pack-content-game-log-1280x720.png). |
+| Compact journal at 860×620 | Pass: the journal button opened a 364 px drawer, close control was visible, and the document had no horizontal overflow. [Native capture](screenshots/figma-rc/pack-content-game-log-860x620.png). |
 | 860×620 native resize | Pass for library, gallery, skins, selected-pack browser and resource settings: no document horizontal overflow; resource form and close button remain visible. Other settings subframes remain to be checked. |
 | 1240×820 at 125% monitor scale | DOM viewport had no document overflow; full visual inspection remains open because the host panel clipped the bottom of the native window |
 

@@ -835,6 +835,56 @@ impl Engine {
 			log_path: log_path.to_string_lossy().into(),
 		})
 	}
+	pub async fn game_log_tail(&self, instance_id: &str) -> Result<String> {
+		use tokio::io::{AsyncReadExt, AsyncSeekExt};
+		self.instance(instance_id).await?;
+		let directory = self.instance_path(instance_id)?.join("logs");
+		let metadata = match tokio::fs::symlink_metadata(&directory).await {
+			Ok(metadata) => metadata,
+			Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(String::new()),
+			Err(error) => return Err(error.into()),
+		};
+		if metadata.file_type().is_symlink() || !metadata.is_dir() {
+			return Err(Error::Invalid("Unsafe game log directory".into()));
+		}
+		let mut entries = tokio::fs::read_dir(&directory).await?;
+		let mut latest: Option<(String, PathBuf)> = None;
+		for _ in 0..1024 {
+			let Some(entry) = entries.next_entry().await? else {
+				break;
+			};
+			let name = entry.file_name();
+			let Some(name) = name.to_str() else { continue };
+			if !name.starts_with("launcher-") || !name.ends_with(".log") {
+				continue;
+			}
+			if latest
+				.as_ref()
+				.is_none_or(|(current, _)| name > current.as_str())
+			{
+				latest = Some((name.to_string(), entry.path()));
+			}
+		}
+		let Some((_, path)) = latest else {
+			return Ok(String::new());
+		};
+		let metadata = tokio::fs::symlink_metadata(&path).await?;
+		if metadata.file_type().is_symlink() || !metadata.is_file() {
+			return Err(Error::Invalid("Unsafe game log file".into()));
+		}
+		let mut file = tokio::fs::File::open(path).await?;
+		let start = metadata.len().saturating_sub(32_768);
+		file.seek(std::io::SeekFrom::Start(start)).await?;
+		let mut bytes = Vec::with_capacity((metadata.len() - start) as usize);
+		file.take(32_768).read_to_end(&mut bytes).await?;
+		let text = String::from_utf8_lossy(&bytes);
+		let text = if start == 0 {
+			text.as_ref()
+		} else {
+			text.split_once('\n').map_or("", |(_, rest)| rest)
+		};
+		Ok(sanitize_game_log(&readable_game_log(text)))
+	}
 	pub async fn prepare_ely_runtime(&self, op: &Operation) -> Result<String> {
 		let release: serde_json::Value = self
 			.downloads
@@ -1102,6 +1152,40 @@ fn extract_natives(archive: &Path, directory: &Path, exclude: Option<&[String]>)
 	}
 	Ok(())
 }
+fn readable_game_log(input: &str) -> String {
+	static EVENT: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+	let pattern = EVENT.get_or_init(|| {
+		regex::Regex::new(
+			r#"(?s)<log4j:Event\b[^>]*\blevel="([^"]+)"[^>]*>.*?<log4j:Message><!\[CDATA\[(.*?)\]\]></log4j:Message>.*?</log4j:Event>"#,
+		)
+		.expect("constant game log event pattern")
+	});
+	pattern
+		.replace_all(input, |captures: &regex::Captures<'_>| {
+			format!("[{}] {}", &captures[1], &captures[2])
+		})
+		.into_owned()
+}
+
+fn sanitize_game_log(input: &str) -> String {
+	static SECRET: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+	let pattern = SECRET.get_or_init(|| {
+		regex::Regex::new(
+			r#"(?i)\b(access[_-]?token|refresh[_-]?token|authorization|password|session[_-]?id)\b["']?(?:\s*[:=]\s*|\s+)(?:Bearer\s+)?["']?[^\s"',;]+"#,
+		)
+		.expect("constant log redaction pattern")
+	});
+	pattern.replace_all(input, "$1=[redacted]").into_owned()
+}
+
+fn redact_identity_token(line: &str, token: &str) -> String {
+	if token.is_empty() || token == "0" {
+		line.to_owned()
+	} else {
+		line.replace(token, "[redacted]")
+	}
+}
+
 fn capture_log<R: tokio::io::AsyncRead + Unpin + Send + 'static>(
 	reader: R,
 	path: PathBuf,
@@ -1125,11 +1209,7 @@ fn capture_log<R: tokio::io::AsyncRead + Unpin + Send + 'static>(
 			match reader.read_line(&mut line).await {
 				Ok(0) | Err(_) => break,
 				Ok(_) => {
-					let safe = if token.is_empty() {
-						line.clone()
-					} else {
-						line.replace(token.as_str(), "[redacted]")
-					};
+					let safe = redact_identity_token(&line, token.as_str());
 					if file.write_all(safe.as_bytes()).await.is_err() {
 						break;
 					}
@@ -1170,6 +1250,33 @@ fn apply_default_java_path(
 
 #[cfg(test)]
 mod tests {
+	#[test]
+	fn xml_game_events_are_readable_in_sidebar() {
+		let input = "<log4j:Event logger=\"Minecraft\" level=\"WARN\" thread=\"main\"><log4j:Message><![CDATA[Missing optional mod]]></log4j:Message></log4j:Event>";
+		assert_eq!(
+			super::readable_game_log(input),
+			"[WARN] Missing optional mod"
+		);
+	}
+	#[test]
+	fn offline_placeholder_does_not_corrupt_game_versions_in_logs() {
+		let line = "Fabric Loader 0.19.5 and Minecraft 1.21.1";
+		assert_eq!(super::redact_identity_token(line, "0"), line);
+		assert_eq!(
+			super::redact_identity_token("token=secret", "secret"),
+			"token=[redacted]"
+		);
+	}
+	#[test]
+	fn game_log_redacts_common_credentials_before_frontend_delivery() {
+		let input =
+			"accessToken=secret123\nAuthorization: Bearer abc.def\npassword: hunter2\nINFO Started";
+		let output = super::sanitize_game_log(input);
+		assert!(!output.contains("secret123"));
+		assert!(!output.contains("abc.def"));
+		assert!(!output.contains("hunter2"));
+		assert!(output.contains("INFO Started"));
+	}
 	#[test]
 	fn configured_java_path_uses_required_major_and_keeps_pack_override() {
 		let paths = std::collections::BTreeMap::from([

@@ -467,6 +467,18 @@ pub async fn core_stop(
 		.map_err(core_error)
 }
 #[tauri::command]
+pub async fn core_game_log_tail(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	instance_id: String,
+) -> Result<String> {
+	engine(&window, &state)
+		.await?
+		.game_log_tail(&instance_id)
+		.await
+		.map_err(core_error)
+}
+#[tauri::command]
 pub async fn core_jobs(
 	window: tauri::WebviewWindow,
 	state: tauri::State<'_, AppState>,

@@ -1029,6 +1029,10 @@ body {
 	border-radius: 20px;
 	padding: 5px 11px;
 }
+.figma-pack-mobile-log,
+.pack-log-close {
+	display: none !important;
+}
 .figma-pack-log-controls input {
 	flex: 1;
 	min-width: 0;
@@ -1903,6 +1907,29 @@ body {
 	}
 	.figma-news {
 		display: none;
+	}
+	.figma-pack-mobile-log {
+		display: inline-flex !important;
+		margin-left: auto;
+	}
+	.figma-news.figma-pack-log.compact-open {
+		display: block;
+		position: fixed;
+		top: 115px;
+		right: 0;
+		bottom: 0;
+		width: min(364px, calc(100vw - 76px));
+		z-index: 30;
+		overflow-y: auto;
+		box-shadow: -8px 0 24px #0008;
+	}
+	.pack-log-close {
+		display: inline-flex !important;
+		border: 0;
+		background: none;
+		color: var(--figma-text);
+		font: inherit;
+		cursor: pointer;
 	}
 	.figma-header-right {
 		right: 24px;

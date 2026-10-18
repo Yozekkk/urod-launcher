@@ -81,17 +81,56 @@ const launcherUpdateNotes = computed(() =>
 )
 const routeDetail = ref<string | null>(null)
 const packLogSearch = ref('')
-const packLogFilter = ref<'all' | 'errors' | 'information'>('all')
-const visiblePackOperations = computed(() =>
-	operations.active.value.filter((job) => {
-		if (job.instance_id !== routeDetail.value) return false
-		if (packLogFilter.value === 'errors' && !job.error) return false
-		if (packLogFilter.value === 'information' && job.error) return false
-		return operationMessage(job)
-			.toLocaleLowerCase()
-			.includes(packLogSearch.value.toLocaleLowerCase())
-	}),
-)
+type PackLogLevel = 'errors' | 'warnings' | 'information'
+const packLogFilter = ref<'all' | PackLogLevel>('all')
+const packLogLines = ref<string[]>([])
+const packLogError = ref('')
+const packLogOpen = ref(false)
+let packLogRequest = 0
+let packLogTimer: ReturnType<typeof setInterval> | undefined
+async function refreshPackLog() {
+	const instanceId = page.value === 'library' ? routeDetail.value : null
+	if (!instanceId) return
+	const request = ++packLogRequest
+	try {
+		const text = await gameApi.gameLogTail(instanceId)
+		if (request !== packLogRequest || routeDetail.value !== instanceId) return
+		packLogLines.value = text.split(/\r?\n/).filter(Boolean).slice(-200)
+		packLogError.value = ''
+	} catch (reason) {
+		if (request !== packLogRequest || routeDetail.value !== instanceId) return
+		packLogError.value = String(reason)
+	}
+}
+watch([page, routeDetail], () => {
+	packLogRequest++
+	packLogLines.value = []
+	packLogError.value = ''
+	packLogOpen.value = false
+	if (page.value === 'library' && routeDetail.value) void refreshPackLog()
+})
+const visiblePackLogLines = computed(() => {
+	const operationLines = operations.active.value
+		.filter((job) => job.instance_id === routeDetail.value)
+		.map((job) => ({
+			text: operationMessage(job),
+			level: (job.error ? 'errors' : 'information') as PackLogLevel,
+		}))
+	const gameLines = packLogLines.value.map((line) => ({
+		text: line,
+		level: (/\b(?:ERROR|FATAL)\b/i.test(line)
+			? 'errors'
+			: /\bWARN(?:ING)?\b/i.test(line)
+				? 'warnings'
+				: 'information') as PackLogLevel,
+	}))
+	const query = packLogSearch.value.toLocaleLowerCase()
+	return [...operationLines, ...gameLines].filter(
+		(line) =>
+			(packLogFilter.value === 'all' || line.level === packLogFilter.value) &&
+			line.text.toLocaleLowerCase().includes(query),
+	)
+})
 const snapshot = ref<Snapshot | null>(null)
 const draft = ref<Settings | null>(null)
 let customizationTimer: ReturnType<typeof setTimeout> | undefined
@@ -634,6 +673,9 @@ async function restart() {
 onMounted(() => {
 	void checkServer()
 	updateRoute()
+	packLogTimer = setInterval(() => {
+		if (page.value === 'library' && routeDetail.value) void refreshPackLog()
+	}, 3000)
 	void invoke<string | null>('initial_route')
 		.then((route) => {
 			if (mounted && route) {
@@ -699,6 +741,7 @@ onMounted(() => {
 onUnmounted(() => {
 	clearTimeout(noticeTimer)
 	clearTimeout(customizationTimer)
+	clearInterval(packLogTimer)
 	mounted = false
 	for (const cleanup of eventCleanup) cleanup()
 	window.removeEventListener('hashchange', updateRoute)
@@ -1056,6 +1099,7 @@ onUnmounted(() => {
 					:settings="snapshot.settings"
 					:account-name="activeAccount?.nickname || null"
 					:operations="operations"
+					@open-log="packLogOpen = true"
 				/>
 				<ContentPage
 					v-else-if="page === 'content'"
@@ -1541,17 +1585,23 @@ onUnmounted(() => {
 		<aside
 			v-if="page === 'library' || page === 'content' || page === 'skins'"
 			class="figma-news"
-			:class="{ 'figma-pack-log': page === 'library' && !!routeDetail }"
-			:aria-label="page === 'library' && routeDetail ? 'Операции сборки' : 'Новости сообщества'"
+			:class="{
+				'figma-pack-log': page === 'library' && !!routeDetail,
+				'compact-open': packLogOpen,
+			}"
+			:aria-label="page === 'library' && routeDetail ? 'Журнал сборки' : 'Новости сообщества'"
 		>
 			<template v-if="page === 'library' && routeDetail">
 				<div class="figma-pack-log-controls">
 					<input
 						v-model="packLogSearch"
 						type="search"
-						aria-label="Поиск операций"
+						aria-label="Поиск по журналу"
 						placeholder="Поиск"
-					/><span title="Состояние операций сборки">Операции</span>
+					/><span title="Журнал игры и операций сборки">Игра</span>
+					<button class="pack-log-close" aria-label="Закрыть журнал" @click="packLogOpen = false">
+						Закрыть
+					</button>
 				</div>
 				<div class="figma-pack-log-filters">
 					<button :class="{ selected: packLogFilter === 'all' }" @click="packLogFilter = 'all'">
@@ -1561,7 +1611,11 @@ onUnmounted(() => {
 						@click="packLogFilter = 'errors'"
 					>
 						Ошибки</button
-					><button disabled title="Уровень предупреждений пока недоступен">Предупреждения</button
+					><button
+						:class="{ selected: packLogFilter === 'warnings' }"
+						@click="packLogFilter = 'warnings'"
+					>
+						Предупреждения</button
 					><button
 						:class="{ selected: packLogFilter === 'information' }"
 						@click="packLogFilter = 'information'"
@@ -1569,9 +1623,10 @@ onUnmounted(() => {
 						Информация
 					</button>
 				</div>
-				<div class="figma-pack-log-lines" role="log" aria-label="Операции сборки">
-					<p v-for="job in visiblePackOperations" :key="job.id">&gt; {{ operationMessage(job) }}</p>
-					<p v-if="!visiblePackOperations.length">&gt;_консоль</p>
+				<div class="figma-pack-log-lines" role="log" aria-label="Журнал сборки">
+					<p v-if="packLogError" role="alert">{{ packLogError }}</p>
+					<p v-for="(line, index) in visiblePackLogLines" :key="index">&gt; {{ line.text }}</p>
+					<p v-if="!packLogError && !visiblePackLogLines.length">&gt;_консоль</p>
 				</div>
 			</template>
 			<template v-else>
