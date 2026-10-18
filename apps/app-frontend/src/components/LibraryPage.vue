@@ -77,6 +77,9 @@ const managed = ref<Instance | null>(null)
 const manageName = ref('')
 const manageMemory = ref(4096)
 const manageJava = ref('')
+const manageWindowEnabled = ref(false)
+const manageWindowWidth = ref(854)
+const manageWindowHeight = ref(480)
 const manageAction = ref<'rename' | 'duplicate' | 'delete' | 'configure'>('rename')
 const packSettingsTab = ref<'main' | 'installation' | 'overrides'>('main')
 const removingMod = ref<InstalledContent | null>(null)
@@ -167,6 +170,8 @@ function requestFor(instance: Instance, name: string): CreateInstance {
 		loader: instance.loader,
 		loader_version: instance.loader_version,
 		memory_mb: instance.memory_mb,
+		window_width: instance.window_width,
+		window_height: instance.window_height,
 		java_path: instance.java_path,
 	}
 }
@@ -305,6 +310,8 @@ async function createInstance() {
 			loader: loader.value,
 			loader_version: loader.value === 'vanilla' ? null : loaderVersion.value,
 			memory_mb: props.settings.memory_mb,
+			window_width: null,
+			window_height: null,
 			java_path: Object.values(props.settings.java_paths).some(Boolean)
 				? null
 				: props.settings.java_path || null,
@@ -323,6 +330,9 @@ function showManage(instance: Instance, action: 'rename' | 'duplicate' | 'delete
 	manageName.value = action === 'duplicate' ? `${instance.name} — копия` : instance.name
 	manageMemory.value = instance.memory_mb
 	manageJava.value = instance.java_path || ''
+	manageWindowEnabled.value = instance.window_width != null && instance.window_height != null
+	manageWindowWidth.value = instance.window_width ?? props.settings.window_width ?? 854
+	manageWindowHeight.value = instance.window_height ?? props.settings.window_height ?? 480
 	manageAction.value = action
 	packSettingsTab.value = 'main'
 	error.value = ''
@@ -345,6 +355,19 @@ async function pickManagedJava() {
 async function manageInstance() {
 	const instance = managed.value
 	if (!instance) return
+	if (
+		manageAction.value === 'configure' &&
+		manageWindowEnabled.value &&
+		(!Number.isInteger(manageWindowWidth.value) ||
+			!Number.isInteger(manageWindowHeight.value) ||
+			manageWindowWidth.value < 320 ||
+			manageWindowWidth.value > 7680 ||
+			manageWindowHeight.value < 240 ||
+			manageWindowHeight.value > 4320)
+	) {
+		error.value = 'Укажите ширину 320–7680 и высоту 240–4320.'
+		return
+	}
 	const success = await operation(
 		async () => {
 			if (manageAction.value === 'delete') {
@@ -356,6 +379,8 @@ async function manageInstance() {
 				await gameApi.edit(instance.id, {
 					...requestFor(instance, instance.name),
 					memory_mb: manageMemory.value,
+					window_width: manageWindowEnabled.value ? manageWindowWidth.value : null,
+					window_height: manageWindowEnabled.value ? manageWindowHeight.value : null,
 					java_path: manageJava.value.trim() || null,
 				})
 			else await gameApi.edit(instance.id, requestFor(instance, manageName.value.trim()))
@@ -1176,7 +1201,10 @@ onUnmounted(() => {
 						<img src="/figma/f2524.svg" alt="" />Переопределения
 					</button>
 				</nav>
-				<div class="figma-pack-body">
+				<div
+					class="figma-pack-body"
+					:class="{ 'figma-pack-body-overrides': packSettingsTab === 'overrides' }"
+				>
 					<div v-if="packSettingsTab === 'main'" class="figma-pack-main" data-figma-node="3:11">
 						<label class="figma-pack-field"
 							><strong>Название</strong><input v-model="manageName" maxlength="80" :disabled="busy"
@@ -1256,35 +1284,93 @@ onUnmounted(() => {
 							отдельной проверки.
 						</p>
 					</div>
-					<div v-else class="figma-pack-overrides" data-figma-node="3:648,3:463,3:530,3:588,3:629">
-						<strong>Переопределение расположения Java</strong>
-						<label class="figma-pack-field"
-							><span>Путь Java для этой сборки</span
-							><input v-model="manageJava" :disabled="busy" placeholder="Автоматический выбор Java"
-						/></label>
-						<button class="figma-pack-button" :disabled="busy" @click="pickManagedJava">
-							Выбрать Java вручную
-						</button>
-						<strong>Переопределение выделенной памяти</strong>
-						<label class="figma-pack-memory"
-							><input
-								v-model.number="manageMemory"
-								type="range"
-								min="512"
-								max="32768"
-								step="256"
-								:disabled="busy"
-							/><output>{{ manageMemory }} МБ</output></label
-						>
+					<div v-else class="figma-pack-overrides">
+						<section class="figma-pack-window-section" data-figma-node="3:463">
+							<div class="figma-pack-window-intro">
+								<div>
+									<strong>Переопределение настроек окна</strong>
+									<p>Настройка полноэкранного режима и разрешения при запуске для этой сборки.</p>
+								</div>
+								<button
+									class="figma-settings-switch"
+									:class="{ on: manageWindowEnabled }"
+									:aria-pressed="manageWindowEnabled"
+									aria-label="Переопределить размер окна для сборки"
+									:disabled="busy"
+									@click="manageWindowEnabled = !manageWindowEnabled"
+								/>
+							</div>
+							<div class="figma-settings-window-row">
+								<span
+									><strong>Полноэкранный режим</strong
+									><small>Запускать игру в полноэкранном режиме (через options.txt).</small></span
+								><button
+									class="figma-settings-switch"
+									disabled
+									title="Полноэкранный режим пока недоступен"
+									aria-label="Полноэкранный режим пока недоступен"
+								/>
+							</div>
+							<label class="figma-settings-window-row"
+								><span><strong>Ширина</strong><small>Ширина окна игры при запуске.</small></span
+								><input
+									v-model.number="manageWindowWidth"
+									type="number"
+									min="320"
+									max="7680"
+									:disabled="busy || !manageWindowEnabled"
+									aria-label="Ширина окна этой сборки"
+							/></label>
+							<label class="figma-settings-window-row"
+								><span><strong>Высота</strong><small>Высота окна игры при запуске.</small></span
+								><input
+									v-model.number="manageWindowHeight"
+									type="number"
+									min="240"
+									max="4320"
+									:disabled="busy || !manageWindowEnabled"
+									aria-label="Высота окна этой сборки"
+							/></label>
+							<div class="figma-pack-window-intro">
+								<div>
+									<strong>Переопределение выделенной памяти</strong>
+									<p>Настройка выделения памяти отдельно для этой сборки.</p>
+								</div>
+								<span
+									class="figma-settings-switch on"
+									aria-label="Для этой сборки задана отдельная память"
+								/>
+							</div>
+							<label class="figma-pack-memory"
+								><small>512 MB</small
+								><input
+									v-model.number="manageMemory"
+									type="range"
+									min="512"
+									max="32768"
+									step="256"
+									:disabled="busy"
+								/><small>32.0 GB</small><output>{{ manageMemory }}</output></label
+							>
+						</section>
+						<section class="figma-pack-java-override" data-figma-node="3:530">
+							<strong>Переопределение расположения Java</strong
+							><label class="figma-pack-field"
+								><span>Путь Java для этой сборки</span
+								><input
+									v-model="manageJava"
+									:disabled="busy"
+									placeholder="Автоматический выбор Java" /></label
+							><button class="figma-pack-button" :disabled="busy" @click="pickManagedJava">
+								Выбрать Java вручную
+							</button>
+						</section>
+						<div class="figma-pack-unsupported" data-figma-node="3:588,3:629">
+							<strong>Аргументы Java и команды запуска</strong><span>Пока недоступно</span>
+						</div>
 						<button class="figma-pack-button red" :disabled="busy" @click="manageInstance">
 							Сохранить
 						</button>
-						<div class="figma-pack-unsupported">
-							<strong>Переопределение настроек окна</strong><span>Пока недоступно</span>
-						</div>
-						<div class="figma-pack-unsupported">
-							<strong>Аргументы Java и команды запуска</strong><span>Пока недоступно</span>
-						</div>
 					</div>
 				</div>
 				<div v-if="error" class="banner error figma-pack-error" role="alert">{{ error }}</div>

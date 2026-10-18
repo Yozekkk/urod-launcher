@@ -189,6 +189,8 @@ impl Engine {
 			manifest_version: None,
 			status: "created".into(),
 			memory_mb: request.memory_mb,
+			window_width: request.window_width,
+			window_height: request.window_height,
 			java_path: request.java_path,
 			directory: directory.to_string_lossy().into(),
 			icon: None,
@@ -224,6 +226,8 @@ impl Engine {
 		instance.loader = request.loader;
 		instance.loader_version = request.loader_version;
 		instance.memory_mb = request.memory_mb;
+		instance.window_width = request.window_width;
+		instance.window_height = request.window_height;
 		instance.java_path = request.java_path;
 		self.validate_instance_java(&instance).await?;
 		self.save_instance(&instance).await?;
@@ -253,14 +257,22 @@ impl Engine {
 	}
 }
 fn validate_create(r: &CreateInstance) -> Result<()> {
+	let dimensions_invalid = match (r.window_width, r.window_height) {
+		(None, None) => false,
+		(Some(width), Some(height)) => {
+			!(320..=7680).contains(&width) || !(240..=4320).contains(&height)
+		}
+		_ => true,
+	};
 	if r.name.trim().is_empty()
 		|| r.name.len() > 120
 		|| r.game_version.is_empty()
 		|| r.game_version.len() > 100
 		|| !(512..=65536).contains(&r.memory_mb)
+		|| dimensions_invalid
 	{
 		return Err(Error::Invalid(
-			"invalid instance name, version or memory limit".into(),
+			"invalid instance name, version, memory or window size".into(),
 		));
 	}
 	files::safe_relative(&r.game_version)?;

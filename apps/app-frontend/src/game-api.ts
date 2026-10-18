@@ -28,6 +28,8 @@ export type Instance = {
 	manifest_version: string | null
 	status: string
 	memory_mb: number
+	window_width: number | null
+	window_height: number | null
 	java_path: string | null
 	directory: string
 	icon?: string | null
@@ -40,6 +42,8 @@ export type CreateInstance = {
 	loader: Loader
 	loader_version: string | null
 	memory_mb: number
+	window_width?: number | null
+	window_height?: number | null
 	java_path: string | null
 }
 export type InstalledContent = {

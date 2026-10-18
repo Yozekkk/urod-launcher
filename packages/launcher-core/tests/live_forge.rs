@@ -20,6 +20,8 @@ async fn install_forge_1_21_1() {
 			loader: Loader::Forge,
 			loader_version: Some("52.1.14".into()),
 			memory_mb: 4096,
+			window_width: None,
+			window_height: None,
 			java_path: None,
 		})
 		.await

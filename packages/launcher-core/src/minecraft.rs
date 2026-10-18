@@ -628,6 +628,10 @@ impl Engine {
 		let _guard = self.mutation.lock().await;
 		self.ensure_stopped(instance_id).await?;
 		let mut instance = self.instance(instance_id).await?;
+		let window_size = instance
+			.window_width
+			.zip(instance.window_height)
+			.or(window_size);
 		if instance.status != "ready" {
 			return Err(Error::Invalid(
 				"install Minecraft before launching this instance".into(),

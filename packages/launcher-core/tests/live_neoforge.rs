@@ -20,6 +20,8 @@ async fn install_neoforge_21_1_250() {
 			loader: Loader::Neoforge,
 			loader_version: Some("21.1.250".into()),
 			memory_mb: 5120,
+			window_width: None,
+			window_height: None,
 			java_path: None,
 		})
 		.await

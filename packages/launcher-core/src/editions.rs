@@ -147,6 +147,8 @@ impl Engine {
 				loader: manifest.loader.kind,
 				loader_version: manifest.loader.version.clone(),
 				memory_mb: manifest.memory.recommended_mb,
+				window_width: None,
+				window_height: None,
 				java_path: None,
 			})
 			.await?;

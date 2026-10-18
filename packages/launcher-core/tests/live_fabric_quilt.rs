@@ -37,6 +37,8 @@ async fn install_and_launch_loader_1_21_1() {
 			loader,
 			loader_version: Some(version.clone()),
 			memory_mb: 4096,
+			window_width: None,
+			window_height: None,
 			java_path: None,
 		})
 		.await

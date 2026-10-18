@@ -65,6 +65,8 @@ In **Settings → Java locations**, specify separate executables for Java 21 and
 
 Global settings let you set Minecraft window width and height. Both values are validated before saving and passed to the game at launch; leave the fields empty to use the game's defaults. The selected pack's journal shows recent Minecraft output and launcher operations, with search and severity filters. In a narrow window, open it with **Журнал**. Fullscreen control, custom Java arguments, environment variables and launch commands are not available yet.
 
+In an individual pack's **Overrides** settings, you can enable its own window width and height. The pack values take priority over the global values; turning the switch off restores the global dimensions.
+
 ## Gorod Urodov
 
 UrodGame server address: `gorodurodov.ru`. A dedicated community pack will appear once a real manifest with verifiable files and versions is published. Until then, users can create ordinary instances and use the launcher without community registration. [Official website](https://gorodurodov.ru).

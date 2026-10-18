@@ -252,6 +252,10 @@
 .figma-pack-body::-webkit-scrollbar {
 	display: none;
 }
+.figma-pack-body.figma-pack-body-overrides {
+	left: 279px;
+	right: 52px;
+}
 .figma-pack-main,
 .figma-pack-install,
 .figma-pack-overrides,
@@ -368,20 +372,86 @@
 .figma-pack-overrides .figma-pack-field input {
 	width: min(505px, 100%);
 }
+.figma-pack-window-section,
+.figma-pack-java-override {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+.figma-pack-overrides {
+	gap: 180px;
+}
+.figma-pack-window-intro {
+	width: 100%;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 14px;
+}
+.figma-pack-window-intro strong,
+.figma-pack-java-override > strong {
+	color: var(--figma-text);
+	font:
+		600 16px/1.2 Geologica,
+		sans-serif;
+}
+.figma-pack-window-intro p {
+	max-width: 396px;
+	margin: 2px 0 0;
+	color: var(--figma-muted);
+	font:
+		400 13px/1.2 Geologica,
+		sans-serif;
+}
+.figma-pack-window-intro .figma-settings-switch {
+	flex: 0 0 44px;
+	width: 44px;
+	margin-top: 14px;
+}
+.figma-pack-window-section > .figma-settings-window-row {
+	min-height: 50px;
+	padding-top: 0;
+}
+.figma-pack-window-section > .figma-settings-window-row + .figma-settings-window-row,
+.figma-pack-window-section > .figma-settings-window-row + .figma-pack-window-intro {
+	margin-top: -14px;
+}
+.figma-pack-window-section .figma-settings-window-row input:disabled {
+	color: var(--figma-muted);
+}
+.figma-pack-window-section .figma-pack-memory {
+	margin-top: -4px;
+}
 .figma-pack-memory {
 	width: 100%;
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 19.5px;
 }
 .figma-pack-memory input {
 	flex: 1;
+	min-width: 60px;
 	accent-color: var(--figma-accent);
+}
+.figma-pack-memory small {
+	flex: 0 0 auto;
+	color: var(--figma-muted);
+	font:
+		400 13px Geologica,
+		sans-serif;
 }
 .figma-pack-memory output,
 .figma-pack-unsupported span {
 	color: var(--figma-muted);
 	font-size: 13px;
+}
+.figma-pack-memory output {
+	min-width: 68px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: var(--figma-border);
+	text-align: center;
 }
 .figma-pack-unsupported {
 	display: flex;

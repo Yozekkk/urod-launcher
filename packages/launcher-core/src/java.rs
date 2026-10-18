@@ -691,6 +691,8 @@ mod tests {
 				loader: crate::Loader::Vanilla,
 				loader_version: None,
 				memory_mb: 2048,
+				window_width: None,
+				window_height: None,
 				java_path: None,
 			})
 			.await
@@ -908,6 +910,8 @@ mod live_pipeline_tests {
 					loader: crate::Loader::Vanilla,
 					loader_version: None,
 					memory_mb: 2048,
+					window_width: None,
+					window_height: None,
 					java_path: None,
 				})
 				.await
