@@ -9,6 +9,7 @@
 - Fixed direct links to installed shaders and resource packs so their Modrinth type is recovered from project metadata even when the URL has no type parameter.
 - Added Figma-based global and pack settings windows. Global RAM, per-pack RAM, renaming and duplication were exercised in the native app. Unsupported sync, repair, window and command controls are explicitly unavailable.
 - Matched the resource settings layout from Figma `3:199` against a native Tauri capture. The cache and extended report controls are disabled until backend operations exist.
+- Added separate, validated Java 21 and 25 paths from Figma `3:104`, with runtime detection, native path selection and launch-time selection. Per-pack Java overrides retain priority; a global default no longer becomes a saved pack override during launch.
 - Verified live install, start and stop for Minecraft 1.21.1 with Vanilla, Fabric, Quilt, Forge and NeoForge; repeated the Vanilla launch.
 - Patched the transitive `source-map-js` dependency to 1.2.2 after a production dependency audit found GHSA-68fv-2mgg-jv7q.
 - Replaced bundled desktop icons with rasterizations of the original Figma launcher mark.

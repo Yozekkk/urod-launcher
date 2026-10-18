@@ -25,7 +25,7 @@ This image was captured from the running Tauri app at 1280×720. The empty libra
 
 - Microsoft Minecraft, Ely.by and Offline accounts, with multiple profiles.
 - Separate Vanilla, Fabric, Forge, NeoForge and Quilt instances; pack import and export, including `.mrpack`.
-- Public Modrinth mod and modpack catalog; Java and memory controls, downloads and game logs. Custom JVM arguments are not yet available in the interface.
+- Public Modrinth mod, shader, resource pack and modpack catalog; Java and memory controls, downloads and game logs. Custom JVM arguments are not yet available in the interface.
 - Download integrity checks, managed file updates and rollback where supported by the inherited engine.
 - Persistent local PNG skin library with 3D preview and Classic/Slim variants. Applying a skin to a Microsoft account sends it to the official Minecraft Services API from the native process and checks the profile afterwards. This still needs verification with a real licensed account.
 - 40 customization controls for themes, colors, background, motion and layout, with presets and JSON import/export. The language control changes the document language and primary navigation; a complete English interface translation remains to be done.
@@ -56,6 +56,12 @@ The Arch package can also be built from source with the [PKGBUILD](packaging/arc
 Microsoft sign-in uses OAuth, Xbox/XSTS and Minecraft Authentication. Ely.by uses its supported authentication flow. An Offline profile is useful in single-player and on servers that allow it; it does not grant a Minecraft license.
 
 In **Skins**, add a 64×64 or 64×32 PNG (up to 1 MB), choose Classic/Steve or Slim/Alex, select an account, then press **Apply**. For Microsoft accounts the native process uploads the PNG to Minecraft Services and verifies the profile response. For Offline accounts, the skin appears locally in the launcher. Uploading to Ely.by from the launcher is not supported yet, and the interface says so. Tokens are not sent to Vue.
+
+## Packs and Java
+
+In **Library**, create a pack, choose its Minecraft version and loader, install the game, and select an account before playing. You can browse Modrinth mods, shaders and resource packs for the selected pack, then search, disable, update or remove installed files. `.mrpack` import and export remain available in the pack's additional actions.
+
+In **Settings → Java locations**, specify separate executables for Java 21 and Java 25 or find installed runtimes with **Detect**. The launcher verifies an executable's major version before saving it. With no configured path, the engine finds a compatible Java and downloads a verified runtime during launch if needed. A pack-specific Java path takes priority. Installing a recommended runtime directly from this settings panel is not yet available.
 
 ## Gorod Urodov
 
