@@ -34,6 +34,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y build-essential pkg-config libssl-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf xdg-utils
       - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod
       - run: pnpm prepr:frontend:app
       - run: pnpm build
       - run: node --test scripts/release-assets.test.mjs

@@ -1,0 +1,13 @@
+# Security review in progress
+
+Date: 2026-10-18. This is a repository review and deterministic test record, not a penetration-test certificate.
+
+- `apps/app/capabilities/main.json` grants the main window core permissions and autostart actions. It does not grant broad filesystem, shell, HTTP or updater plugin capabilities. The sign-in window has no native IPC capability.
+- `apps/app/tauri.conf.json` sets a restrictive CSP; only self, IPC, data images, and Modrinth CDN images are permitted for the relevant resource types. Inline styles remain enabled for the current UI.
+- Native skin import limits the PNG to 1 MiB, decodes it with image allocation limits, requires 64×32 or 64×64 pixels, and confines the filename to a parsed UUID under the library directory. The skin index is persisted through a temporary file and rename.
+- Microsoft skin upload sends the token from the native account session and checks the returned profile id, active variant, and texture host before reporting success. The user interface displays a native error when the service rejects the operation. Live upload has not been exercised with an owner account.
+- GitHub updates require a matching size and SHA-256 and Tauri signature verification. The UrodLauncher public key and endpoint are unset, so automatic updates stay disabled. No inherited NCreate key is used.
+- The existing Minecraft engine has deterministic tests for path confinement, hash checks, cancellation, rollback, modpack import traversal, Java runtime validation, and process lifecycle. These do not replace live installer and launch checks.
+- `pnpm audit --audit-level high --prod` initially found [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q) in transitive `source-map-js` 1.2.1. The workspace now overrides it to patched 1.2.2; a fresh `pnpm audit --prod` reports no known production advisories. This is a point-in-time registry result, not a guarantee against undisclosed flaws.
+
+Open review items: audit every Tauri command argument after the remaining UI work; exercise path and network failures against real packages; verify operating-system keyring behavior on Windows and Linux; run dependency and license scans for the final lockfiles; inspect install/uninstall and signed update recovery. Do not publish a Stable claim while these are open.
