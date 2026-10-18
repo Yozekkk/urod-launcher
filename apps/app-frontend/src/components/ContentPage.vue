@@ -31,7 +31,7 @@ const query = ref('')
 const category = ref('')
 const gameVersion = ref('')
 const loader = ref('')
-const sort = ref('relevance')
+const sort = ref('newest')
 const offset = ref(0)
 const limit = 20
 const result = ref<SearchResult>({ hits: [], offset: 0, total_hits: 0 })
@@ -62,6 +62,12 @@ function resetFilters() {
 	category.value = ''
 	loader.value = ''
 	gameVersion.value = ''
+	void search(true)
+}
+function applyInstanceFilter() {
+	const instance = targetInstance.value
+	gameVersion.value = instance?.game_version || ''
+	loader.value = instance?.loader === 'vanilla' ? '' : instance?.loader || ''
 	void search(true)
 }
 const dates = new Intl.DateTimeFormat('ru', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -97,7 +103,7 @@ function syncFilters() {
 	category.value = params.get('category') || ''
 	gameVersion.value = params.get('version') || ''
 	loader.value = params.get('loader') || ''
-	sort.value = params.get('sort') || 'relevance'
+	sort.value = params.get('sort') || 'newest'
 	offset.value = Math.max(0, Number.parseInt(params.get('offset') || '0', 10) || 0)
 	if (params.get('instance')) target.value = params.get('instance') || ''
 }
@@ -108,7 +114,7 @@ function filterHash(detail: string | null = null) {
 	if (category.value) params.set('category', category.value)
 	if (gameVersion.value) params.set('version', gameVersion.value)
 	if (loader.value) params.set('loader', loader.value)
-	if (sort.value !== 'relevance') params.set('sort', sort.value)
+	if (sort.value !== 'newest') params.set('sort', sort.value)
 	if (offset.value) params.set('offset', String(offset.value))
 	if (target.value) params.set('instance', target.value)
 	return `#/content${detail ? `/${detail}` : ''}${params.size ? `?${params}` : ''}`
@@ -277,9 +283,8 @@ onUnmounted(() => {
 	<section class="page content-page">
 		<div class="page-heading">
 			<div>
-				<p class="eyebrow">БОЛЬШЕ ВОЗМОЖНОСТЕЙ ДЛЯ ТВОЕГО МИРА</p>
-				<h1>{{ detail && project ? project.title : 'Контент' }}</h1>
-				<p class="page-intro">
+				<h1>{{ detail && project ? project.title : 'Галерея' }}</h1>
+				<p v-if="detail" class="page-intro">
 					{{
 						detail
 							? 'Выбери совместимую версию и сборку для установки.'
@@ -287,9 +292,25 @@ onUnmounted(() => {
 					}}
 				</p>
 			</div>
-			<a class="button secondary" href="#/library"
+			<a v-if="detail" class="button secondary" href="#/library"
 				><AppIcon name="folder" :size="18" />Моя библиотека</a
 			>
+		</div>
+		<div v-if="!detail" class="figma-gallery-controls">
+			<label for="gallery-instance">Сборка</label>
+			<select id="gallery-instance" v-model="target" @change="applyInstanceFilter">
+				<option value="">Все</option>
+				<option v-for="instance in instances" :key="instance.id" :value="instance.id">
+					{{ instance.name }}
+				</option>
+			</select>
+			<label for="gallery-sort">Сортировка</label>
+			<select id="gallery-sort" v-model="sort" @change="search(true)">
+				<option value="newest">Сначала новые</option>
+				<option value="relevance">По релевантности</option>
+				<option value="downloads">По загрузкам</option>
+				<option value="updated">По обновлению</option>
+			</select>
 		</div>
 		<div
 			v-if="(error || operations.error.value) && !installDialog?.open"
@@ -319,73 +340,67 @@ onUnmounted(() => {
 			@cancel="operations.cancel(job.id)"
 		/>
 		<template v-if="!detail">
-			<div class="content-tabs" role="tablist" aria-label="Тип контента">
-				<button
-					role="tab"
-					:aria-selected="kind === 'mod'"
-					:class="{ active: kind === 'mod' }"
-					@click="setKind('mod')"
-				>
-					Моды</button
-				><button
-					role="tab"
-					:aria-selected="kind === 'modpack'"
-					:class="{ active: kind === 'modpack' }"
-					@click="setKind('modpack')"
-				>
-					Модпаки</button
-				><span>Данные каталога · Modrinth</span>
-			</div>
-			<form class="content-search" @submit.prevent="search(true)">
-				<label class="sr-only" for="content-query">Поиск контента</label
-				><input
-					id="content-query"
-					v-model="query"
-					name="content-query"
-					autocomplete="off"
-					:placeholder="
-						kind === 'mod'
-							? 'Найти мод: оптимизация, механизмы, новые миры…'
-							: 'Найти готовую сборку…'
-					"
-				/><button class="button primary"><AppIcon name="arrow" :size="18" />Найти</button>
-			</form>
-			<div class="search-filters">
-				<div>
-					<label for="content-version">Minecraft</label
-					><select id="content-version" v-model="gameVersion" @change="search(true)">
-						<option value="">Все версии</option>
-						<option v-for="version in gameVersions" :key="version.id" :value="version.id">
-							{{ version.id }}
-						</option>
-					</select>
+			<details class="gallery-advanced">
+				<summary aria-label="Поиск и фильтры" title="Поиск и фильтры">Фильтры</summary>
+				<div class="content-tabs" role="tablist" aria-label="Тип контента">
+					<button
+						role="tab"
+						:aria-selected="kind === 'mod'"
+						:class="{ active: kind === 'mod' }"
+						@click="setKind('mod')"
+					>
+						Моды</button
+					><button
+						role="tab"
+						:aria-selected="kind === 'modpack'"
+						:class="{ active: kind === 'modpack' }"
+						@click="setKind('modpack')"
+					>
+						Модпаки</button
+					><span>Данные каталога · Modrinth</span>
 				</div>
-				<div>
-					<label for="content-loader">Загрузчик</label
-					><select id="content-loader" v-model="loader" @change="search(true)">
-						<option value="">Любой</option>
-						<option v-for="item in loaders" :key="item" :value="item">
-							{{ loaderNames[item] }}
-						</option>
-					</select>
+				<form class="content-search" @submit.prevent="search(true)">
+					<label class="sr-only" for="content-query">Поиск контента</label
+					><input
+						id="content-query"
+						v-model="query"
+						name="content-query"
+						autocomplete="off"
+						:placeholder="
+							kind === 'mod'
+								? 'Найти мод: оптимизация, механизмы, новые миры…'
+								: 'Найти готовую сборку…'
+						"
+					/><button class="button primary"><AppIcon name="arrow" :size="18" />Найти</button>
+				</form>
+				<div class="search-filters">
+					<div>
+						<label for="content-version">Minecraft</label
+						><select id="content-version" v-model="gameVersion" @change="search(true)">
+							<option value="">Все версии</option>
+							<option v-for="version in gameVersions" :key="version.id" :value="version.id">
+								{{ version.id }}
+							</option>
+						</select>
+					</div>
+					<div>
+						<label for="content-loader">Загрузчик</label
+						><select id="content-loader" v-model="loader" @change="search(true)">
+							<option value="">Любой</option>
+							<option v-for="item in loaders" :key="item" :value="item">
+								{{ loaderNames[item] }}
+							</option>
+						</select>
+					</div>
+					<div>
+						<label for="content-category">Категория</label
+						><select id="content-category" v-model="category" @change="search(true)">
+							<option value="">Все категории</option>
+							<option v-for="item in categories" :key="item" :value="item">{{ item }}</option>
+						</select>
+					</div>
 				</div>
-				<div>
-					<label for="content-category">Категория</label
-					><select id="content-category" v-model="category" @change="search(true)">
-						<option value="">Все категории</option>
-						<option v-for="item in categories" :key="item" :value="item">{{ item }}</option>
-					</select>
-				</div>
-				<div>
-					<label for="content-sort">Сортировка</label
-					><select id="content-sort" v-model="sort" @change="search(true)">
-						<option value="relevance">По релевантности</option>
-						<option value="downloads">По загрузкам</option>
-						<option value="updated">По обновлению</option>
-						<option value="newest">Сначала новые</option>
-					</select>
-				</div>
-			</div>
+			</details>
 			<div class="search-result-heading">
 				<span>{{ loading ? 'Ищем проекты…' : `Найдено: ${formatCount(result.total_hits)}` }}</span
 				><span>{{
@@ -421,9 +436,8 @@ onUnmounted(() => {
 								width="54"
 								height="54"
 								alt=""
-								loading="lazy" /><span v-else class="project-icon-fallback"
-								><AppIcon name="game" :size="24" /></span
-						></a>
+								loading="lazy"
+						/></a>
 						<div>
 							<a class="project-title" :href="filterHash(hit.project_id)">{{ hit.title }}</a>
 							<p>Автор: {{ hit.author }}</p>

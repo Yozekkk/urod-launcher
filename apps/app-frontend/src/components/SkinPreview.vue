@@ -9,7 +9,7 @@ onMounted(() => {
 	if (!canvas.value) return
 	try {
 		viewer = new SkinViewer({ canvas: canvas.value, width: 260, height: 320 })
-		viewer.autoRotate = !props.reducedMotion
+		viewer.autoRotate = false
 		viewer.autoRotateSpeed = 0.35
 		viewer.controls.enableZoom = false
 		viewer.controls.enablePan = false
@@ -28,12 +28,6 @@ watch(
 		}
 	},
 )
-watch(
-	() => props.reducedMotion,
-	(value) => {
-		if (viewer) viewer.autoRotate = !value
-	},
-)
 onUnmounted(() => {
 	viewer?.dispose()
 	viewer = null
@@ -50,9 +44,9 @@ onUnmounted(() => {
 	display: grid;
 	place-items: center;
 	min-height: 340px;
-	background: radial-gradient(circle at 50% 35%, #96323e44, transparent 65%), #15171b;
-	border: 1px solid #ffffff14;
-	border-radius: 20px;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
 }
 .skin-preview canvas {
 	max-width: 100%;

@@ -269,10 +269,11 @@ async fn skin_library_rename(
 	state: tauri::State<'_, AppState>,
 	id: String,
 	name: String,
+	slim: Option<bool>,
 ) -> Result<Vec<skin_library::SavedSkin>> {
 	local(&window)?;
 	let _gate = state.skin_gate.lock().await;
-	skin_library::rename(state.store().await?, &id, &name).await
+	skin_library::rename(state.store().await?, &id, &name, slim).await
 }
 #[tauri::command]
 async fn skin_library_remove(

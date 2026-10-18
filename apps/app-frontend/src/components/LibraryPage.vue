@@ -33,6 +33,8 @@ const loading = ref(true)
 const busy = ref(false)
 const error = ref('')
 const notice = ref('')
+const librarySearch = ref('')
+const librarySort = ref<'name' | 'recent'>('name')
 const createDialog = ref<HTMLDialogElement | null>(null)
 const manageDialog = ref<HTMLDialogElement | null>(null)
 const updateDialog = ref<HTMLDialogElement | null>(null)
@@ -75,6 +77,7 @@ const manageName = ref('')
 const manageMemory = ref(4096)
 const manageJava = ref('')
 const manageAction = ref<'rename' | 'duplicate' | 'delete' | 'configure'>('rename')
+const packSettingsTab = ref<'main' | 'installation' | 'overrides'>('main')
 const removingMod = ref<InstalledContent | null>(null)
 const selectedUpdateIds = ref<string[]>([])
 const modFilter = ref('')
@@ -93,9 +96,15 @@ const visibleMods = computed(() =>
 	mods.value.filter((mod) => mod.name.toLowerCase().includes(modFilter.value.toLowerCase())),
 )
 const libraryInstances = computed(() =>
-	[...instances.value].sort(
-		(a, b) => Number(b.kind === 'official') - Number(a.kind === 'official'),
-	),
+	[...instances.value]
+		.filter((instance) =>
+			instance.name.toLocaleLowerCase().includes(librarySearch.value.toLocaleLowerCase()),
+		)
+		.sort((a, b) =>
+			librarySort.value === 'recent'
+				? (b.last_played || 0) - (a.last_played || 0)
+				: a.name.localeCompare(b.name, 'ru'),
+		),
 )
 const localJobs = computed(() =>
 	props.operations.active.value.filter(
@@ -308,8 +317,14 @@ function showManage(instance: Instance, action: 'rename' | 'duplicate' | 'delete
 	manageMemory.value = instance.memory_mb
 	manageJava.value = instance.java_path || ''
 	manageAction.value = action
+	packSettingsTab.value = 'main'
 	error.value = ''
-	manageDialog.value?.showModal()
+	if (!manageDialog.value?.open) manageDialog.value?.showModal()
+}
+async function saveManagedName() {
+	if (!managed.value || manageName.value.trim() === managed.value.name) return
+	manageAction.value = 'rename'
+	await manageInstance()
 }
 async function pickManagedJava() {
 	if (!managed.value) return
@@ -498,12 +513,10 @@ onUnmounted(() => {
 	<section class="page library-page">
 		<div class="page-heading">
 			<div>
-				<p class="eyebrow">ТВОИ МИРЫ. ТВОИ СБОРКИ.</p>
 				<h1>
-					{{ current ? current.name : 'Библиотека'
-					}}<span v-if="!current" class="heading-count">{{ libraryInstances.length }}</span>
+					{{ current ? current.name : 'Библиотека' }}
 				</h1>
-				<p class="page-intro">
+				<p v-if="current" class="page-intro">
 					{{
 						current
 							? `Minecraft ${current.game_version} · ${loaderNames[current.loader]}${current.loader_version ? ` ${current.loader_version}` : ''}`
@@ -512,12 +525,25 @@ onUnmounted(() => {
 				</p>
 			</div>
 			<div class="heading-actions">
-				<button class="button secondary" :disabled="busy" @click="importPack">
-					<AppIcon name="folder" :size="18" />Импорт .mrpack</button
-				><button class="button primary" :disabled="busy" @click="showCreate">
-					<AppIcon name="plus" :size="18" />Создать сборку
+				<button
+					id="create-instance-button"
+					class="button primary"
+					:disabled="busy"
+					@click="showCreate"
+				>
+					+ Новая Сборка
 				</button>
 			</div>
+		</div>
+		<div v-if="!current" class="figma-library-toolbar">
+			<input v-model="librarySearch" type="search" aria-label="Поиск сборок" placeholder="Поиск" />
+			<select v-model="librarySort" aria-label="Сортировка сборок">
+				<option value="name">Название</option>
+				<option value="recent">Последний запуск</option>
+			</select>
+			<button class="figma-library-import" :disabled="busy" @click="importPack">
+				Импорт .mrpack
+			</button>
 		</div>
 		<div v-if="error || operations.error.value" class="banner error inline-banner" role="alert">
 			{{ error || operations.error.value
@@ -802,35 +828,19 @@ onUnmounted(() => {
 			<a href="#/library" class="button secondary">Открыть библиотеку</a>
 		</div>
 		<div v-else-if="!libraryInstances.length" class="empty-state library-empty">
-			<div class="library-empty-art"><AppIcon name="folder" :size="48" /><span>+</span></div>
-			<h2>Первый мир начинается с тебя</h2>
-			<p>Создай свою сборку. Сборка сообщества появится после публикации manifest.</p>
-			<button class="button primary" @click="showCreate">
-				<AppIcon name="plus" />Создать свою сборку</button
-			><button class="button subtle" @click="importPack">Импортировать .mrpack</button>
+			<p>{{ librarySearch ? 'Сборки не найдены' : 'Сборок пока нет' }}</p>
 		</div>
 		<div v-else class="instance-grid">
 			<article v-for="instance in libraryInstances" :key="instance.id" class="instance-card">
 				<a :href="`#/library/${instance.id}`" class="instance-card-link"
 					><div class="instance-cover">
-						<img
-							v-if="instance.icon || instance.kind === 'official'"
-							:src="instance.icon || '/brand/logo.svg'"
-							width="80"
-							height="80"
-							alt=""
-						/><AppIcon v-else name="game" :size="45" /><span class="loader-chip">{{
-							loaderNames[instance.loader]
-						}}</span>
+						<img v-if="instance.icon" :src="instance.icon" width="80" height="80" alt="" />
 					</div>
 					<span v-if="instance.kind === 'official'" class="official-library-badge"
 						><AppIcon name="check" :size="12" />Сообщество</span
 					>
 					<h2>{{ instance.name }}</h2>
-					<p>
-						<span class="instance-version">Minecraft {{ instance.game_version }}</span
-						><span class="instance-mod-count"> · {{ modCountLabel(instance.mod_count ?? 0) }}</span>
-					</p>
+					<p>{{ loaderNames[instance.loader] }} {{ instance.game_version }}</p>
 					<small>{{ lastPlayed(instance) }}</small></a
 				>
 				<div class="instance-card-bottom">
@@ -1062,94 +1072,247 @@ onUnmounted(() => {
 				</button>
 			</form>
 		</dialog>
-		<dialog ref="manageDialog" class="modal" aria-labelledby="manage-title">
-			<button
-				class="modal-close icon-button"
-				aria-label="Закрыть окно"
-				:disabled="busy"
-				@click="manageDialog?.close()"
+		<dialog
+			ref="manageDialog"
+			class="modal"
+			:class="{ 'figma-pack-settings-dialog': manageAction === 'configure' }"
+			aria-labelledby="manage-title"
+		>
+			<div
+				v-if="manageAction === 'configure' && managed"
+				class="figma-pack-settings"
+				data-figma-node="3:11"
 			>
-				<AppIcon name="close" />
-			</button>
-			<h2 id="manage-title">
-				{{
-					manageAction === 'delete'
-						? 'Удалить сборку?'
-						: manageAction === 'duplicate'
-							? 'Создать копию'
-							: manageAction === 'configure'
-								? 'Параметры сборки'
-								: 'Название сборки'
-				}}
-			</h2>
-			<p class="modal-intro">
-				{{
-					manageAction === 'delete'
-						? `«${managed?.name}» исчезнет из библиотеки. Файлы сборки будут перемещены в локальную корзину лаунчера.`
-						: manageAction === 'configure'
-							? 'RAM и Java используются только этой сборкой. Версия Minecraft и загрузчик сохраняются.'
-							: 'Имя помогает найти свой мир в библиотеке.'
-				}}
-			</p>
-			<form @submit.prevent="manageInstance">
-				<template v-if="manageAction === 'configure'"
-					><label for="instance-memory"
-						>Оперативная память · {{ (manageMemory / 1024).toFixed(1) }} ГБ</label
-					><input
-						id="instance-memory"
-						v-model.number="manageMemory"
-						type="range"
-						min="1024"
-						max="32768"
-						step="512"
-						:disabled="busy"
-					/><label for="instance-java" class="field-label-spaced"
-						>Путь к исполняемому файлу Java</label
-					><input
-						id="instance-java"
-						v-model="manageJava"
-						name="instance-java"
-						autocomplete="off"
-						spellcheck="false"
-						placeholder="Автоматический выбор установленной Java"
-						:disabled="busy"
-					/>
-					<button type="button" class="button secondary" @click="pickManagedJava">
-						Выбрать Java вручную
+				<header class="figma-pack-header">
+					<img class="figma-pack-mark" :src="managed.icon || '/figma/8aecb.png'" alt="" />
+					<span>{{ managed.name }}</span
+					><b id="manage-title">Настройки</b>
+					<button aria-label="Закрыть окно" :disabled="busy" @click="manageDialog?.close()">
+						<img src="/figma/20469.svg" alt="" />
 					</button>
-					<p class="field-help">
-						Укажи путь к java, например /usr/lib/jvm/java-21-openjdk/bin/java. Лаунчер проверит
-						версию перед установкой и запуском.
-					</p></template
-				>
-				<template v-else-if="manageAction !== 'delete'"
-					><label for="manage-name">Название</label
-					><input
-						id="manage-name"
-						v-model="manageName"
-						name="manage-name"
-						maxlength="80"
-						autocomplete="off"
-						required
-				/></template>
-				<div v-if="error" class="banner error" role="alert">{{ error }}</div>
-				<div class="dialog-actions">
+				</header>
+				<nav class="figma-pack-nav" aria-label="Разделы настроек сборки">
 					<button
-						type="button"
-						class="button subtle"
-						:disabled="busy"
-						@click="manageDialog?.close()"
+						:class="{ selected: packSettingsTab === 'main' }"
+						@click="packSettingsTab = 'main'"
 					>
-						Отмена</button
-					><button
-						class="button"
-						:class="manageAction === 'delete' ? 'danger' : 'primary'"
-						:disabled="busy"
-					>
-						{{ busy ? 'Сохраняем…' : manageAction === 'delete' ? 'Удалить сборку' : 'Сохранить' }}
+						<img src="/figma/4b87e.svg" alt="" />Основные
 					</button>
+					<button
+						:class="{ selected: packSettingsTab === 'installation' }"
+						@click="packSettingsTab = 'installation'"
+					>
+						<img src="/figma/2de22.svg" alt="" />Установка
+					</button>
+					<button
+						:class="{ selected: packSettingsTab === 'overrides' }"
+						@click="packSettingsTab = 'overrides'"
+					>
+						<img src="/figma/f2524.svg" alt="" />Переопределения
+					</button>
+				</nav>
+				<div class="figma-pack-body">
+					<div v-if="packSettingsTab === 'main'" class="figma-pack-main" data-figma-node="3:11">
+						<label class="figma-pack-field"
+							><strong>Название</strong><input v-model="manageName" maxlength="80" :disabled="busy"
+						/></label>
+						<button
+							v-if="manageName.trim() !== managed.name"
+							class="figma-pack-button red"
+							:disabled="busy || !manageName.trim()"
+							@click="saveManagedName"
+						>
+							Сохранить название
+						</button>
+						<div class="figma-pack-section">
+							<strong>Создание копии сборки</strong
+							><button
+								class="figma-pack-button"
+								:disabled="busy"
+								@click="showManage(managed, 'duplicate')"
+							>
+								<img src="/figma/165b7.svg" alt="" />Создать копию
+							</button>
+							<p>Создаёт копию сборки, включая миры, настройки, моды и другой контент.</p>
+						</div>
+						<div class="figma-pack-section">
+							<strong>Удаление сборки</strong
+							><button
+								class="figma-pack-button red"
+								:disabled="busy"
+								@click="showManage(managed, 'delete')"
+							>
+								<img src="/figma/94db2.svg" alt="" />Удалить сборку
+							</button>
+							<p>Файлы сборки будут перемещены в локальную корзину лаунчера.</p>
+						</div>
+						<div class="figma-pack-icon">
+							<strong>Иконка</strong>
+							<div><img v-if="managed.icon" :src="managed.icon" alt="" /></div>
+						</div>
+					</div>
+					<div
+						v-else-if="packSettingsTab === 'installation'"
+						class="figma-pack-install"
+						data-figma-node="3:422"
+					>
+						<strong>Сведения об установке</strong>
+						<div class="figma-pack-install-box">
+							<span
+								>Платформа<strong>{{ loaderNames[managed.loader] }}</strong></span
+							><span
+								>Версия игры<strong>{{ managed.game_version }}</strong></span
+							><span
+								>Версия {{ loaderNames[managed.loader]
+								}}<strong>{{ managed.loader_version || '—' }}</strong></span
+							>
+						</div>
+						<button
+							class="figma-pack-button red"
+							disabled
+							title="Смена установки с сохранением контента пока не поддерживается"
+						>
+							Изменить — недоступно
+						</button>
+						<p>
+							Не рекомендуется изменять установку после добавления контента. Это может привести к
+							ошибкам.
+						</p>
+						<strong>Исправление сборки</strong>
+						<button
+							class="figma-pack-button"
+							disabled
+							title="Безопасное исправление установленной сборки пока не поддерживается"
+						>
+							Исправить — недоступно
+						</button>
+						<p>
+							Переустановка зависимостей без затрагивания пользовательского контента требует
+							отдельной проверки.
+						</p>
+					</div>
+					<div v-else class="figma-pack-overrides" data-figma-node="3:648,3:463,3:530,3:588,3:629">
+						<strong>Переопределение расположения Java</strong>
+						<label class="figma-pack-field"
+							><span>Путь Java для этой сборки</span
+							><input v-model="manageJava" :disabled="busy" placeholder="Автоматический выбор Java"
+						/></label>
+						<button class="figma-pack-button" :disabled="busy" @click="pickManagedJava">
+							Выбрать Java вручную
+						</button>
+						<strong>Переопределение выделенной памяти</strong>
+						<label class="figma-pack-memory"
+							><input
+								v-model.number="manageMemory"
+								type="range"
+								min="512"
+								max="32768"
+								step="256"
+								:disabled="busy"
+							/><output>{{ manageMemory }} МБ</output></label
+						>
+						<button class="figma-pack-button red" :disabled="busy" @click="manageInstance">
+							Сохранить
+						</button>
+						<div class="figma-pack-unsupported">
+							<strong>Переопределение настроек окна</strong><span>Пока недоступно</span>
+						</div>
+						<div class="figma-pack-unsupported">
+							<strong>Аргументы Java и команды запуска</strong><span>Пока недоступно</span>
+						</div>
+					</div>
 				</div>
-			</form>
+				<div v-if="error" class="banner error figma-pack-error" role="alert">{{ error }}</div>
+			</div>
+			<template v-else>
+				<button
+					class="modal-close icon-button"
+					aria-label="Закрыть окно"
+					:disabled="busy"
+					@click="manageDialog?.close()"
+				>
+					<AppIcon name="close" />
+				</button>
+				<h2 id="manage-title">
+					{{
+						manageAction === 'delete'
+							? 'Удалить сборку?'
+							: manageAction === 'duplicate'
+								? 'Создать копию'
+								: manageAction === 'configure'
+									? 'Параметры сборки'
+									: 'Название сборки'
+					}}
+				</h2>
+				<p class="modal-intro">
+					{{
+						manageAction === 'delete'
+							? `«${managed?.name}» исчезнет из библиотеки. Файлы сборки будут перемещены в локальную корзину лаунчера.`
+							: manageAction === 'configure'
+								? 'RAM и Java используются только этой сборкой. Версия Minecraft и загрузчик сохраняются.'
+								: 'Имя помогает найти свой мир в библиотеке.'
+					}}
+				</p>
+				<form @submit.prevent="manageInstance">
+					<template v-if="manageAction === 'configure'"
+						><label for="instance-memory"
+							>Оперативная память · {{ (manageMemory / 1024).toFixed(1) }} ГБ</label
+						><input
+							id="instance-memory"
+							v-model.number="manageMemory"
+							type="range"
+							min="1024"
+							max="32768"
+							step="512"
+							:disabled="busy"
+						/><label for="instance-java" class="field-label-spaced"
+							>Путь к исполняемому файлу Java</label
+						><input
+							id="instance-java"
+							v-model="manageJava"
+							name="instance-java"
+							autocomplete="off"
+							spellcheck="false"
+							placeholder="Автоматический выбор установленной Java"
+							:disabled="busy"
+						/>
+						<button type="button" class="button secondary" @click="pickManagedJava">
+							Выбрать Java вручную
+						</button>
+						<p class="field-help">
+							Укажи путь к java, например /usr/lib/jvm/java-21-openjdk/bin/java. Лаунчер проверит
+							версию перед установкой и запуском.
+						</p></template
+					>
+					<template v-else-if="manageAction !== 'delete'"
+						><label for="manage-name">Название</label
+						><input
+							id="manage-name"
+							v-model="manageName"
+							name="manage-name"
+							maxlength="80"
+							autocomplete="off"
+							required
+					/></template>
+					<div v-if="error" class="banner error" role="alert">{{ error }}</div>
+					<div class="dialog-actions">
+						<button
+							type="button"
+							class="button subtle"
+							:disabled="busy"
+							@click="manageDialog?.close()"
+						>
+							Отмена</button
+						><button
+							class="button"
+							:class="manageAction === 'delete' ? 'danger' : 'primary'"
+							:disabled="busy"
+						>
+							{{ busy ? 'Сохраняем…' : manageAction === 'delete' ? 'Удалить сборку' : 'Сохранить' }}
+						</button>
+					</div>
+				</form>
+			</template>
 		</dialog>
 		<dialog ref="updateDialog" class="modal update-dialog" aria-labelledby="update-title">
 			<button

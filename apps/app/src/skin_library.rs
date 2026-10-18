@@ -131,7 +131,12 @@ pub async fn save(store: &Store, name: &str, slim: bool, data: &str) -> Result<V
 	}
 	list(store).await
 }
-pub async fn rename(store: &Store, id: &str, name: &str) -> Result<Vec<SavedSkin>> {
+pub async fn rename(
+	store: &Store,
+	id: &str,
+	name: &str,
+	slim: Option<bool>,
+) -> Result<Vec<SavedSkin>> {
 	let name = valid_name(name)?;
 	let mut skins = index(store).await?;
 	let item = skins
@@ -139,6 +144,9 @@ pub async fn rename(store: &Store, id: &str, name: &str) -> Result<Vec<SavedSkin
 		.find(|item| item.id == id)
 		.ok_or("Скин не найден")?;
 	item.name = name;
+	if let Some(slim) = slim {
+		item.slim = slim;
+	}
 	persist(store, &skins).await?;
 	list(store).await
 }
@@ -382,6 +390,11 @@ mod tests {
 		let second = save(&store, "Второй", true, &png).await.unwrap();
 		let second_id = second[0].id.clone();
 		assert_eq!(second.len(), 2);
+		let edited = rename(&store, &second_id, "Переименован", Some(false))
+			.await
+			.unwrap();
+		assert_eq!(edited[0].name, "Переименован");
+		assert!(!edited[0].slim);
 		apply_local(&store, "offline-test", &first_id)
 			.await
 			.unwrap();
