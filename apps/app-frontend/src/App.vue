@@ -650,6 +650,21 @@ function updateDefaultJavaPath(major: number, path: string) {
 	if (!draft.value) return
 	draft.value.java_paths = { ...draft.value.java_paths, [major]: path }
 }
+function updateWindowSize(dimension: 'width' | 'height', value: string) {
+	if (!draft.value) return
+	if (!value) {
+		draft.value.window_width = null
+		draft.value.window_height = null
+		return
+	}
+	if (dimension === 'width') {
+		draft.value.window_width = Number(value)
+		draft.value.window_height ??= 480
+	} else {
+		draft.value.window_height = Number(value)
+		draft.value.window_width ??= 854
+	}
+}
 async function saveSettings() {
 	if (!draft.value) return
 	const previous = snapshot.value?.settings
@@ -1261,6 +1276,7 @@ onUnmounted(() => {
 						@close="setPage('library')"
 						@save="saveSettings"
 						@update-memory="draft.memory_mb = $event"
+						@update-window-size="updateWindowSize"
 						@update-java-path="updateDefaultJavaPath"
 					/>
 					<details class="figma-settings-legacy">

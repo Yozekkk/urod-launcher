@@ -615,6 +615,16 @@ impl Engine {
 		identity: LaunchIdentity,
 		java_paths: &std::collections::BTreeMap<u32, String>,
 	) -> Result<RunningGame> {
+		self.launch_with_options(instance_id, identity, java_paths, None)
+			.await
+	}
+	pub async fn launch_with_options(
+		&self,
+		instance_id: &str,
+		identity: LaunchIdentity,
+		java_paths: &std::collections::BTreeMap<u32, String>,
+		window_size: Option<(u32, u32)>,
+	) -> Result<RunningGame> {
 		let _guard = self.mutation.lock().await;
 		self.ensure_stopped(instance_id).await?;
 		let mut instance = self.instance(instance_id).await?;
@@ -622,6 +632,11 @@ impl Engine {
 			return Err(Error::Invalid(
 				"install Minecraft before launching this instance".into(),
 			));
+		}
+		if window_size.is_some_and(|(width, height)| {
+			!(320..=7680).contains(&width) || !(240..=4320).contains(&height)
+		}) {
+			return Err(Error::Invalid("Invalid Minecraft window dimensions".into()));
 		}
 		let info: VersionInfo = serde_json::from_slice(
 			&tokio::fs::read(
@@ -783,6 +798,9 @@ impl Engine {
 			for argument in &m.launch.game_args {
 				game.push(substitute(argument, &substitutions)?);
 			}
+		}
+		if let Some((width, height)) = window_size {
+			apply_window_size(&mut game, width, height);
 		}
 		if let Some(logging) = info
 			.logging
@@ -1167,6 +1185,24 @@ fn readable_game_log(input: &str) -> String {
 		.into_owned()
 }
 
+fn apply_window_size(args: &mut Vec<String>, width: u32, height: u32) {
+	for option in ["--width", "--height"] {
+		let mut index = 0;
+		while index < args.len() {
+			if args[index] == option {
+				args.remove(index);
+				if index < args.len() && !args[index].starts_with("--") {
+					args.remove(index);
+				}
+			} else {
+				index += 1;
+			}
+		}
+	}
+	args.extend(["--width".into(), width.to_string()]);
+	args.extend(["--height".into(), height.to_string()]);
+}
+
 fn sanitize_game_log(input: &str) -> String {
 	static SECRET: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
 	let pattern = SECRET.get_or_init(|| {
@@ -1250,6 +1286,22 @@ fn apply_default_java_path(
 
 #[cfg(test)]
 mod tests {
+	#[test]
+	fn custom_window_size_replaces_existing_resolution_without_duplicate_flags() {
+		let mut args = vec![
+			"--username".into(),
+			"Player".into(),
+			"--width".into(),
+			"854".into(),
+			"--height".into(),
+			"480".into(),
+		];
+		super::apply_window_size(&mut args, 1280, 720);
+		assert_eq!(
+			args,
+			["--username", "Player", "--width", "1280", "--height", "720"]
+		);
+	}
 	#[test]
 	fn xml_game_events_are_readable_in_sidebar() {
 		let input = "<log4j:Event logger=\"Minecraft\" level=\"WARN\" thread=\"main\"><log4j:Message><![CDATA[Missing optional mod]]></log4j:Message></log4j:Event>";

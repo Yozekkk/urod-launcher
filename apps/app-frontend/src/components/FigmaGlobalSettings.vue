@@ -14,6 +14,7 @@ const emit = defineEmits<{
 	close: []
 	save: []
 	updateMemory: [value: number]
+	updateWindowSize: [dimension: 'width' | 'height', value: string]
 	updateJavaPath: [major: number, path: string]
 }>()
 const section = ref<Section>('global')
@@ -34,6 +35,10 @@ const syncRows = [
 function updateMemory(event: Event) {
 	localChanged.value = true
 	emit('updateMemory', Number((event.target as HTMLInputElement).value))
+}
+function updateWindowSize(dimension: 'width' | 'height', event: Event) {
+	localChanged.value = true
+	emit('updateWindowSize', dimension, (event.target as HTMLInputElement).value)
 }
 function updateJavaPath(major: number, event: Event) {
 	localChanged.value = true
@@ -125,32 +130,124 @@ async function chooseJava(major: number) {
 				<p id="figma-sync-unavailable" class="sr-only">
 					Синхронизация между сборками пока недоступна.
 				</p>
-				<div class="figma-settings-extra" data-figma-node="3:280,3:339,3:367">
-					<h2>Java и память</h2>
-					<label class="figma-settings-memory">
-						<strong>Выделенная память</strong>
-						<span
-							><small>512 МБ</small
+				<div class="figma-settings-extra">
+					<section class="figma-settings-window-section" data-figma-node="3:280">
+						<h2>Окно</h2>
+						<div class="figma-settings-window-row">
+							<div>
+								<strong>Полноэкранный режим</strong>
+								<small>Запускать игру в полноэкранном режиме (через options.txt).</small>
+							</div>
+							<button
+								class="figma-settings-switch"
+								disabled
+								title="Управление полноэкранным режимом пока недоступно"
+								aria-label="Полноэкранный режим пока недоступен"
+							/>
+						</div>
+						<label class="figma-settings-window-row">
+							<span><strong>Ширина</strong><small>Ширина окна игры при запуске.</small></span>
+							<input
+								type="number"
+								min="320"
+								max="7680"
+								:value="settings.window_width ?? ''"
+								placeholder="854"
+								aria-label="Ширина окна игры"
+								@input="updateWindowSize('width', $event)"
+							/>
+						</label>
+						<label class="figma-settings-window-row">
+							<span><strong>Высота</strong><small>Высота окна игры при запуске.</small></span>
+							<input
+								type="number"
+								min="240"
+								max="4320"
+								:value="settings.window_height ?? ''"
+								placeholder="480"
+								aria-label="Высота окна игры"
+								@input="updateWindowSize('height', $event)"
+							/>
+						</label>
+						<h2>Java и память</h2>
+						<label class="figma-settings-memory">
+							<strong>Выделенная память</strong>
+							<span>
+								<small>512 МБ</small>
+								<input
+									type="range"
+									min="512"
+									:max="memoryMax"
+									step="256"
+									:value="settings.memory_mb"
+									@input="updateMemory"
+								/>
+								<small>{{ (memoryMax / 1024).toFixed(1) }} ГБ</small>
+								<output>{{ settings.memory_mb }}</output>
+							</span>
+							<small>Максимальный объём памяти, выделяемый игре.</small>
+						</label>
+					</section>
+					<section class="figma-settings-advanced" data-figma-node="3:339">
+						<label class="figma-settings-field"
+							><strong>Аргументы Java</strong
 							><input
-								type="range"
-								min="512"
-								:max="memoryMax"
-								step="256"
-								:value="settings.memory_mb"
-								@input="updateMemory"
-							/><small>{{ (memoryMax / 1024).toFixed(1) }} ГБ</small
-							><output>{{ settings.memory_mb }}</output></span
+								disabled
+								placeholder="Введите аргументы Java..."
+								title="Пользовательские аргументы Java пока недоступны"
+							/><small>Аргументы, передаваемые Java при запуске игры.</small></label
 						>
-						<small>Максимальный объём памяти, выделяемый игре.</small>
-					</label>
-					<div class="figma-settings-field">
-						<strong>Аргументы Java</strong>
-						<input disabled placeholder="Аргументы Java пока недоступны" />
-					</div>
-					<div class="figma-settings-field">
-						<strong>Команды запуска</strong>
-						<input disabled placeholder="Команды запуска пока недоступны" />
-					</div>
+						<label class="figma-settings-field"
+							><strong>Переменные среды</strong
+							><input
+								disabled
+								placeholder="Введите переменные среды..."
+								title="Переменные среды пока недоступны"
+							/><small>Переменные среды при запуске игры.</small></label
+						>
+					</section>
+					<section class="figma-settings-advanced figma-settings-commands" data-figma-node="3:367">
+						<h2>Команды запуска</h2>
+						<label class="figma-settings-field"
+							><strong>Перед запуском</strong
+							><input
+								disabled
+								placeholder="Введите команду перед запуском..."
+								title="Команды перед запуском пока недоступны"
+							/><small>Выполняется перед запуском игры.</small></label
+						>
+						<label class="figma-settings-field"
+							><strong>Обёртка</strong
+							><input
+								disabled
+								placeholder="Введите команду-обёртку..."
+								title="Команды-обёртки пока недоступны"
+							/><small>Команда-обёртка для запуска Minecraft.</small></label
+						>
+						<label class="figma-settings-field"
+							><strong>После выхода</strong
+							><input
+								disabled
+								placeholder="Введите команду после выхода..."
+								title="Команды после выхода пока недоступны"
+							/><small>Выполняется после выхода из игры.</small></label
+						>
+					</section>
+					<section
+						class="figma-settings-command-help"
+						data-figma-node="3:402"
+						aria-label="Справка по командам запуска; ввод команд пока недоступен"
+					>
+						<p>Команды выполняются в рабочем каталоге сборки. Переменные:</p>
+						<div>
+							<p>·$INST_NAME: название сборки</p>
+							<p>·$INST_ID: имя папки сборки</p>
+							<p>·$INST_DIR: абсолютный путь к папке сборки</p>
+							<p>·$INST_MC_DIR: аналог $INST_DIR</p>
+							<p>·$INST_JAVA: абсолютный путь к Java</p>
+							<p>·$INST_JAVA_ARGS: аргументы JVM, передаваемые игре</p>
+						</div>
+					</section>
 				</div>
 			</div>
 			<div

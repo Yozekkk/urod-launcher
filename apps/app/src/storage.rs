@@ -31,6 +31,10 @@ pub struct Settings {
 	pub blur: bool,
 	pub reduced_motion: bool,
 	pub memory_mb: u32,
+	#[serde(default)]
+	pub window_width: Option<u32>,
+	#[serde(default)]
+	pub window_height: Option<u32>,
 	pub java_path: String,
 	#[serde(default)]
 	pub java_paths: std::collections::BTreeMap<u32, String>,
@@ -50,6 +54,8 @@ impl Default for Settings {
 			blur: true,
 			reduced_motion: false,
 			memory_mb: 4096,
+			window_width: None,
+			window_height: None,
 			java_path: String::new(),
 			java_paths: std::collections::BTreeMap::new(),
 			game_directory: String::new(),
@@ -281,10 +287,18 @@ impl Store {
 		self.snapshot().await
 	}
 	pub async fn settings(&self, settings: Settings) -> Result<Snapshot> {
+		let dimensions_invalid = match (settings.window_width, settings.window_height) {
+			(None, None) => false,
+			(Some(width), Some(height)) => {
+				!(320..=7680).contains(&width) || !(240..=4320).contains(&height)
+			}
+			_ => true,
+		};
 		if !["stable", "beta"].contains(&settings.release_channel.as_str())
 			|| settings.locale != "ru"
 			|| !["dark", "oled"].contains(&settings.theme.as_str())
 			|| !(512..=32768).contains(&settings.memory_mb)
+			|| dimensions_invalid
 			|| settings.java_path.len() > 4096
 			|| settings.java_paths.len() > 16
 			|| settings
@@ -724,6 +738,32 @@ mod tests {
 			Some("/java-21/bin/java")
 		);
 		settings.java_paths.insert(7, "/java-7/bin/java".into());
+		assert!(store.settings(settings).await.is_err());
+		store.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[tokio::test]
+	async fn window_dimensions_persist_and_require_a_valid_pair() {
+		let directory =
+			std::env::temp_dir().join(format!("urod-window-settings-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone()).await.expect("store");
+		let mut settings = Settings {
+			window_width: Some(1280),
+			window_height: Some(720),
+			..Settings::default()
+		};
+		store
+			.settings(settings.clone())
+			.await
+			.expect("save dimensions");
+		let saved = store.snapshot().await.expect("snapshot").settings;
+		assert_eq!(
+			(saved.window_width, saved.window_height),
+			(Some(1280), Some(720))
+		);
+		settings.window_height = None;
+		assert!(store.settings(settings.clone()).await.is_err());
+		settings.window_height = Some(100);
 		assert!(store.settings(settings).await.is_err());
 		store.pool.close().await;
 		tokio::fs::remove_dir_all(directory).await.expect("cleanup");

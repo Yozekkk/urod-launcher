@@ -63,6 +63,8 @@ In **Library**, create a pack, choose its Minecraft version and loader, install 
 
 In **Settings → Java locations**, specify separate executables for Java 21 and Java 25 or find installed runtimes with **Detect**. The launcher verifies an executable's major version before saving it. With no configured path, the engine finds a compatible Java and downloads a verified runtime during launch if needed. A pack-specific Java path takes priority. Installing a recommended runtime directly from this settings panel is not yet available.
 
+Global settings let you set Minecraft window width and height. Both values are validated before saving and passed to the game at launch; leave the fields empty to use the game's defaults. The selected pack's journal shows recent Minecraft output and launcher operations, with search and severity filters. In a narrow window, open it with **Журнал**. Fullscreen control, custom Java arguments, environment variables and launch commands are not available yet.
+
 ## Gorod Urodov
 
 UrodGame server address: `gorodurodov.ru`. A dedicated community pack will appear once a real manifest with verifiable files and versions is published. Until then, users can create ordinary instances and use the launcher without community registration. [Official website](https://gorodurodov.ru).

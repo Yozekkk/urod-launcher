@@ -435,7 +435,15 @@ pub async fn core_launch(
 		xuid: None,
 		authlib_injector,
 	};
-	let launch = e.launch_with_java_paths(&instance_id, identity, &snapshot.settings.java_paths);
+	let launch = e.launch_with_options(
+		&instance_id,
+		identity,
+		&snapshot.settings.java_paths,
+		snapshot
+			.settings
+			.window_width
+			.zip(snapshot.settings.window_height),
+	);
 	tokio::pin!(launch);
 	let mut tick = tokio::time::interval(std::time::Duration::from_millis(500));
 	loop {

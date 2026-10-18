@@ -21,6 +21,8 @@ Status on 2026-10-18: **release blocked; the repository remains version 0.1.0 De
 | Game log sidebar | Native Fabric 1.21.1 launch produced readable game lines in Figma `3:713` sidebar; error filter showed an actual narrator error; compact drawer opened at 860×620. Latest 32 KiB read from the selected pack's log; common credential fields are redacted. | Pass for this local scenario; arbitrary mod output still needs security review |
 | Resource settings | Native comparison with Figma `3:199` at 837×470 and inspection at 860×620; accurate data directory shown | Partial: safe cache deletion and extended report commands do not exist |
 | Java locations | Figma `3:104` transferred; Java 25 and 21 paths persist separately, are checked against the executable major, and apply at launch unless a pack has its own override. Native Fabric 1.21.1 launch used a configured Java 21 path. | Partial: on-demand recommended runtime installation in this panel is disabled |
+| Window and memory | Figma `3:280` rendered in native Tauri and compared at 4.49/255; width/height persist as a validated pair and an actual Fabric launch carried `--width 1024 --height 576`. The game window opened and was stopped. | Partial: fullscreen through `options.txt` is disabled; global RAM remains a default for new packs |
+| Advanced launch panels | Figma `3:339`, `3:367`, and `3:402` rendered and compared at 2.77, 4.66 and 3.57/255 respectively | Visual transfer only; arbitrary JVM arguments, environment variables and shell commands remain disabled |
 | Real accounts | No owner Microsoft/Ely.by credentials used | **Not run** |
 | Signed updater | No UrodLauncher signing key or endpoint; updater is disabled | Safe state, not a completed update feature |
 

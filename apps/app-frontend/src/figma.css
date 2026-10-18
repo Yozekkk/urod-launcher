@@ -522,8 +522,104 @@
 .figma-settings-extra {
 	display: flex;
 	flex-direction: column;
-	gap: 14px;
+	gap: 180px;
 	margin-top: 80px;
+}
+.figma-settings-window-section,
+.figma-settings-advanced {
+	display: flex;
+	flex-direction: column;
+}
+.figma-settings-window-section h2,
+.figma-settings-commands h2 {
+	margin: 0;
+	font:
+		600 18px/1.25 Geologica,
+		sans-serif;
+}
+.figma-settings-window-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	min-height: 50px;
+	padding-top: 5px;
+	gap: 14px;
+}
+.figma-settings-window-section > div.figma-settings-window-row {
+	min-height: 49px;
+	margin-top: 10px;
+}
+.figma-settings-window-row strong,
+.figma-settings-window-row small {
+	display: block;
+	color: var(--figma-muted);
+	font:
+		600 16px/1.2 Geologica,
+		sans-serif;
+}
+.figma-settings-window-row small {
+	margin-top: 3px;
+	font-size: 13px;
+	font-weight: 400;
+}
+.figma-settings-window-row input {
+	width: 270px;
+	min-width: 0;
+	height: 29px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: 20px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font:
+		400 14px Geologica,
+		sans-serif;
+}
+.figma-settings-window-row input::placeholder {
+	color: var(--figma-muted);
+}
+.figma-settings-window-row input::-webkit-inner-spin-button,
+.figma-settings-window-row input::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+.figma-settings-window-row input[type='number'] {
+	appearance: textfield;
+}
+.figma-settings-window-row .figma-settings-switch {
+	margin-top: 2px;
+}
+.figma-settings-window-section > h2:not(:first-child) {
+	margin-top: 4px;
+	margin-bottom: 16px;
+}
+.figma-settings-advanced {
+	gap: 16px;
+}
+.figma-settings-commands h2 {
+	margin-bottom: -2px;
+}
+.figma-settings-commands {
+	padding-bottom: 4px;
+}
+.figma-settings-command-help {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	min-height: 310px;
+	color: var(--figma-muted);
+	font:
+		400 13px/1.2 Geologica,
+		sans-serif;
+}
+.figma-settings-command-help p {
+	margin: 0;
+}
+.figma-settings-advanced .figma-settings-field {
+	gap: 7px;
+}
+.figma-settings-advanced .figma-settings-field input {
+	margin-top: 0;
 }
 .figma-settings-memory span {
 	display: flex;

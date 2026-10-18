@@ -16,6 +16,8 @@ export type Settings = {
 	blur: boolean
 	reduced_motion: boolean
 	memory_mb: number
+	window_width: number | null
+	window_height: number | null
 	java_path: string
 	java_paths: Record<string, string>
 	game_directory: string
