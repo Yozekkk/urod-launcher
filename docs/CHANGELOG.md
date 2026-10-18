@@ -12,6 +12,7 @@
 - Matched global settings frames `3:280`, `3:339`, `3:367` and `3:402` against native captures. Window width and height now persist as a validated pair and reach the Minecraft process as numeric arguments; a Fabric game window opened with a configured pair.
 - Added per-pack window dimension overrides from Figma `3:463`, including validation, persistence, priority over global dimensions and inheritance when the override is disabled. Both paths were exercised with a real Fabric launch.
 - Transferred pack settings frames `3:530`, `3:588` and `3:629`. Java detection now chooses the major required by the selected pack and its override can be saved or cleared; launch command inputs remain disabled until safe backend support exists.
+- Transferred the pack synchronization frame `3:648` with its original Figma controls and a working link to global settings. The five separation controls are disabled until the engine can synchronize these files.
 - Matched the resource settings layout from Figma `3:199` against a native Tauri capture. The cache and extended report controls are disabled until backend operations exist.
 - Added separate, validated Java 21 and 25 paths from Figma `3:104`, with runtime detection, native path selection and launch-time selection. Per-pack Java overrides retain priority; a global default no longer becomes a saved pack override during launch.
 - Verified live install, start and stop for Minecraft 1.21.1 with Vanilla, Fabric, Quilt, Forge and NeoForge; repeated the Vanilla launch.

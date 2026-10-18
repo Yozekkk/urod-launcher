@@ -383,6 +383,91 @@
 .figma-pack-overrides {
 	gap: 180px;
 }
+.figma-pack-sync-section {
+	position: relative;
+	width: 100%;
+	max-width: 505px;
+	min-height: 311px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+.figma-pack-sync-intro {
+	min-height: 47px;
+	margin: 0;
+	color: var(--figma-muted);
+	font:
+		400 13px/16px Geologica,
+		sans-serif;
+}
+.figma-pack-global-link {
+	position: absolute;
+	top: 2px;
+	right: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	height: 27px;
+	padding: 0 7px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font:
+		600 10px Geologica,
+		sans-serif;
+	cursor: pointer;
+}
+.figma-pack-global-link img {
+	width: 16px;
+	height: 14px;
+}
+.figma-pack-sync-row {
+	width: 100%;
+	min-height: 36px;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 8px;
+}
+.figma-pack-sync-row:first-of-type {
+	min-height: 52px;
+}
+.figma-pack-sync-row strong {
+	display: block;
+	color: var(--figma-text);
+	font:
+		600 16px/20px Geologica,
+		sans-serif;
+}
+.figma-pack-sync-row p {
+	max-width: 400px;
+	margin: 0;
+	color: var(--figma-muted);
+	font:
+		400 13px/16px Geologica,
+		sans-serif;
+}
+.figma-pack-sync-row button {
+	flex: 0 0 80px;
+	width: 80px;
+	height: 27px;
+	margin-top: 4px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+}
+.figma-pack-sync-row button img {
+	display: block;
+	width: 80px;
+	height: 27px;
+}
+.figma-pack-sync-row button img.figma-pack-sync-switch {
+	width: 44px;
+	height: 24px;
+	margin-left: auto;
+	transform: rotate(180deg);
+}
 .figma-pack-window-intro {
 	width: 100%;
 	display: flex;

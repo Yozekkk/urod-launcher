@@ -26,7 +26,7 @@ const props = defineProps<{
 	accountName: string | null
 	operations: GameOperations
 }>()
-const emit = defineEmits<{ 'open-log': [] }>()
+const emit = defineEmits<{ 'open-log': []; 'open-global-settings': [] }>()
 const instances = ref<Instance[]>([])
 const mods = ref<InstalledContent[]>([])
 const updates = ref<ContentUpdate[]>([])
@@ -1309,6 +1309,80 @@ onUnmounted(() => {
 						</p>
 					</div>
 					<div v-else class="figma-pack-overrides">
+						<section class="figma-pack-sync-section" data-figma-node="3:648">
+							<p class="figma-pack-sync-intro">
+								Включить принудительное разделение,<br />чтобы хранить синхронизированные<br />настройки
+								отдельно для этой сборки.
+							</p>
+							<button class="figma-pack-global-link" @click="emit('open-global-settings')">
+								<img src="/figma/992df.svg" alt="" />Глобальные настройки
+							</button>
+							<div class="figma-pack-sync-row">
+								<div>
+									<strong>Рассинхронизация настроек игры</strong>
+									<p>Оставить options.txt этой сборки отдельно от синхронизированной копии.</p>
+								</div>
+								<button
+									disabled
+									title="Разделение настроек пока недоступно"
+									aria-label="Рассинхронизация настроек игры пока недоступна"
+								>
+									<img src="/figma/5e6f8.svg" alt="" />
+								</button>
+							</div>
+							<div class="figma-pack-sync-row">
+								<div>
+									<strong>Рассинхронизация серверов</strong>
+									<p>Оставить серверы этой сборки отдельно.</p>
+								</div>
+								<button
+									disabled
+									title="Разделение серверов пока недоступно"
+									aria-label="Рассинхронизация серверов пока недоступна"
+								>
+									<img src="/figma/5e6f8.svg" alt="" />
+								</button>
+							</div>
+							<div class="figma-pack-sync-row">
+								<div>
+									<strong>Рассинхронизация наборов ресурсов</strong>
+									<p>Оставить наборы ресурсов этой сборки отдельно.</p>
+								</div>
+								<button
+									disabled
+									title="Разделение наборов ресурсов пока недоступно"
+									aria-label="Рассинхронизация наборов ресурсов пока недоступна"
+								>
+									<img src="/figma/5e6f8.svg" alt="" />
+								</button>
+							</div>
+							<div class="figma-pack-sync-row">
+								<div>
+									<strong>Рассинхронизация истории команд</strong>
+									<p>Оставить историю команд этой сборки отдельно.</p>
+								</div>
+								<button
+									disabled
+									title="Разделение истории команд пока недоступно"
+									aria-label="Рассинхронизация истории команд пока недоступна"
+								>
+									<img src="/figma/5e6f8.svg" alt="" />
+								</button>
+							</div>
+							<div class="figma-pack-sync-row">
+								<div>
+									<strong>Рассинхронизация сохранённых инструментов</strong>
+									<p>Оставить сохраненные инструменты этой сборки отдельно.</p>
+								</div>
+								<button
+									disabled
+									title="Разделение сохранённых инструментов пока недоступно"
+									aria-label="Рассинхронизация сохранённых инструментов пока недоступна"
+								>
+									<img class="figma-pack-sync-switch" src="/figma/7c452.svg" alt="" />
+								</button>
+							</div>
+						</section>
 						<section class="figma-pack-window-section" data-figma-node="3:463">
 							<div class="figma-pack-window-intro">
 								<div>

@@ -1115,6 +1115,7 @@ onUnmounted(() => {
 					:account-name="activeAccount?.nickname || null"
 					:operations="operations"
 					@open-log="packLogOpen = true"
+					@open-global-settings="setPage('settings')"
 				/>
 				<ContentPage
 					v-else-if="page === 'content'"
