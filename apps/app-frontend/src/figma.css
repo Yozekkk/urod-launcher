@@ -2239,7 +2239,7 @@ body {
 	top: 26px;
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 17px;
 	white-space: nowrap;
 }
 .figma-gallery-controls label {
@@ -2249,7 +2249,7 @@ body {
 		sans-serif;
 }
 .figma-gallery-controls select {
-	width: 160px;
+	width: 154px;
 	height: 38px;
 	min-height: 38px;
 	padding: 0 10px;
@@ -2265,26 +2265,33 @@ body {
 	margin-left: 8px;
 }
 .figma-gallery-controls #gallery-sort {
-	width: 154px;
+	width: 190px;
 }
 .gallery-advanced {
 	position: absolute;
-	right: 38px;
+	right: 0;
 	top: 26px;
 	z-index: 4;
-	width: min(755px, calc(100% - 76px));
+	width: min(755px, 100%);
 	color: var(--figma-text);
 }
 .gallery-advanced > summary {
 	position: absolute;
 	right: 0;
 	top: 0;
-	padding: 5px 8px;
+	display: grid;
+	place-items: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
 	border-radius: 8px;
 	background: var(--figma-control);
 	color: var(--figma-muted);
-	font-size: 10px;
+	list-style: none;
 	cursor: pointer;
+}
+.gallery-advanced > summary::-webkit-details-marker {
+	display: none;
 }
 .gallery-advanced[open] {
 	padding: 34px 16px 16px;
@@ -2298,6 +2305,11 @@ body {
 }
 .gallery-advanced .search-filters {
 	margin: 0;
+}
+@media (min-width: 1400px) {
+	.gallery-advanced {
+		right: 16px;
+	}
 }
 .content-page .search-result-heading {
 	position: absolute;
@@ -2456,6 +2468,8 @@ body {
 	}
 	.gallery-advanced {
 		top: 74px;
+		right: 16px;
+		width: min(755px, calc(100% - 16px));
 	}
 }
 @media (max-width: 650px) {

@@ -413,7 +413,9 @@ onUnmounted(() => {
 				</select>
 			</div>
 			<details class="gallery-advanced">
-				<summary aria-label="Поиск и фильтры" title="Поиск и фильтры">Фильтры</summary>
+				<summary aria-label="Поиск и фильтры" title="Поиск и фильтры">
+					<img src="/figma/02d89.svg" width="12" height="12" alt="" />
+				</summary>
 				<div class="content-tabs" role="tablist" aria-label="Тип контента">
 					<button
 						role="tab"
