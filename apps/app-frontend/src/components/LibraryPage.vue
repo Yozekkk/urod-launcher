@@ -434,6 +434,15 @@ async function installOrPlay(instance: Instance) {
 	}
 	await operation(() => gameApi.launch(instance.id), 'Minecraft запущен')
 }
+async function repairInstallation(instance: Instance) {
+	if (instance.status !== 'ready' || instance.kind === 'official' || instanceBusy(instance.id))
+		return
+	manageDialog.value?.close()
+	await operation(
+		async () => props.operations.track(await gameApi.installGame(instance.id)),
+		'Проверка файлов запущена',
+	)
+}
 async function importPack() {
 	await operation(async () => {
 		const path = await gameApi.pickImport()
@@ -1273,40 +1282,60 @@ onUnmounted(() => {
 						class="figma-pack-install"
 						data-figma-node="3:422"
 					>
-						<strong>Сведения об установке</strong>
-						<div class="figma-pack-install-box">
-							<span
-								>Платформа<strong>{{ loaderNames[managed.loader] }}</strong></span
-							><span
-								>Версия игры<strong>{{ managed.game_version }}</strong></span
-							><span
-								>Версия {{ loaderNames[managed.loader]
-								}}<strong>{{ managed.loader_version || '—' }}</strong></span
+						<div class="figma-pack-install-group">
+							<strong>Сведения об установке</strong>
+							<div class="figma-pack-install-box">
+								<span
+									>Платформа<strong>{{ loaderNames[managed.loader] }}</strong></span
+								><span
+									>Версия игры<strong>{{ managed.game_version }}</strong></span
+								><span
+									>Версия {{ loaderNames[managed.loader]
+									}}<strong>{{ managed.loader_version || '—' }}</strong></span
+								>
+							</div>
+							<button
+								class="figma-pack-button red"
+								disabled
+								aria-label="Изменить установку — недоступно"
+								title="Смена установки с сохранением контента пока не поддерживается"
 							>
+								<img src="/figma/8950a.svg" alt="" />Изменить
+							</button>
+							<div class="figma-pack-install-warning">
+								<img src="/figma/a0728.svg" alt="" />
+								<p>
+									Не рекомендуется изменять установку после добавления контента. Это может привести
+									к ошибкам.
+								</p>
+							</div>
 						</div>
-						<button
-							class="figma-pack-button red"
-							disabled
-							title="Смена установки с сохранением контента пока не поддерживается"
-						>
-							Изменить — недоступно
-						</button>
-						<p>
-							Не рекомендуется изменять установку после добавления контента. Это может привести к
-							ошибкам.
-						</p>
-						<strong>Исправление сборки</strong>
-						<button
-							class="figma-pack-button"
-							disabled
-							title="Безопасное исправление установленной сборки пока не поддерживается"
-						>
-							Исправить — недоступно
-						</button>
-						<p>
-							Переустановка зависимостей без затрагивания пользовательского контента требует
-							отдельной проверки.
-						</p>
+						<div class="figma-pack-install-group">
+							<strong>Исправление сборки</strong>
+							<button
+								class="figma-pack-button"
+								:disabled="
+									busy ||
+									instanceBusy(managed.id) ||
+									managed.status !== 'ready' ||
+									managed.kind === 'official'
+								"
+								:title="
+									managed.kind === 'official'
+										? 'Исправление официальных сборок пока недоступно'
+										: managed.status !== 'ready'
+											? 'Сначала установите сборку'
+											: 'Проверить и восстановить файлы Minecraft и загрузчика'
+								"
+								@click="repairInstallation(managed)"
+							>
+								<img src="/figma/8c5ab.svg" alt="" />Исправить
+							</button>
+							<p>
+								Проверяет и восстанавливает файлы Minecraft и загрузчика. Пользовательский контент
+								остаётся в сборке.
+							</p>
+						</div>
 					</div>
 					<div v-else class="figma-pack-overrides">
 						<section class="figma-pack-sync-section" data-figma-node="3:648">
