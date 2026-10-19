@@ -223,12 +223,15 @@ function selectSkin(item: SavedSkin) {
 	editName.value = item.name
 	editSlim.value = item.slim
 }
-function remove() {
+async function remove() {
 	if (!selected.value || !window.confirm(`Удалить «${selected.value.name}» из библиотеки?`)) return
 	const id = selected.value.id
-	void run('skin_library_remove', { id }, 'Скин удалён').then(() => {
-		selectedId.value = items.value[0]?.id || ''
-	})
+	const activeAccount = account.value
+	const wasActive = activeAccount && selected.value.active_for.includes(activeAccount.uuid)
+	await run('skin_library_remove', { id }, 'Скин удалён')
+	if (error.value) return
+	selectedId.value = items.value[0]?.id || ''
+	if (wasActive && activeAccount) emit('applied', activeAccount)
 }
 async function saveEdit() {
 	if (!selected.value || !editName.value.trim()) return
@@ -285,6 +288,7 @@ function reset() {
 			<h2>⌃&nbsp; Сохраненные скины</h2>
 		</div>
 		<p v-if="error && !addOpen && !editOpen" role="alert" class="skin-page-error">{{ error }}</p>
+		<p v-if="message && !selected" role="status" class="skin-page-message">{{ message }}</p>
 		<div class="skin-layout">
 			<aside class="skin-list" aria-label="Сохранённые скины">
 				<label
@@ -519,6 +523,14 @@ function reset() {
 	z-index: 2;
 	margin: 0;
 	color: var(--figma-accent);
+	font-size: 12px;
+}
+.skin-page-message {
+	position: absolute;
+	left: 38px;
+	top: 65px;
+	margin: 0;
+	color: var(--figma-muted);
 	font-size: 12px;
 }
 .skins-heading {
