@@ -1,10 +1,11 @@
 # Security review in progress
 
-Date: 2026-10-18. This is a repository review and deterministic test record, not a penetration-test certificate.
+Date: 2026-10-19. This is a repository review and deterministic test record, not a penetration-test certificate.
 
 - `apps/app/capabilities/main.json` grants the main window core permissions and autostart actions. It does not grant broad filesystem, shell, HTTP or updater plugin capabilities. The sign-in window has no native IPC capability.
 - `apps/app/tauri.conf.json` sets a restrictive CSP; only self, IPC, data images, and Modrinth CDN images are permitted for the relevant resource types. Inline styles remain enabled for the current UI.
 - Native skin import limits the PNG to 1 MiB, decodes it with image allocation limits, requires 64×32 or 64×64 pixels, and confines the filename to a parsed UUID under the library directory. The skin index is persisted through a temporary file and rename.
+- In-place skin replacement uses the same native PNG validation, writes a staging file in the library directory and atomically renames it over the existing UUID path. If the catalog write fails, it attempts to restore the previous validated bytes. Saved skin reads reject symlink files. A native malformed-PNG request left the record unchanged, and a Unix test verifies symlink rejection. A crash between texture replacement and catalog persistence could still leave the new valid texture with old metadata; transaction recovery remains an open review item.
 - Microsoft skin upload sends the token from the native account session and checks the returned profile id, active variant, and texture host before reporting success. The user interface displays a native error when the service rejects the operation. Live upload has not been exercised with an owner account.
 - GitHub updates require a matching size and SHA-256 and Tauri signature verification. The UrodLauncher public key and endpoint are unset, so automatic updates stay disabled. No inherited NCreate key is used.
 - The existing Minecraft engine has deterministic tests for path confinement, hash checks, cancellation, rollback, modpack import traversal, Java runtime validation, and process lifecycle. These do not replace live installer and launch checks.

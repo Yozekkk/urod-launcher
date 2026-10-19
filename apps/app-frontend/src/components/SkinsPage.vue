@@ -20,6 +20,7 @@ const props = defineProps<{
 const emit = defineEmits<{ applied: [account: Account] }>()
 const items = shallowRef<SavedSkin[]>([])
 const thumbnails = shallowRef<Record<string, string>>({})
+const thumbnailCache = new Map<string, { texture: string; slim: boolean; image: string }>()
 let thumbnailViewer: SkinViewer | null = null
 let thumbnailGeneration = 0
 let thumbnailQueue: Promise<void> = Promise.resolve()
@@ -32,6 +33,7 @@ const error = shallowRef('')
 const message = shallowRef('')
 const editName = shallowRef('')
 const editSlim = shallowRef(false)
+const editTexture = shallowRef<string | null>(null)
 const pendingTexture = shallowRef<string | null>(null)
 const addDialog = ref<HTMLDialogElement | null>(null)
 const editDialog = ref<HTMLDialogElement | null>(null)
@@ -65,11 +67,21 @@ watch(items, (skins) => {
 	const generation = ++thumbnailGeneration
 	thumbnailQueue = thumbnailQueue
 		.then(async () => {
-			thumbnails.value = {}
+			const next: Record<string, string> = {}
+			const ids = new Set(skins.map((skin) => skin.id))
+			for (const id of thumbnailCache.keys()) {
+				if (!ids.has(id)) thumbnailCache.delete(id)
+			}
+			for (const skin of skins) {
+				const cached = thumbnailCache.get(skin.id)
+				if (cached?.texture === skin.preview?.texture && cached?.slim === skin.slim)
+					next[skin.id] = cached.image
+			}
+			thumbnails.value = next
 			for (const skin of skins) {
 				if (generation !== thumbnailGeneration) return
 				const texture = skin.preview?.texture
-				if (!texture) continue
+				if (!texture || next[skin.id]) continue
 				try {
 					if (!thumbnailViewer) {
 						thumbnailViewer = new SkinViewer({
@@ -86,9 +98,11 @@ watch(items, (skins) => {
 					await thumbnailViewer.loadSkin(texture, { model: skin.slim ? 'slim' : 'default' })
 					if (generation !== thumbnailGeneration) return
 					thumbnailViewer.render()
+					const image = thumbnailViewer.canvas.toDataURL('image/png')
+					thumbnailCache.set(skin.id, { texture, slim: skin.slim, image })
 					thumbnails.value = {
 						...thumbnails.value,
-						[skin.id]: thumbnailViewer.canvas.toDataURL('image/png'),
+						[skin.id]: image,
 					}
 				} catch {
 					// Keep the validated head preview when WebGL is unavailable.
@@ -103,6 +117,7 @@ onUnmounted(() => {
 	void thumbnailQueue.finally(() => {
 		thumbnailViewer?.dispose()
 		thumbnailViewer = null
+		thumbnailCache.clear()
 	})
 })
 async function run(command: string, args: Record<string, unknown>, success: string) {
@@ -134,6 +149,7 @@ function readSkinFile(file: File | undefined) {
 		if (!name.value.trim()) name.value = file.name.replace(/\.png$/i, '')
 		addOpen.value = true
 		addDialog.value?.showModal()
+		addDialog.value?.focus()
 	}
 	reader.onerror = () => {
 		error.value = 'Не удалось прочитать файл'
@@ -172,8 +188,35 @@ function showEdit() {
 	error.value = ''
 	editName.value = selected.value.name
 	editSlim.value = selected.value.slim
+	editTexture.value = null
 	editOpen.value = true
 	editDialog.value?.showModal()
+	editDialog.value?.focus()
+}
+function closeEdit() {
+	editOpen.value = false
+	editTexture.value = null
+}
+function replaceTexture(event: Event) {
+	const input = event.target as HTMLInputElement
+	const file = input.files?.[0]
+	input.value = ''
+	if (!file) return
+	editTexture.value = null
+	if (file.size > 1_048_576 || file.type !== 'image/png') {
+		error.value = 'Выберите PNG размером до 1 МБ'
+		return
+	}
+	const reader = new FileReader()
+	reader.onload = () => {
+		if (typeof reader.result !== 'string') return
+		error.value = ''
+		editTexture.value = reader.result
+	}
+	reader.onerror = () => {
+		error.value = 'Не удалось прочитать файл'
+	}
+	reader.readAsDataURL(file)
 }
 function selectSkin(item: SavedSkin) {
 	selectedId.value = item.id
@@ -187,14 +230,25 @@ function remove() {
 		selectedId.value = items.value[0]?.id || ''
 	})
 }
-async function rename() {
+async function saveEdit() {
 	if (!selected.value || !editName.value.trim()) return
+	const wasActive = account.value && selected.value.active_for.includes(account.value.uuid)
+	const hadActiveAccounts = selected.value.active_for.length > 0
+	const appearanceChanged = editSlim.value !== selected.value.slim || editTexture.value !== null
 	await run(
-		'skin_library_rename',
-		{ id: selected.value.id, name: editName.value, slim: editSlim.value },
-		'Скин изменён',
+		'skin_library_update',
+		{
+			id: selected.value.id,
+			name: editName.value,
+			slim: editSlim.value,
+			data: editTexture.value,
+		},
+		appearanceChanged && hadActiveAccounts
+			? 'Скин изменён. Примените его к аккаунту снова.'
+			: 'Скин изменён',
 	)
 	if (!error.value) {
+		if (wasActive && appearanceChanged && account.value) emit('applied', account.value)
 		editDialog.value?.close()
 		editOpen.value = false
 	}
@@ -349,7 +403,9 @@ function reset() {
 		>
 			<header>
 				<h2 id="skin-add-title">Добавить скин</h2>
-				<button aria-label="Закрыть" @click="addDialog?.close()">×</button>
+				<button aria-label="Закрыть" @click="addDialog?.close()">
+					<img src="/figma/70ec6.svg" width="14" height="14" alt="" />
+				</button>
 			</header>
 			<div class="skin-dialog-body">
 				<SkinPreview
@@ -358,7 +414,9 @@ function reset() {
 					:slim="slim"
 					:reduced-motion="reducedMotion"
 				/>
-				<p class="skin-rotate-hint">⟷ Перетащите, чтобы повернуть</p>
+				<p class="skin-rotate-hint">
+					<img src="/figma/8e05e.svg" width="16" height="9" alt="" />Перетащите, чтобы повернуть
+				</p>
 				<div class="skin-dialog-fields">
 					<fieldset>
 						<legend>Стиль рук</legend>
@@ -373,13 +431,15 @@ function reset() {
 				</div>
 			</div>
 			<footer>
-				<button class="button secondary" @click="addDialog?.close()">× Отменить</button>
+				<button class="button secondary" @click="addDialog?.close()">
+					<img src="/figma/92af7.svg" width="13" height="13" alt="" />Отменить
+				</button>
 				<button
 					class="button primary"
 					:disabled="busy || !pendingTexture || !name.trim()"
 					@click="saveNew"
 				>
-					Сохранить скин
+					<img src="/figma/7989a.svg" width="15" height="15" alt="" />Сохранить скин
 				</button>
 			</footer>
 			<p v-if="error" role="alert" class="skin-error">{{ error }}</p>
@@ -389,26 +449,40 @@ function reset() {
 			class="skin-dialog"
 			aria-labelledby="skin-edit-title"
 			tabindex="-1"
-			@close="editOpen = false"
+			@close="closeEdit"
 		>
 			<header>
 				<h2 id="skin-edit-title">Редактирование скина</h2>
-				<button aria-label="Закрыть" @click="editDialog?.close()">×</button>
+				<button aria-label="Закрыть" @click="editDialog?.close()">
+					<img src="/figma/70ec6.svg" width="14" height="14" alt="" />
+				</button>
 			</header>
 			<div class="skin-dialog-body">
 				<SkinPreview
 					v-if="editOpen"
-					:texture="selected?.preview?.texture || null"
+					:texture="editTexture || selected?.preview?.texture || null"
 					:slim="editSlim"
 					:reduced-motion="reducedMotion"
 				/>
-				<p class="skin-rotate-hint">⟷ Перетащите, чтобы повернуть</p>
+				<p class="skin-rotate-hint">
+					<img src="/figma/8e05e.svg" width="16" height="9" alt="" />Перетащите, чтобы повернуть
+				</p>
 				<div class="skin-dialog-fields">
-					<label
-						>Текстура<button disabled title="Замена текстуры существующего скина пока недоступна">
-							↑ Заменить текстуру
-						</button></label
-					>
+					<div class="skin-texture-field">
+						<span>Текстура</span>
+						<label class="skin-replace-button">
+							<img src="/figma/2e380.svg" width="10" height="13" alt="" />{{
+								editTexture ? 'Текстура выбрана' : 'Заменить текстуру'
+							}}
+							<input
+								type="file"
+								accept="image/png"
+								aria-label="Заменить текстуру скина PNG"
+								:disabled="busy"
+								@change="replaceTexture"
+							/>
+						</label>
+					</div>
 					<fieldset>
 						<legend>Стиль рук</legend>
 						<label><input v-model="editSlim" type="radio" :value="false" /> Стив</label>
@@ -422,9 +496,11 @@ function reset() {
 				</div>
 			</div>
 			<footer>
-				<button class="button secondary" @click="editDialog?.close()">× Отменить</button>
-				<button class="button primary" :disabled="busy || !editName.trim()" @click="rename">
-					Сохранить скин
+				<button class="button secondary" @click="editDialog?.close()">
+					<img src="/figma/92af7.svg" width="13" height="13" alt="" />Отменить
+				</button>
+				<button class="button primary" :disabled="busy || !editName.trim()" @click="saveEdit">
+					<img src="/figma/7989a.svg" width="15" height="15" alt="" />Сохранить скин
 				</button>
 			</footer>
 			<p v-if="error" role="alert" class="skin-error">{{ error }}</p>
@@ -819,6 +895,9 @@ function reset() {
 	overflow: hidden;
 	outline: none;
 }
+.skin-dialog:focus {
+	box-shadow: none;
+}
 .skin-dialog::backdrop {
 	background: #000b;
 }
@@ -836,6 +915,8 @@ function reset() {
 	font-weight: 600;
 }
 .skin-dialog > header button {
+	display: grid;
+	place-items: center;
 	padding: 0;
 	border: 0;
 	background: transparent;
@@ -858,14 +939,18 @@ function reset() {
 	height: 270px;
 	min-height: 0;
 	overflow: hidden;
+	transform: translateY(-16px);
 }
 .skin-dialog-body :deep(.skin-preview canvas) {
 	width: 180px;
 	height: 270px;
-	transform: translateY(-77px) scale(0.9);
+	transform: translateY(-77px) scale(1.25, 0.9);
 }
 .skin-rotate-hint {
 	position: absolute;
+	display: flex;
+	align-items: center;
+	gap: 5px;
 	left: 39px;
 	top: 268px;
 	margin: 0;
@@ -885,6 +970,38 @@ function reset() {
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 11px;
+}
+.skin-texture-field {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 11px;
+}
+.skin-replace-button {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	width: 154px;
+	padding: 9px 10px;
+	border-radius: 12px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font-size: 10px;
+	cursor: pointer;
+}
+.skin-replace-button:focus-within {
+	outline: 2px solid var(--figma-accent);
+	outline-offset: 2px;
+}
+.skin-replace-button input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
 }
 .skin-dialog-fields input[type='file'],
 .skin-dialog-fields > label > button {
@@ -951,6 +1068,10 @@ function reset() {
 	padding: 25px 31px 0;
 }
 .skin-dialog > footer .button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
 	min-height: 31px;
 	border-radius: 10px;
 	font-size: 16px;

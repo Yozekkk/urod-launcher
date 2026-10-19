@@ -298,6 +298,19 @@ async fn skin_library_rename(
 	skin_library::rename(state.store().await?, &id, &name, slim).await
 }
 #[tauri::command]
+async fn skin_library_update(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	id: String,
+	name: String,
+	slim: bool,
+	data: Option<String>,
+) -> Result<Vec<skin_library::SavedSkin>> {
+	local(&window)?;
+	let _gate = state.skin_gate.lock().await;
+	skin_library::update(state.store().await?, &id, &name, slim, data.as_deref()).await
+}
+#[tauri::command]
 async fn skin_library_remove(
 	window: tauri::WebviewWindow,
 	state: tauri::State<'_, AppState>,
@@ -552,6 +565,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		skin_library_list,
 		skin_library_save,
 		skin_library_rename,
+		skin_library_update,
 		skin_library_remove,
 		skin_library_apply,
 		skin_library_reset,
@@ -622,6 +636,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		skin_library_list,
 		skin_library_save,
 		skin_library_rename,
+		skin_library_update,
 		skin_library_remove,
 		skin_library_apply,
 		skin_library_reset,

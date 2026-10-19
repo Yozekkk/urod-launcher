@@ -78,10 +78,13 @@ fn decode_png(data: &str) -> Result<Vec<u8>> {
 }
 async fn read_skin(store: &Store, id: &str) -> Result<Vec<u8>> {
 	let path = skin_path(store, id)?;
-	let metadata = tokio::fs::metadata(&path)
+	let metadata = tokio::fs::symlink_metadata(&path)
 		.await
 		.map_err(|_| "Скин не найден")?;
-	if !metadata.is_file() || metadata.len() > MAX_PNG_BYTES as u64 {
+	if metadata.file_type().is_symlink()
+		|| !metadata.is_file()
+		|| metadata.len() > MAX_PNG_BYTES as u64
+	{
 		return Err("Файл скина повреждён".into());
 	}
 	let bytes = tokio::fs::read(path)
@@ -145,9 +148,59 @@ pub async fn rename(
 		.ok_or("Скин не найден")?;
 	item.name = name;
 	if let Some(slim) = slim {
+		if item.slim != slim {
+			item.active_for.clear();
+		}
 		item.slim = slim;
 	}
 	persist(store, &skins).await?;
+	list(store).await
+}
+pub async fn update(
+	store: &Store,
+	id: &str,
+	name: &str,
+	slim: bool,
+	data: Option<&str>,
+) -> Result<Vec<SavedSkin>> {
+	let name = valid_name(name)?;
+	let replacement = data.map(decode_png).transpose()?;
+	let mut skins = index(store).await?;
+	let item = skins
+		.iter_mut()
+		.find(|item| item.id == id)
+		.ok_or("Скин не найден")?;
+	let changed_appearance = item.slim != slim || replacement.is_some();
+	item.name = name;
+	item.slim = slim;
+	if changed_appearance {
+		item.active_for.clear();
+	}
+	if let Some(bytes) = replacement {
+		let path = skin_path(store, id)?;
+		let original = read_skin(store, id).await?;
+		let staging = directory(store).join(format!("{}.tmp", Uuid::new_v4()));
+		tokio::fs::write(&staging, bytes)
+			.await
+			.map_err(|_| "Не удалось подготовить новую текстуру")?;
+		if tokio::fs::rename(&staging, &path).await.is_err() {
+			let _ = tokio::fs::remove_file(staging).await;
+			return Err("Не удалось заменить текстуру скина".into());
+		}
+		if let Err(error) = persist(store, &skins).await {
+			let rollback = directory(store).join(format!("{}.tmp", Uuid::new_v4()));
+			if tokio::fs::write(&rollback, original).await.is_err()
+				|| tokio::fs::rename(&rollback, &path).await.is_err()
+			{
+				return Err(
+					"Не удалось восстановить прежнюю текстуру после ошибки записи каталога".into(),
+				);
+			}
+			return Err(error);
+		}
+	} else {
+		persist(store, &skins).await?;
+	}
 	list(store).await
 }
 pub async fn remove(store: &Store, id: &str) -> Result<Vec<SavedSkin>> {
@@ -412,10 +465,53 @@ mod tests {
 		);
 		assert_eq!(reloaded[0].id, second_id);
 		assert_eq!(reloaded[0].active_for, ["offline-test"]);
+		let original = bytes(&store, &second_id).await.unwrap().0;
+		assert!(
+			update(&store, &second_id, "Изменён", true, Some("not a PNG"))
+				.await
+				.is_err()
+		);
+		assert_eq!(bytes(&store, &second_id).await.unwrap().0, original);
+		assert_eq!(list(&store).await.unwrap()[0].name, "Переименован");
+		let mut image = image::load_from_memory(&original).unwrap().to_rgba8();
+		image.put_pixel(8, 8, image::Rgba([244, 32, 31, 255]));
+		let mut encoded = std::io::Cursor::new(Vec::new());
+		image::DynamicImage::ImageRgba8(image)
+			.write_to(&mut encoded, image::ImageFormat::Png)
+			.unwrap();
+		let replacement = BASE64_STANDARD.encode(encoded.into_inner());
+		let updated = update(&store, &second_id, "Изменён", true, Some(&replacement))
+			.await
+			.unwrap();
+		assert_eq!(updated[0].name, "Изменён");
+		assert!(updated[0].slim);
+		assert!(updated[0].active_for.is_empty());
+		assert_ne!(bytes(&store, &second_id).await.unwrap().0, original);
+		assert!(local_skin(&store, "offline-test").await.unwrap().is_none());
 		reset_local(&store, "offline-test").await.unwrap();
 		assert!(local_skin(&store, "offline-test").await.unwrap().is_none());
 		remove(&store, &first_id).await.unwrap();
 		assert_eq!(list(&store).await.unwrap().len(), 1);
+		drop(store);
+		let _ = tokio::fs::remove_dir_all(directory).await;
+	}
+	#[cfg(unix)]
+	#[tokio::test]
+	async fn rejects_a_symlink_replacing_a_saved_skin() {
+		let directory = std::env::temp_dir().join(format!("urod-skin-link-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone()).await.unwrap();
+		let png = BASE64_STANDARD.encode(include_bytes!("../assets/steve.png"));
+		let saved = save(&store, "Link test", false, &png).await.unwrap();
+		let id = &saved[0].id;
+		let path = skin_path(&store, id).unwrap();
+		tokio::fs::remove_file(&path).await.unwrap();
+		std::os::unix::fs::symlink(
+			Path::new(env!("CARGO_MANIFEST_DIR")).join("assets/steve.png"),
+			&path,
+		)
+		.unwrap();
+		assert!(read_skin(&store, id).await.is_err());
+		assert!(list(&store).await.unwrap()[0].preview.is_none());
 		drop(store);
 		let _ = tokio::fs::remove_dir_all(directory).await;
 	}
