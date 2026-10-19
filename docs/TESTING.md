@@ -1,6 +1,6 @@
 # Verification record
 
-Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only checks observed on this Linux host and in the linked CI run. Native tests used isolated launcher data under `/tmp/urod-figma-rc` and `.qa-runtime/urod-figma-native`; live loader tests used an ignored local cache in `.qa-runtime`.
+Date: 2026-10-19. Branch: `release/1.0.0-figma-stable`. Results describe only checks observed on this Linux host and in the linked CI run. Native tests used isolated launcher data under `/tmp/urod-figma-rc` and `.qa-runtime/urod-figma-native`; live loader tests used an ignored local cache in `.qa-runtime`.
 
 | Command or scenario | Outcome |
 | --- | --- |
@@ -24,6 +24,7 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | [CI run 39160531660](https://github.com/Yozekkk/urod-launcher/actions/runs/39160531660) | Pass on the pushed pack synchronization commit: frontend/backend verification and the existing desktop package build matrix. The resource-limit changes are verified locally and await a new CI run after push. |
 | Real Tauri at 1280×720 | Library, gallery, skins, dialogs, global settings and pack settings captured from the running app under [figma-rc](screenshots/figma-rc) |
 | Skin save/edit/restart | Pass: known 64×64 PNG saved; Steve/Alex changed; state remained after WebView reload |
+| Skin library full-body thumbnails | Native Tauri at 1280×720 rendered a saved 64×64 Steve PNG as a full-body card and main 3D preview; drag-and-drop of that PNG opened the add dialog. Figma `3:1012` normalized whole-frame RGB difference: 9.86/255, with different real/demo skin and account content. At 860×620 the picker, preview, edit control and navigation remained visible with no document horizontal overflow. |
 | Settings persistence | Pass: global RAM set to 6144 MB and survived WebView reload; pack RAM set to 6144 MB, name changed and a copy created through the Figma style native dialog |
 | Vanilla 1.21.1 | Pass: official assets installed, Java 21 client started, Niri reported a `Minecraft 1.21.1` window, game stopped; second launch/stop passed in 22.11 seconds |
 | Fabric 1.21.1 | Pass: loader 0.19.5 installed, game PID 7654 launched, status remained running, stop passed in 246.63 seconds |

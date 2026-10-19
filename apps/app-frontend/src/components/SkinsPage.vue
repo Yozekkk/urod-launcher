@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowRef, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { SkinViewer } from 'skinview3d'
 import type { Account, Skin } from '../models'
 import SkinPreview from './SkinPreview.vue'
 
@@ -18,6 +19,10 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ applied: [account: Account] }>()
 const items = shallowRef<SavedSkin[]>([])
+const thumbnails = shallowRef<Record<string, string>>({})
+let thumbnailViewer: SkinViewer | null = null
+let thumbnailGeneration = 0
+let thumbnailQueue: Promise<void> = Promise.resolve()
 const selectedId = shallowRef('')
 const accountId = shallowRef('')
 const name = shallowRef('')
@@ -56,6 +61,50 @@ async function load() {
 onMounted(() => {
 	void load()
 })
+watch(items, (skins) => {
+	const generation = ++thumbnailGeneration
+	thumbnailQueue = thumbnailQueue
+		.then(async () => {
+			thumbnails.value = {}
+			for (const skin of skins) {
+				if (generation !== thumbnailGeneration) return
+				const texture = skin.preview?.texture
+				if (!texture) continue
+				try {
+					if (!thumbnailViewer) {
+						thumbnailViewer = new SkinViewer({
+							canvas: document.createElement('canvas'),
+							width: 120,
+							height: 164,
+							zoom: 1.05,
+							preserveDrawingBuffer: true,
+							renderPaused: true,
+							enableControls: false,
+						})
+						thumbnailViewer.playerObject.rotation.y = 0.38
+					}
+					await thumbnailViewer.loadSkin(texture, { model: skin.slim ? 'slim' : 'default' })
+					if (generation !== thumbnailGeneration) return
+					thumbnailViewer.render()
+					thumbnails.value = {
+						...thumbnails.value,
+						[skin.id]: thumbnailViewer.canvas.toDataURL('image/png'),
+					}
+				} catch {
+					// Keep the validated head preview when WebGL is unavailable.
+				}
+				await new Promise<void>((resolve) => setTimeout(resolve, 0))
+			}
+		})
+		.catch(() => {})
+})
+onUnmounted(() => {
+	thumbnailGeneration++
+	void thumbnailQueue.finally(() => {
+		thumbnailViewer?.dispose()
+		thumbnailViewer = null
+	})
+})
 async function run(command: string, args: Record<string, unknown>, success: string) {
 	busy.value = true
 	error.value = ''
@@ -71,9 +120,7 @@ async function run(command: string, args: Record<string, unknown>, success: stri
 		busy.value = false
 	}
 }
-async function upload(event: Event) {
-	const input = event.target as HTMLInputElement
-	const file = input.files?.[0]
+function readSkinFile(file: File | undefined) {
 	if (!file) return
 	if (file.size > 1_048_576 || file.type !== 'image/png') {
 		error.value = 'Выберите PNG размером до 1 МБ'
@@ -92,7 +139,15 @@ async function upload(event: Event) {
 		error.value = 'Не удалось прочитать файл'
 	}
 	reader.readAsDataURL(file)
+}
+function upload(event: Event) {
+	const input = event.target as HTMLInputElement
+	readSkinFile(input.files?.[0])
 	input.value = ''
+}
+function dropSkin(event: DragEvent) {
+	prepareAdd()
+	readSkinFile(event.dataTransfer?.files[0])
 }
 function prepareAdd() {
 	error.value = ''
@@ -178,10 +233,16 @@ function reset() {
 		<p v-if="error && !addOpen && !editOpen" role="alert" class="skin-page-error">{{ error }}</p>
 		<div class="skin-layout">
 			<aside class="skin-list" aria-label="Сохранённые скины">
-				<label class="skin-add-tile" :aria-disabled="busy" @click="prepareAdd">
+				<label
+					class="skin-add-tile"
+					:aria-disabled="busy"
+					@dragover.prevent
+					@drop.prevent="dropSkin"
+					@click="prepareAdd"
+				>
 					<img src="/figma/55119.svg" width="25" height="25" alt="" />
 					<strong>Добавить скин</strong>
-					<small>Выберите PNG</small>
+					<small>Перетащите сюда</small>
 					<input
 						type="file"
 						accept="image/png"
@@ -195,10 +256,18 @@ function reset() {
 					:key="item.id"
 					class="skin-item"
 					:class="{ selected: selectedId === item.id }"
+					:aria-label="`Выбрать скин ${item.name}`"
+					:aria-pressed="selectedId === item.id"
 					@click="selectSkin(item)"
 				>
 					<img
-						v-if="item.preview?.head"
+						v-if="thumbnails[item.id]"
+						class="skin-thumbnail"
+						:src="thumbnails[item.id]"
+						alt=""
+					/>
+					<img
+						v-else-if="item.preview?.head"
 						:src="item.preview.head"
 						width="42"
 						height="42"
@@ -214,7 +283,10 @@ function reset() {
 					:texture="selected?.preview?.texture || null"
 					:slim="selected?.slim || false"
 					:reduced-motion="reducedMotion"
+					:width="183"
+					:height="260"
 				/>
+				<p v-if="selected" class="skin-detail-hint">⟷ Перетащите, чтобы повернуть</p>
 				<div v-if="selected" class="skin-controls">
 					<button class="button secondary skin-edit-button" :disabled="busy" @click="showEdit">
 						Изменить
@@ -627,24 +699,39 @@ function reset() {
 	position: relative;
 	flex-direction: column;
 	justify-content: center;
-	gap: 6px;
-	padding: 8px;
+	gap: 0;
+	padding: 0;
 	text-align: center;
+	overflow: hidden;
 }
 .skin-item:hover,
-.skin-item.selected {
+.skin-item:focus-visible {
 	background: var(--figma-control);
 	border-color: var(--figma-accent);
 }
+.skin-item.selected {
+	background: var(--figma-control);
+	border-color: var(--figma-border);
+}
 .skin-item img {
-	width: 112px;
-	height: 112px;
+	width: 120px;
+	height: 164px;
 	object-fit: contain;
 	image-rendering: pixelated;
 }
 .skin-item span {
-	max-width: 116px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	padding: 6px;
+	background: var(--figma-control);
 	font-size: 11px;
+	opacity: 0;
+}
+.skin-item:hover span,
+.skin-item:focus-visible span {
+	opacity: 1;
 }
 .skin-item b {
 	position: absolute;
@@ -653,6 +740,7 @@ function reset() {
 	font-size: 12px;
 }
 .skin-detail {
+	position: relative;
 	grid-column: 1;
 	grid-row: 1;
 	width: 183px;
@@ -672,24 +760,35 @@ function reset() {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.skin-detail .skin-preview {
+.skin-detail :deep(.skin-preview) {
 	width: 183px;
-	min-height: 300px;
-	height: 300px;
+	min-height: 260px;
+	height: 260px;
 	overflow: hidden;
 }
-.skin-detail .skin-preview canvas {
+.skin-detail :deep(.skin-preview canvas) {
 	max-width: none;
 	width: 183px;
-	height: 300px;
+	height: 260px;
+	transform: translate(-32px, -16px) scale(0.88, 0.96);
+	transform-origin: top center;
 }
-.skin-detail .skin-preview p {
+.skin-detail :deep(.skin-preview p) {
 	font-size: 11px;
 	text-align: center;
 }
+.skin-detail-hint {
+	position: absolute;
+	top: 344px;
+	left: -10px;
+	margin: 0;
+	color: var(--figma-muted);
+	font-size: 9px;
+	white-space: nowrap;
+}
 .skin-controls {
 	justify-content: center;
-	margin: 8px 0 0;
+	margin: 0;
 }
 .skin-edit-button {
 	min-height: 24px;
@@ -702,7 +801,7 @@ function reset() {
 .skin-actions {
 	grid-column: 1 / -1;
 	grid-row: 2;
-	margin-top: 70px;
+	margin-top: 130px;
 	background: var(--figma-control);
 	border-color: var(--figma-border);
 }

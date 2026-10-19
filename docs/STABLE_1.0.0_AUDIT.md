@@ -1,6 +1,6 @@
 # UrodLauncher 1.0.0 Stable readiness audit
 
-Status on 2026-10-18: **release blocked; the repository remains version 0.1.0 Development**. Work is on `release/1.0.0-figma-stable`. No `v1.0.0` tag, Stable package, or GitHub Release has been published.
+Status on 2026-10-19: **release blocked; the repository remains version 0.1.0 Development**. Work is on `release/1.0.0-figma-stable`. No `v1.0.0` tag, Stable package, or GitHub Release has been published.
 
 | Gate | Evidence | Result |
 | --- | --- | --- |
@@ -8,7 +8,7 @@ Status on 2026-10-18: **release blocked; the repository remains version 0.1.0 De
 | Figma inventory | MCP `get_metadata` returned 23 top-level frames; `get_design_context` and screenshots for all listed top-level frames are retained in `docs/figma-reference` | Pass for extraction; child component analysis continues |
 | Settings design | All 16 settings contexts and original screenshots saved in `docs/figma-reference`, including `3:104`, `3:199`, and `3:402` | Pass for extraction; transfer and comparison incomplete |
 | Visual transfer | Shell, library, gallery, skins, dialogs, global settings shell and pack settings shell use exported Figma assets; [comparison map](FIGMA_IMPLEMENTATION_MAP.md) includes real desktop captures and measured differences | Partial: exact subframes and several settings controls remain unimplemented |
-| Functional skin library | PNG upload, safe native validation, model change and persistence exercised in isolated Tauri data | Pass for those paths; Microsoft live upload unavailable |
+| Functional skin library | PNG upload, safe native validation, model change and persistence exercised in isolated Tauri data; PNG drop opened the add dialog and full-body thumbnail rendered in the native app | Pass for those paths; Microsoft live upload unavailable |
 | Settings persistence | Global RAM changed to 6144 MB and survived WebView reload; pack RAM changed to 6144 MB, pack renamed and duplicated through the new native UI | Pass for these paths in isolated data |
 | Frontend check | TypeScript, ESLint, Prettier and 18 tests, including shader/resource pack compatibility | Pass |
 | Rust check | `cargo check --locked -p urod-launcher` | Pass |

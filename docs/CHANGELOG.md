@@ -5,6 +5,7 @@
 - Imported original UrodLauncher Figma SVG/PNG assets and the Geologica/Inter fonts with OFL notices.
 - Replaced the main shell with Figma sidebar, header and news rail; reworked library and live Modrinth gallery geometry.
 - Reworked the skin page and add/edit dialogs using the inspected Figma frames. PNG upload, native validation, model choice and persistence remain functional.
+- Replaced skin-card head crops with full-body previews rendered from each saved PNG using one reusable WebGL viewer, matched the main preview scale against Figma `3:1012`, and made the add tile accept dropped PNG files.
 - Transferred the pack content manager and selected-pack Modrinth browser from Figma frames `3:713` and `3:888`, retaining live installed content and real catalog data. Added shader and resource pack search, compatibility checks and installation through the existing backend.
 - Fixed direct links to installed shaders and resource packs so their Modrinth type is recovered from project metadata even when the URL has no type parameter.
 - Added Figma-based global and pack settings windows. Global RAM, per-pack RAM, renaming and duplication were exercised in the native app. Unsupported sync, repair, fullscreen and command controls are explicitly unavailable.
