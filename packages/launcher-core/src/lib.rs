@@ -59,6 +59,13 @@ pub struct Engine {
 }
 impl Engine {
 	pub async fn open(root: PathBuf, pool: SqlitePool) -> Result<Arc<Self>> {
+		Self::open_with_download_parallelism(root, pool, 6).await
+	}
+	pub async fn open_with_download_parallelism(
+		root: PathBuf,
+		pool: SqlitePool,
+		parallelism: usize,
+	) -> Result<Arc<Self>> {
 		tokio::fs::create_dir_all(root.join("instances")).await?;
 		let mut tx = pool.begin().await?;
 		sqlx::query(
@@ -91,7 +98,7 @@ impl Engine {
 		let engine = Arc::new(Self {
 			root,
 			pool,
-			downloads: DownloadManager::new()?,
+			downloads: DownloadManager::with_parallelism(parallelism)?,
 			mutation: Mutex::new(()),
 			running: Mutex::new(std::collections::HashMap::new()),
 			providers: Mutex::new(providers),

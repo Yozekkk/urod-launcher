@@ -235,6 +235,7 @@ export const gameApi = {
 		invoke<LoaderVersion[]>('core_loader_versions', { loader, gameVersion }),
 	categories: (kind: ContentKind) => invoke<string[]>('core_categories', { kind }),
 	openFolder: (instanceId: string) => invoke<void>('core_open_folder', { instanceId }),
+	openBackupFolder: () => invoke<void>('core_open_backup_folder'),
 	pickIcon: (instanceId: string) => invoke<Instance | null>('pick_instance_icon', { instanceId }),
 	pickImport: () => invoke<string | null>('pick_import_pack'),
 	importPack: (path: string, name: string) => invoke<Instance>('core_import_pack', { path, name }),

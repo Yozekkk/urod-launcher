@@ -564,6 +564,43 @@ pub async fn core_open_folder(
 		.open_path(path.to_string_lossy().into_owned(), None::<&str>)
 		.map_err(|_| "Не удалось открыть папку".to_string())
 }
+#[tauri::command]
+pub async fn core_open_backup_folder(
+	window: tauri::WebviewWindow,
+	app: tauri::AppHandle,
+	state: tauri::State<'_, AppState>,
+) -> Result<()> {
+	local(&window)?;
+	let store = state.store().await?;
+	let path = store.directory.join("backups");
+	match tokio::fs::symlink_metadata(&path).await {
+		Ok(metadata) if !metadata.is_dir() || metadata.file_type().is_symlink() => {
+			return Err("Некорректная папка резервных копий".into());
+		}
+		Ok(_) => {}
+		Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+			tokio::fs::create_dir(&path)
+				.await
+				.map_err(|_| "Не удалось создать папку резервных копий".to_string())?;
+		}
+		Err(_) => return Err("Папка резервных копий недоступна".into()),
+	}
+	let data_directory = tokio::fs::canonicalize(&store.directory)
+		.await
+		.map_err(|_| "Каталог приложения недоступен".to_string())?;
+	let backup_directory = tokio::fs::canonicalize(&path)
+		.await
+		.map_err(|_| "Папка резервных копий недоступна".to_string())?;
+	if backup_directory.parent() != Some(data_directory.as_path()) {
+		return Err("Некорректная папка резервных копий".into());
+	}
+	app.opener()
+		.open_path(
+			backup_directory.to_string_lossy().into_owned(),
+			None::<&str>,
+		)
+		.map_err(|_| "Не удалось открыть папку резервных копий".into())
+}
 async fn pick(app: tauri::AppHandle, save: bool, icon: bool) -> Result<Option<PathBuf>> {
 	tokio::task::spawn_blocking(move || {
 		let dialog = app.dialog().file().set_title(if icon {

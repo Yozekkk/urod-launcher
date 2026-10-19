@@ -35,9 +35,14 @@ impl AppState {
 		self.engine
 			.get_or_try_init(|| async {
 				let store = self.store().await?;
-				Engine::open(store.directory.clone(), store.pool.clone())
-					.await
-					.map_err(core_commands::core_error)
+				let parallelism = store.snapshot().await?.settings.download_parallelism as usize;
+				Engine::open_with_download_parallelism(
+					store.directory.clone(),
+					store.pool.clone(),
+					parallelism,
+				)
+				.await
+				.map_err(core_commands::core_error)
 			})
 			.await
 			.cloned()
@@ -581,6 +586,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		core_commands::core_loader_versions,
 		core_commands::core_categories,
 		core_commands::core_open_folder,
+		core_commands::core_open_backup_folder,
 		core_commands::pick_instance_icon,
 		core_commands::core_java_runtimes,
 		core_commands::core_detect_instance_java,
@@ -650,6 +656,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		core_commands::core_loader_versions,
 		core_commands::core_categories,
 		core_commands::core_open_folder,
+		core_commands::core_open_backup_folder,
 		core_commands::pick_instance_icon,
 		core_commands::core_java_runtimes,
 		core_commands::core_detect_instance_java,

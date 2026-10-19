@@ -67,6 +67,8 @@ Global settings let you set Minecraft window width and height. Both values are v
 
 In an individual pack's **Overrides** settings, you can enable its own window width and height. The pack values take priority over the global values; turning the switch off restores the global dimensions.
 
+In **Resource management**, set 1–10 concurrent downloads; the new limit applies after restarting the launcher. The backup button opens the directory containing any database migration backups. Creating backups on demand and setting an independent disk-write limit are not available yet.
+
 ## Gorod Urodov
 
 UrodGame server address: `gorodurodov.ru`. A dedicated community pack will appear once a real manifest with verifiable files and versions is published. Until then, users can create ordinary instances and use the launcher without community registration. [Official website](https://gorodurodov.ru).

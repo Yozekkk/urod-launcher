@@ -14,6 +14,7 @@
 - Transferred pack settings frames `3:530`, `3:588` and `3:629`. Java detection now chooses the major required by the selected pack and its override can be saved or cleared; launch command inputs remain disabled until safe backend support exists.
 - Transferred the pack synchronization frame `3:648` with its original Figma controls and a working link to global settings. The five separation controls are disabled until the engine can synchronize these files.
 - Matched the resource settings layout from Figma `3:199` against a native Tauri capture. The cache and extended report controls are disabled until backend operations exist.
+- Transferred the additional resource frame `3:236`: download parallelism is now a validated 1–10 setting applied after restart, and the backup folder button opens a confined local directory. The separate write limit remains unavailable.
 - Added separate, validated Java 21 and 25 paths from Figma `3:104`, with runtime detection, native path selection and launch-time selection. Per-pack Java overrides retain priority; a global default no longer becomes a saved pack override during launch.
 - Verified live install, start and stop for Minecraft 1.21.1 with Vanilla, Fabric, Quilt, Forge and NeoForge; repeated the Vanilla launch.
 - Patched the transitive `source-map-js` dependency to 1.2.2 after a production dependency audit found GHSA-68fv-2mgg-jv7q.

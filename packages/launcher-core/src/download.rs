@@ -156,10 +156,16 @@ pub struct DownloadManager {
 }
 impl DownloadManager {
 	pub fn new() -> Result<Self> {
+		Self::with_parallelism(6)
+	}
+	pub fn with_parallelism(parallelism: usize) -> Result<Self> {
+		if !(1..=10).contains(&parallelism) {
+			return Err(crate::Error::Invalid("invalid download parallelism".into()));
+		}
 		Ok(Self {
 			trusted: Arc::new(Mutex::new(std::collections::HashSet::new())),
 			clients: Arc::new(Mutex::new(HashMap::new())),
-			slots: Arc::new(Semaphore::new(6)),
+			slots: Arc::new(Semaphore::new(parallelism)),
 			operations: Arc::new(Mutex::new(HashMap::new())),
 			#[cfg(test)]
 			fixtures: Arc::new(Mutex::new(HashMap::new())),

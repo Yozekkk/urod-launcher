@@ -16,11 +16,13 @@ const emit = defineEmits<{
 	updateMemory: [value: number]
 	updateWindowSize: [dimension: 'width' | 'height', value: string]
 	updateJavaPath: [major: number, path: string]
+	updateDownloadParallelism: [value: number]
 }>()
 const section = ref<Section>('global')
 const localChanged = ref(false)
 const javaBusy = ref(false)
 const javaMessage = ref('')
+const resourceMessage = ref('')
 const memoryMax = 32768
 const syncRows = [
 	['Синхронизация настроек игры', 'Использовать одинаковые настройки игры в сборках.'],
@@ -35,6 +37,18 @@ const syncRows = [
 function updateMemory(event: Event) {
 	localChanged.value = true
 	emit('updateMemory', Number((event.target as HTMLInputElement).value))
+}
+function updateDownloadParallelism(event: Event) {
+	localChanged.value = true
+	emit('updateDownloadParallelism', Number((event.target as HTMLInputElement).value))
+}
+async function openBackupFolder() {
+	resourceMessage.value = ''
+	try {
+		await gameApi.openBackupFolder()
+	} catch (reason) {
+		resourceMessage.value = displayError(reason)
+	}
 }
 function updateWindowSize(dimension: 'width' | 'height', event: Event) {
 	localChanged.value = true
@@ -110,7 +124,10 @@ async function chooseJava(major: number) {
 				<img src="/figma/bd47c.svg" alt="" />Управление ресурсами
 			</button>
 		</nav>
-		<div class="figma-settings-body">
+		<div
+			class="figma-settings-body"
+			:class="{ 'figma-settings-body-resources': section === 'resources' }"
+		>
 			<div v-if="section === 'global'" class="figma-settings-panel" data-figma-node="3:47">
 				<div v-for="[title, description] in syncRows" :key="title" class="figma-settings-row">
 					<div>
@@ -327,6 +344,50 @@ async function chooseJava(major: number) {
 						замедлиться, пока кеш не восстановится.
 					</p>
 				</div>
+				<section class="figma-resource-advanced" data-figma-node="3:236">
+					<div class="figma-resource-concurrency">
+						<strong>Каталог приложения</strong>
+						<div class="figma-resource-range">
+							<span>1</span
+							><input
+								type="range"
+								min="1"
+								max="10"
+								:value="settings.download_parallelism"
+								:disabled="busy"
+								aria-label="Количество одновременных загрузок"
+								@input="updateDownloadParallelism"
+							/><span>10</span><output>{{ settings.download_parallelism }}</output>
+						</div>
+						<p>
+							Количество одновременно скачиваемых файлов. Уменьшите, если скачивание работает
+							нестабильно. Требуется перезапуск.
+						</p>
+					</div>
+					<div class="figma-resource-concurrency">
+						<strong>Лимит одновременных записей</strong>
+						<div class="figma-resource-range">
+							<span>1</span
+							><input
+								type="range"
+								min="1"
+								max="50"
+								value="50"
+								disabled
+								aria-label="Лимит одновременных записей пока недоступен"
+							/><span>50</span><output>50</output>
+						</div>
+						<p>Количество одновременно записываемых на диск файлов. Настройка пока недоступна.</p>
+					</div>
+					<div class="figma-resource-backups">
+						<strong>Резервные копии базы данных</strong>
+						<button class="figma-resource-backup-open" @click="openBackupFolder">
+							<img src="/figma/d4b65.svg" alt="" />Открыть папку резервных копий
+						</button>
+						<p>Здесь хранятся резервные копии важных данных приложения на случай их утери.</p>
+						<p v-if="resourceMessage" role="alert">{{ resourceMessage }}</p>
+					</div>
+				</section>
 			</div>
 		</div>
 	</section>

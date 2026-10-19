@@ -1279,6 +1279,7 @@ onUnmounted(() => {
 						@update-memory="draft.memory_mb = $event"
 						@update-window-size="updateWindowSize"
 						@update-java-path="updateDefaultJavaPath"
+						@update-download-parallelism="draft.download_parallelism = $event"
 					/>
 					<details class="figma-settings-legacy">
 						<summary>Другие настройки лаунчера</summary>

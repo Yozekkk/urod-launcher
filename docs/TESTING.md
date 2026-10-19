@@ -4,8 +4,8 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 
 | Command or scenario | Outcome |
 | --- | --- |
-| `pnpm check` in `apps/app-frontend` | Pass after pack Java settings: Vue typecheck, ESLint, Prettier, 18 unit tests |
-| `pnpm build` | Pass after pack Java settings; Vite warns that the lazy skin viewer chunk exceeds 500 kB |
+| `pnpm check` in `apps/app-frontend` | Pass after resource settings: Vue typecheck, ESLint, Prettier, 18 unit tests |
+| `pnpm build` | Pass after resource settings; Vite warns that the lazy skin viewer chunk exceeds 500 kB |
 | `node scripts/check-stage2-boundary.mjs` | Pass after the latest settings UI changes |
 | `node --test scripts/release-assets.test.mjs` | Pass |
 | `pnpm audit --prod` | Pass after overriding transitive `source-map-js` to 1.2.2; no known production advisories reported |
@@ -15,13 +15,13 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | `cargo clippy --locked -p urod-launcher --all-targets -- -D warnings` | Pass after correcting seven Daedalus warnings |
 | `cargo test --locked -p urod-launcher -p urod-launcher-core` | Pass after Java changes: 31 app tests and 49 core tests passed; 2 and 4 respectively ignored live/manual tests. Fabric/Quilt live integration remains ignored in the default run and passed when run explicitly earlier. |
 | `cargo test -p urod-launcher -p urod-launcher-core` after window settings | Pass: 32 app tests and 53 core tests; 2 and 4 respectively ignored. The new tests cover persistence and validation of the dimension pair, and replacement of existing resolution arguments. |
-| `cargo test -p urod-launcher -p urod-launcher-core` after pack overrides | Pass: 32 app tests and 54 core tests; 2 and 4 respectively ignored. The additional core test verifies pack override persistence, rejection of incomplete dimensions and clearing the override. |
+| `cargo test --locked -p urod-launcher -p urod-launcher-core` after resource limits | Pass: 33 app tests and 54 core tests; 2 and 4 respectively ignored. The new app test verifies download-limit persistence and rejects values outside 1–10. |
 | `cargo test -p urod-launcher-core --lib` after journal changes | Pass: 52 tests, 4 ignored; includes readable Log4j conversion, common credential redaction, and offline token placeholder regression. |
 | `node scripts/build.mjs --no-bundle` | Pass: optimized Linux binary built with the current 0.1.0 metadata |
 | Release binary launch | Pass: `target/release/UrodLauncher` opened a native window with `XDG_DATA_HOME=/tmp/urod-release-smoke-data`; [capture](screenshots/figma-rc/release-binary-home-physical.png) shows the production WebView |
 | Arch candidate package | `makepkg --force --nodeps --nocheck` passed for 0.1.0-1; package contains binary, desktop entry, Figma icon, LICENSE and NOTICE. `pacman -U` and `pacman -R` succeeded inside an isolated `/tmp/urod-package-root` with `-dd` because that root has no system dependency database. This does not verify launch after a normal system install. |
 | [CI run 39104625372](https://github.com/Yozekkk/urod-launcher/actions/runs/39104625372) | Pass: verification, Debian package build and apt installation, Windows NSIS build, Arch package build and pacman installation. Packages still carry 0.1.0 metadata. CI did not execute the Windows app or launch installed Linux packages. |
-| [CI run 39128404867](https://github.com/Yozekkk/urod-launcher/actions/runs/39128404867) | Pass on the pushed per-pack window commit: frontend/backend verification and the existing desktop package build matrix. The pack Java changes are verified locally and await a new CI run after push. |
+| [CI run 39160531660](https://github.com/Yozekkk/urod-launcher/actions/runs/39160531660) | Pass on the pushed pack synchronization commit: frontend/backend verification and the existing desktop package build matrix. The resource-limit changes are verified locally and await a new CI run after push. |
 | Real Tauri at 1280×720 | Library, gallery, skins, dialogs, global settings and pack settings captured from the running app under [figma-rc](screenshots/figma-rc) |
 | Skin save/edit/restart | Pass: known 64×64 PNG saved; Steve/Alex changed; state remained after WebView reload |
 | Settings persistence | Pass: global RAM set to 6144 MB and survived WebView reload; pack RAM set to 6144 MB, name changed and a copy created through the Figma style native dialog |
@@ -42,6 +42,7 @@ Date: 2026-10-18. Branch: `release/1.0.0-figma-stable`. Results describe only ch
 | Per-pack Java detection, persistence and launch | Pass: native `Обнаружить` returned Java 21 for the Fabric 1.21.1 QA pack. Saving `/usr/bin/java` persisted it in `core_instances`; disabling and saving the switch cleared `java_path` to null. A separate path `/usr/lib/jvm/java-21-openjdk/bin/java` was then saved through the UI; the actual Fabric process used it as argv[0], opened a Minecraft 1.21.1 window, and stopped successfully. [Native capture](screenshots/figma-rc/settings-pack-java-837x470.png). |
 | Pack launch commands and help | Native captures of Figma `3:588` and `3:629` compare at 4.37 and 2.58/255 mean RGB difference. Shell command inputs are disabled; this is a visual check, not a command-execution pass. |
 | Pack synchronization panel | Native Figma `3:648` capture compared at 6.98/255. Five unavailable controls are disabled; the `Глобальные настройки` button navigated to `#/settings` and rendered the real settings page without horizontal overflow. Synchronization itself was not exercised because it is unimplemented. |
+| Resource limits and backups | Figma `3:236` native capture compared at 4.49/255. The download limit was changed from 6 to 4 through the UI, saved in `snapshot`, and read back as 4 after restarting Tauri. The backup button opened/created the local `backups` directory without a native error. A temporary symlink from that QA directory to `/tmp` was rejected by the native command, then removed and the original directory restored. At 860×620, the controls remained visible without document horizontal overflow. The independent write limit remains disabled. |
 | Pack Java dialog at 860×620 | Pass: the 836×470 dialog, Java card and last environment field remain within the viewport; document width equals viewport width. [Native screenshot](screenshots/figma-rc/settings-pack-java-860-physical-125pct.png). |
 | Additional global settings frames | Native captures for `3:339`, `3:367`, and `3:402` were compared with the corresponding Figma screenshots; mean absolute RGB errors were 2.77, 4.66 and 3.57/255. Input fields are disabled, so visual checks do not count as functional support. |
 | 860×620 native resize | Pass for library, gallery, skins, selected-pack browser and resource settings: no document horizontal overflow; resource form and close button remain visible. Other settings subframes remain to be checked. |
