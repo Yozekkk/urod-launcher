@@ -341,6 +341,12 @@ function showManage(instance: Instance, action: 'rename' | 'duplicate' | 'delete
 	packSettingsTab.value = 'main'
 	error.value = ''
 	if (!manageDialog.value?.open) manageDialog.value?.showModal()
+	if (action === 'configure')
+		void nextTick(() =>
+			manageDialog.value
+				?.querySelector<HTMLElement>('#manage-title')
+				?.focus({ preventScroll: true }),
+		)
 }
 async function saveManagedName() {
 	if (!managed.value || manageName.value.trim() === managed.value.name) return
@@ -1209,7 +1215,7 @@ onUnmounted(() => {
 				<header class="figma-pack-header">
 					<img class="figma-pack-mark" :src="managed.icon || '/figma/8aecb.png'" alt="" />
 					<span>{{ managed.name }}</span
-					><b id="manage-title">Настройки</b>
+					><b id="manage-title" tabindex="-1">Настройки</b>
 					<button aria-label="Закрыть окно" :disabled="busy" @click="manageDialog?.close()">
 						<img src="/figma/20469.svg" alt="" />
 					</button>

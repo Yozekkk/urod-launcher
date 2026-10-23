@@ -194,6 +194,11 @@
 		600 18px/1.2 Inter,
 		sans-serif;
 }
+.figma-pack-header > b:focus-visible,
+:root[data-focus-glow='true'] .figma-pack-header > b:focus-visible {
+	outline: none;
+	box-shadow: none;
+}
 .figma-pack-header > button {
 	position: absolute;
 	right: 32px;
