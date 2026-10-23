@@ -1,6 +1,6 @@
 # UrodLauncher 1.0.0 Stable readiness audit
 
-Status on 2026-10-19: **release blocked; the repository remains version 0.1.0 Development**. Work is on `release/1.0.0-figma-stable`. No `v1.0.0` tag, Stable package, or GitHub Release has been published.
+Status on 2026-10-23: **release blocked; the repository remains version 0.1.0 Development**. Work is on `release/1.0.0-figma-stable`. No `v1.0.0` tag, Stable package, or GitHub Release has been published.
 
 | Gate | Evidence | Result |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ Status on 2026-10-19: **release blocked; the repository remains version 0.1.0 De
 | Native boundary | [Boundary audit](../scripts/check-stage2-boundary.mjs) and release asset script test | Pass after the latest settings UI changes |
 | Installation and launch | Isolated live Vanilla, Fabric, Quilt, Forge and NeoForge 1.21.1 installed, started, remained running and stopped; Vanilla also repeated launch and displayed a real game window | Pass for these loader/version combinations only |
 | Installer matrix | [CI run 39202944299](https://github.com/Yozekkk/urod-launcher/actions/runs/39202944299) passed verification and Windows NSIS, Debian and Arch package jobs for current 0.1.0 metadata. Its Arch package was extracted and the packaged binary opened, closed and reopened on this desktop with isolated data; its installed icon matches the Figma-derived source bytes. Windows execution, Debian installed-app launch, normal Arch install/removal on this host and all 1.0.0 packages remain open. | **Partial** |
-| Pack repair | The Figma `3:422` repair button ran in native Tauri on a ready custom Fabric 1.21.1 pack. After deliberately truncating the isolated cached client JAR, a second repair restored its original SHA-256 while the checked mod, shader, resource pack and pack-data hashes stayed unchanged. | Pass for this local path; official-pack repair and download-failure rollback remain open |
+| Pack repair | The Figma `3:422` repair button ran in native Tauri on a ready custom Fabric 1.21.1 pack. After deliberately truncating the isolated cached client JAR, repairs before and after the direct-rename fix restored its original SHA-256 while the checked mod, shader, resource pack and pack-data hashes stayed unchanged. The new file-replacement test and core Clippy pass. | Pass for this local path; official-pack repair, power-loss durability and download-failure rollback remain open |
 | Selected-pack content | Installed Fabric API, a shader and a resource pack through live Modrinth; filtered each kind and persisted a resource pack toggle | Pass for those paths; data pack tab needs world targeting |
 | Game log sidebar | Native Fabric 1.21.1 launch produced readable game lines in Figma `3:713` sidebar; error filter showed an actual narrator error; compact drawer opened at 860×620. Latest 32 KiB read from the selected pack's log; common credential fields are redacted. | Pass for this local scenario; arbitrary mod output still needs security review |
 | Resource settings | Native comparison with Figma `3:199` at 837×470 and inspection at 860×620; accurate data directory shown | Partial: safe cache deletion and extended report commands do not exist |

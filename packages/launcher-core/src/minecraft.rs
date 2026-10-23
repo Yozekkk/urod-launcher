@@ -395,10 +395,10 @@ impl Engine {
 					let temporary =
 						target.with_extension(format!("lzma.{}.part", uuid::Uuid::new_v4()));
 					tokio::fs::write(&temporary, bytes).await?;
-					if target.exists() {
-						tokio::fs::remove_file(&target).await?;
+					if let Err(error) = tokio::fs::rename(&temporary, &target).await {
+						let _ = tokio::fs::remove_file(&temporary).await;
+						return Err(error.into());
 					}
-					tokio::fs::rename(temporary, target).await?;
 					continue;
 				}
 				let hash = if let Some(hash) = library.checksums.as_ref().and_then(|x| x.first()) {

@@ -474,12 +474,10 @@ impl DownloadManager {
 		op.register_transfer(&temporary.to_string_lossy(), size);
 		let result = self
 			.stream_file(url, &temporary, hash, algorithm, size, op)
-			.await;
+			.await
+			.and_then(|_| op.check());
 		if result.is_ok() {
-			if path.exists() {
-				tokio::fs::remove_file(path).await?;
-			}
-			tokio::fs::rename(&temporary, path).await?;
+			commit_verified_download(&temporary, path).await?;
 		} else {
 			let _ = tokio::fs::remove_file(&temporary).await;
 		}
@@ -565,6 +563,15 @@ impl DownloadManager {
 		}
 		Ok(())
 	}
+}
+async fn commit_verified_download(temporary: &Path, destination: &Path) -> Result<()> {
+	// Both paths are in the same directory. A rename replaces an existing file
+	// without first removing its name, so an error cannot erase the old copy.
+	if let Err(error) = tokio::fs::rename(temporary, destination).await {
+		let _ = tokio::fs::remove_file(temporary).await;
+		return Err(error.into());
+	}
+	Ok(())
 }
 pub(crate) fn validate_url(url: &reqwest::Url) -> Result<()> {
 	let host = url
@@ -886,6 +893,30 @@ mod cancellation_tests {
 #[cfg(test)]
 mod cached_integrity_tests {
 	use super::*;
+	#[tokio::test]
+	async fn verified_download_replaces_file_and_keeps_destination_on_rename_error() {
+		let directory = tempfile::tempdir().unwrap();
+		let destination = directory.path().join("client.jar");
+		let temporary = directory.path().join("client.part");
+		tokio::fs::write(&destination, b"previous").await.unwrap();
+		tokio::fs::write(&temporary, b"verified").await.unwrap();
+		commit_verified_download(&temporary, &destination)
+			.await
+			.unwrap();
+		assert_eq!(tokio::fs::read(&destination).await.unwrap(), b"verified");
+		assert!(!temporary.exists());
+
+		let blocked = directory.path().join("existing-directory");
+		tokio::fs::create_dir(&blocked).await.unwrap();
+		tokio::fs::write(&temporary, b"verified").await.unwrap();
+		assert!(
+			commit_verified_download(&temporary, &blocked)
+				.await
+				.is_err()
+		);
+		assert!(blocked.is_dir());
+		assert!(!temporary.exists());
+	}
 	#[tokio::test]
 	async fn all_declared_algorithms_verify_cached_files_and_cache_phase_has_no_speed() {
 		let dir = tempfile::tempdir().unwrap();

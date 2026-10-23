@@ -58,6 +58,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
+      - run: cargo test --locked -p urod-launcher-core verified_download_replaces_file_and_keeps_destination_on_rename_error
       - run: pnpm app:build --bundles nsis --config tauri.ci.conf.json
       - uses: actions/upload-artifact@v4
         with:
