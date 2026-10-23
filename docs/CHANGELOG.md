@@ -24,6 +24,7 @@
 - Verified live install, start and stop for Minecraft 1.21.1 with Vanilla, Fabric, Quilt, Forge and NeoForge; repeated the Vanilla launch.
 - Patched the transitive `source-map-js` dependency to 1.2.2 after a production dependency audit found GHSA-68fv-2mgg-jv7q.
 - Replaced bundled desktop icons with rasterizations of the original Figma launcher mark.
+- Included the project's NOTICE attribution as a Tauri resource so future Windows and Debian bundles carry it alongside the GPL license.
 - Corrected active `AGENTS.md` project instructions and seven Daedalus Clippy warnings.
 
 The 1.0.0 release is not issued. See [the readiness audit](STABLE_1.0.0_AUDIT.md) for remaining gates. Historical 0.1.0 records remain in the repository.

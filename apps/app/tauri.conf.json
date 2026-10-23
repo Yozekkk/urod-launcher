@@ -47,7 +47,8 @@
 			"icons/icon.ico"
 		],
 		"resources": {
-			"../../LICENSE": "LICENSE.txt"
+			"../../LICENSE": "LICENSE.txt",
+			"../../NOTICE.md": "NOTICE.md"
 		},
 		"windows": {
 			"nsis": {
