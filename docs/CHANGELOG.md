@@ -27,6 +27,7 @@
 - Updated DOMPurify to 3.4.17 and markdown-it to 15.0.3 after new security advisories made the production dependency audit fail; the local audit and untrusted-Markdown tests pass again.
 - Replaced bundled desktop icons with rasterizations of the original Figma launcher mark.
 - Included the project's NOTICE attribution as a Tauri resource so future Windows and Debian bundles carry it alongside the GPL license.
+- Removed duplicated WebKit/GTK entries from explicit Debian dependencies after the package control file showed that Tauri already adds them.
 - Corrected active `AGENTS.md` project instructions and seven Daedalus Clippy warnings.
 
 The 1.0.0 release is not issued. See [the readiness audit](STABLE_1.0.0_AUDIT.md) for remaining gates. Historical 0.1.0 records remain in the repository.
