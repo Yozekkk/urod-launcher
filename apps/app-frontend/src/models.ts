@@ -16,7 +16,11 @@ export type Settings = {
 	blur: boolean
 	reduced_motion: boolean
 	memory_mb: number
+	download_parallelism: number
+	window_width: number | null
+	window_height: number | null
 	java_path: string
+	java_paths: Record<string, string>
 	game_directory: string
 	auto_updates: boolean
 	release_channel: 'stable' | 'beta'

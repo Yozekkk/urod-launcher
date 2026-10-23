@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, shallowRef, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { invoke } from '@tauri-apps/api/core'
+import { SkinViewer } from 'skinview3d'
 import type { Account, Skin } from '../models'
 import SkinPreview from './SkinPreview.vue'
 
@@ -18,6 +19,11 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ applied: [account: Account] }>()
 const items = shallowRef<SavedSkin[]>([])
+const thumbnails = shallowRef<Record<string, string>>({})
+const thumbnailCache = new Map<string, { texture: string; slim: boolean; image: string }>()
+let thumbnailViewer: SkinViewer | null = null
+let thumbnailGeneration = 0
+let thumbnailQueue: Promise<void> = Promise.resolve()
 const selectedId = shallowRef('')
 const accountId = shallowRef('')
 const name = shallowRef('')
@@ -26,6 +32,13 @@ const busy = shallowRef(false)
 const error = shallowRef('')
 const message = shallowRef('')
 const editName = shallowRef('')
+const editSlim = shallowRef(false)
+const editTexture = shallowRef<string | null>(null)
+const pendingTexture = shallowRef<string | null>(null)
+const addDialog = ref<HTMLDialogElement | null>(null)
+const editDialog = ref<HTMLDialogElement | null>(null)
+const addOpen = shallowRef(false)
+const editOpen = shallowRef(false)
 const selected = computed(() => items.value.find((item) => item.id === selectedId.value))
 const account = computed(() => props.accounts.find((item) => item.uuid === accountId.value))
 const active = computed(() => selected.value?.active_for.includes(accountId.value) ?? false)
@@ -50,6 +63,63 @@ async function load() {
 onMounted(() => {
 	void load()
 })
+watch(items, (skins) => {
+	const generation = ++thumbnailGeneration
+	thumbnailQueue = thumbnailQueue
+		.then(async () => {
+			const next: Record<string, string> = {}
+			const ids = new Set(skins.map((skin) => skin.id))
+			for (const id of thumbnailCache.keys()) {
+				if (!ids.has(id)) thumbnailCache.delete(id)
+			}
+			for (const skin of skins) {
+				const cached = thumbnailCache.get(skin.id)
+				if (cached?.texture === skin.preview?.texture && cached?.slim === skin.slim)
+					next[skin.id] = cached.image
+			}
+			thumbnails.value = next
+			for (const skin of skins) {
+				if (generation !== thumbnailGeneration) return
+				const texture = skin.preview?.texture
+				if (!texture || next[skin.id]) continue
+				try {
+					if (!thumbnailViewer) {
+						thumbnailViewer = new SkinViewer({
+							canvas: document.createElement('canvas'),
+							width: 120,
+							height: 164,
+							zoom: 1.05,
+							preserveDrawingBuffer: true,
+							renderPaused: true,
+							enableControls: false,
+						})
+						thumbnailViewer.playerObject.rotation.y = 0.38
+					}
+					await thumbnailViewer.loadSkin(texture, { model: skin.slim ? 'slim' : 'default' })
+					if (generation !== thumbnailGeneration) return
+					thumbnailViewer.render()
+					const image = thumbnailViewer.canvas.toDataURL('image/png')
+					thumbnailCache.set(skin.id, { texture, slim: skin.slim, image })
+					thumbnails.value = {
+						...thumbnails.value,
+						[skin.id]: image,
+					}
+				} catch {
+					// Keep the validated head preview when WebGL is unavailable.
+				}
+				await new Promise<void>((resolve) => setTimeout(resolve, 0))
+			}
+		})
+		.catch(() => {})
+})
+onUnmounted(() => {
+	thumbnailGeneration++
+	void thumbnailQueue.finally(() => {
+		thumbnailViewer?.dispose()
+		thumbnailViewer = null
+		thumbnailCache.clear()
+	})
+})
 async function run(command: string, args: Record<string, unknown>, success: string) {
 	busy.value = true
 	error.value = ''
@@ -65,9 +135,7 @@ async function run(command: string, args: Record<string, unknown>, success: stri
 		busy.value = false
 	}
 }
-async function upload(event: Event) {
-	const input = event.target as HTMLInputElement
-	const file = input.files?.[0]
+function readSkinFile(file: File | undefined) {
 	if (!file) return
 	if (file.size > 1_048_576 || file.type !== 'image/png') {
 		error.value = 'Выберите PNG размером до 1 МБ'
@@ -77,37 +145,125 @@ async function upload(event: Event) {
 	reader.onload = () => {
 		const data = reader.result
 		if (typeof data !== 'string') return
-		void run(
-			'skin_library_save',
-			{ name: name.value.trim() || file.name.replace(/\.png$/i, ''), slim: slim.value, data },
-			'Скин сохранён в библиотеке',
-		).then(() => {
-			selectedId.value = items.value[0]?.id || ''
-		})
+		pendingTexture.value = data
+		if (!name.value.trim()) name.value = file.name.replace(/\.png$/i, '')
+		addOpen.value = true
+		addDialog.value?.showModal()
+		addDialog.value?.focus()
 	}
 	reader.onerror = () => {
 		error.value = 'Не удалось прочитать файл'
 	}
 	reader.readAsDataURL(file)
+}
+function upload(event: Event) {
+	const input = event.target as HTMLInputElement
+	readSkinFile(input.files?.[0])
 	input.value = ''
+}
+function dropSkin(event: DragEvent) {
+	prepareAdd()
+	readSkinFile(event.dataTransfer?.files[0])
+}
+function prepareAdd() {
+	error.value = ''
+	name.value = ''
+	slim.value = false
+	pendingTexture.value = null
+}
+async function saveNew() {
+	if (!pendingTexture.value) return
+	await run(
+		'skin_library_save',
+		{ name: name.value.trim(), slim: slim.value, data: pendingTexture.value },
+		'Скин сохранён в библиотеке',
+	)
+	if (error.value) return
+	selectedId.value = items.value[0]?.id || ''
+	addDialog.value?.close()
+	addOpen.value = false
+}
+function showEdit() {
+	if (!selected.value) return
+	error.value = ''
+	editName.value = selected.value.name
+	editSlim.value = selected.value.slim
+	editTexture.value = null
+	editOpen.value = true
+	editDialog.value?.showModal()
+	editDialog.value?.focus()
+}
+function closeEdit() {
+	editOpen.value = false
+	editTexture.value = null
+}
+function replaceTexture(event: Event) {
+	const input = event.target as HTMLInputElement
+	const file = input.files?.[0]
+	input.value = ''
+	if (!file) return
+	editTexture.value = null
+	if (file.size > 1_048_576 || file.type !== 'image/png') {
+		error.value = 'Выберите PNG размером до 1 МБ'
+		return
+	}
+	const reader = new FileReader()
+	reader.onload = () => {
+		if (typeof reader.result !== 'string') return
+		error.value = ''
+		editTexture.value = reader.result
+	}
+	reader.onerror = () => {
+		error.value = 'Не удалось прочитать файл'
+	}
+	reader.readAsDataURL(file)
 }
 function selectSkin(item: SavedSkin) {
 	selectedId.value = item.id
 	editName.value = item.name
+	editSlim.value = item.slim
 }
-function remove() {
+async function remove() {
 	if (!selected.value || !window.confirm(`Удалить «${selected.value.name}» из библиотеки?`)) return
 	const id = selected.value.id
-	void run('skin_library_remove', { id }, 'Скин удалён').then(() => {
-		selectedId.value = items.value[0]?.id || ''
-	})
+	const activeAccount = account.value
+	const wasActive = activeAccount && selected.value.active_for.includes(activeAccount.uuid)
+	await run('skin_library_remove', { id }, 'Скин удалён')
+	if (error.value) return
+	selectedId.value = items.value[0]?.id || ''
+	if (wasActive && activeAccount) emit('applied', activeAccount)
 }
-function rename() {
+async function saveEdit() {
 	if (!selected.value || !editName.value.trim()) return
-	void run(
+	const wasActive = account.value && selected.value.active_for.includes(account.value.uuid)
+	const hadActiveAccounts = selected.value.active_for.length > 0
+	const appearanceChanged = editSlim.value !== selected.value.slim || editTexture.value !== null
+	await run(
+		'skin_library_update',
+		{
+			id: selected.value.id,
+			name: editName.value,
+			slim: editSlim.value,
+			data: editTexture.value,
+		},
+		appearanceChanged && hadActiveAccounts
+			? 'Скин изменён. Примените его к аккаунту снова.'
+			: 'Скин изменён',
+	)
+	if (!error.value) {
+		if (wasActive && appearanceChanged && account.value) emit('applied', account.value)
+		editDialog.value?.close()
+		editOpen.value = false
+	}
+}
+async function promptRename() {
+	if (!selected.value) return
+	const next = window.prompt('Название скина', selected.value.name)
+	if (next === null || next.trim() === selected.value.name) return
+	await run(
 		'skin_library_rename',
-		{ id: selected.value.id, name: editName.value },
-		'Название изменено',
+		{ id: selected.value.id, name: next, slim: null },
+		'Скин переименован',
 	)
 }
 function apply() {
@@ -128,31 +284,48 @@ function reset() {
 <template>
 	<section class="page skins-page">
 		<div class="skins-heading">
-			<div>
-				<p class="eyebrow">БИБЛИОТЕКА СКИНОВ</p>
-				<h1>Скины</h1>
-				<p>Сохраняйте варианты и переключайте их для выбранного аккаунта.</p>
-			</div>
-			<label class="button primary skin-upload"
-				>Загрузить PNG<input
-					type="file"
-					accept="image/png"
-					aria-label="Загрузить PNG скин"
-					:disabled="busy"
-					@change="upload"
-			/></label>
+			<h1>Выбор скина</h1>
+			<h2>⌃&nbsp; Сохраненные скины</h2>
 		</div>
+		<p v-if="error && !addOpen && !editOpen" role="alert" class="skin-page-error">{{ error }}</p>
+		<p v-if="message && !selected" role="status" class="skin-page-message">{{ message }}</p>
 		<div class="skin-layout">
 			<aside class="skin-list" aria-label="Сохранённые скины">
+				<label
+					class="skin-add-tile"
+					:aria-disabled="busy"
+					@dragover.prevent
+					@drop.prevent="dropSkin"
+					@click="prepareAdd"
+				>
+					<img src="/figma/55119.svg" width="25" height="25" alt="" />
+					<strong>Добавить скин</strong>
+					<small>Перетащите сюда</small>
+					<input
+						type="file"
+						accept="image/png"
+						aria-label="Добавить скин PNG"
+						:disabled="busy"
+						@change="upload"
+					/>
+				</label>
 				<button
 					v-for="item in items"
 					:key="item.id"
 					class="skin-item"
 					:class="{ selected: selectedId === item.id }"
+					:aria-label="`Выбрать скин ${item.name}`"
+					:aria-pressed="selectedId === item.id"
 					@click="selectSkin(item)"
 				>
 					<img
-						v-if="item.preview?.head"
+						v-if="thumbnails[item.id]"
+						class="skin-thumbnail"
+						:src="thumbnails[item.id]"
+						alt=""
+					/>
+					<img
+						v-else-if="item.preview?.head"
 						:src="item.preview.head"
 						width="42"
 						height="42"
@@ -161,22 +334,24 @@ function reset() {
 						>{{ item.name }}<small>{{ item.slim ? 'Alex / Slim' : 'Steve / Classic' }}</small></span
 					><b v-if="item.active_for.includes(accountId)" title="Активный">●</b>
 				</button>
-				<p v-if="!items.length" class="skin-empty">Загрузите первый PNG скин.</p>
 			</aside>
 			<div class="skin-detail">
+				<strong v-if="selected" class="skin-selected-name">{{ selected.name }}</strong>
 				<SkinPreview
 					:texture="selected?.preview?.texture || null"
 					:slim="selected?.slim || false"
 					:reduced-motion="reducedMotion"
+					:width="183"
+					:height="260"
 				/>
+				<p v-if="selected" class="skin-detail-hint">⟷ Перетащите, чтобы повернуть</p>
 				<div v-if="selected" class="skin-controls">
-					<label>Название<input v-model="editName" maxlength="48" autocomplete="off" /></label
-					><button class="button secondary" :disabled="busy || !editName.trim()" @click="rename">
-						Переименовать</button
-					><button class="button secondary" :disabled="busy" @click="remove">Удалить</button>
+					<button class="button secondary skin-edit-button" :disabled="busy" @click="showEdit">
+						Изменить
+					</button>
 				</div>
 			</div>
-			<div class="skin-actions">
+			<div v-if="selected" class="skin-actions">
 				<h2>Применить скин</h2>
 				<label for="skin-account">Аккаунт</label
 				><select id="skin-account" v-model="accountId">
@@ -214,24 +389,149 @@ function reset() {
 				>
 					Восстановить стандартный
 				</button>
-				<div class="skin-import">
-					<label
-						>Название нового скина<input
-							v-model="name"
-							maxlength="48"
-							autocomplete="off"
-							placeholder="Название…" /></label
-					><label class="skin-model"><input v-model="slim" type="checkbox" /> Alex / Slim</label>
-				</div>
+				<button class="button secondary" :disabled="busy || !selected" @click="remove">
+					Удалить выбранный скин
+				</button>
+				<button class="button secondary" :disabled="busy || !selected" @click="promptRename">
+					Переименовать
+				</button>
 				<p v-if="message" role="status" aria-live="polite" class="skin-success">{{ message }}</p>
-				<p v-if="error" role="alert" class="skin-error">{{ error }}</p>
 			</div>
 		</div>
+		<dialog
+			ref="addDialog"
+			class="skin-dialog"
+			aria-labelledby="skin-add-title"
+			tabindex="-1"
+			@close="addOpen = false"
+		>
+			<header>
+				<h2 id="skin-add-title">Добавить скин</h2>
+				<button aria-label="Закрыть" @click="addDialog?.close()">
+					<img src="/figma/70ec6.svg" width="14" height="14" alt="" />
+				</button>
+			</header>
+			<div class="skin-dialog-body">
+				<SkinPreview
+					v-if="addOpen"
+					:texture="pendingTexture"
+					:slim="slim"
+					:reduced-motion="reducedMotion"
+				/>
+				<p class="skin-rotate-hint">
+					<img src="/figma/8e05e.svg" width="16" height="9" alt="" />Перетащите, чтобы повернуть
+				</p>
+				<div class="skin-dialog-fields">
+					<fieldset>
+						<legend>Стиль рук</legend>
+						<label><input v-model="slim" type="radio" :value="false" /> Стив</label>
+						<label><input v-model="slim" type="radio" :value="true" /> Алекс</label>
+					</fieldset>
+					<label
+						>Плащ<button disabled title="Загрузка плащей пока недоступна">
+							<span>×</span><span>НЕТ</span>
+						</button></label
+					>
+				</div>
+			</div>
+			<footer>
+				<button class="button secondary" @click="addDialog?.close()">
+					<img src="/figma/92af7.svg" width="13" height="13" alt="" />Отменить
+				</button>
+				<button
+					class="button primary"
+					:disabled="busy || !pendingTexture || !name.trim()"
+					@click="saveNew"
+				>
+					<img src="/figma/7989a.svg" width="15" height="15" alt="" />Сохранить скин
+				</button>
+			</footer>
+			<p v-if="error" role="alert" class="skin-error">{{ error }}</p>
+		</dialog>
+		<dialog
+			ref="editDialog"
+			class="skin-dialog"
+			aria-labelledby="skin-edit-title"
+			tabindex="-1"
+			@close="closeEdit"
+		>
+			<header>
+				<h2 id="skin-edit-title">Редактирование скина</h2>
+				<button aria-label="Закрыть" @click="editDialog?.close()">
+					<img src="/figma/70ec6.svg" width="14" height="14" alt="" />
+				</button>
+			</header>
+			<div class="skin-dialog-body">
+				<SkinPreview
+					v-if="editOpen"
+					:texture="editTexture || selected?.preview?.texture || null"
+					:slim="editSlim"
+					:reduced-motion="reducedMotion"
+				/>
+				<p class="skin-rotate-hint">
+					<img src="/figma/8e05e.svg" width="16" height="9" alt="" />Перетащите, чтобы повернуть
+				</p>
+				<div class="skin-dialog-fields">
+					<div class="skin-texture-field">
+						<span>Текстура</span>
+						<label class="skin-replace-button">
+							<img src="/figma/2e380.svg" width="10" height="13" alt="" />{{
+								editTexture ? 'Текстура выбрана' : 'Заменить текстуру'
+							}}
+							<input
+								type="file"
+								accept="image/png"
+								aria-label="Заменить текстуру скина PNG"
+								:disabled="busy"
+								@change="replaceTexture"
+							/>
+						</label>
+					</div>
+					<fieldset>
+						<legend>Стиль рук</legend>
+						<label><input v-model="editSlim" type="radio" :value="false" /> Стив</label>
+						<label><input v-model="editSlim" type="radio" :value="true" /> Алекс</label>
+					</fieldset>
+					<label
+						>Плащ<button disabled title="Загрузка плащей пока недоступна">
+							<span>×</span><span>НЕТ</span>
+						</button></label
+					>
+				</div>
+			</div>
+			<footer>
+				<button class="button secondary" @click="editDialog?.close()">
+					<img src="/figma/92af7.svg" width="13" height="13" alt="" />Отменить
+				</button>
+				<button class="button primary" :disabled="busy || !editName.trim()" @click="saveEdit">
+					<img src="/figma/7989a.svg" width="15" height="15" alt="" />Сохранить скин
+				</button>
+			</footer>
+			<p v-if="error" role="alert" class="skin-error">{{ error }}</p>
+		</dialog>
 	</section>
 </template>
 <style scoped>
 .skins-page {
+	position: relative;
 	padding: 28px 36px 48px;
+}
+.skin-page-error {
+	position: absolute;
+	left: 38px;
+	top: 65px;
+	z-index: 2;
+	margin: 0;
+	color: var(--figma-accent);
+	font-size: 12px;
+}
+.skin-page-message {
+	position: absolute;
+	left: 38px;
+	top: 65px;
+	margin: 0;
+	color: var(--figma-muted);
+	font-size: 12px;
 }
 .skins-heading {
 	display: flex;
@@ -399,6 +699,433 @@ function reset() {
 	.skin-list {
 		min-height: 0;
 		max-height: 180px;
+	}
+}
+.skins-page {
+	padding: 31px 25px 50px 38px;
+}
+.skins-heading {
+	justify-content: flex-start;
+	gap: 80px;
+	margin: 0 0 22px;
+}
+.skins-heading h1,
+.skins-heading h2 {
+	margin: 0;
+	font:
+		500 20px/26px Geologica,
+		sans-serif;
+}
+.skins-heading h2 {
+	color: var(--figma-accent);
+}
+.skin-layout {
+	display: grid;
+	grid-template-columns: 169px minmax(0, 1fr);
+	grid-template-rows: auto auto;
+	gap: 0 14px;
+}
+.skin-list {
+	grid-column: 2;
+	grid-row: 1;
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 136px));
+	grid-auto-rows: 176px;
+	gap: 14px;
+	align-content: start;
+	min-height: 0;
+	max-height: none;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	overflow: visible;
+}
+.skin-add-tile,
+.skin-item {
+	width: 136px;
+	height: 176px;
+	border: 1.5px solid var(--figma-border);
+	border-radius: 22px;
+	background: var(--figma-control);
+	color: var(--figma-text);
+	cursor: pointer;
+}
+.skin-add-tile {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	border-style: dashed;
+	font-size: 10px;
+}
+.skin-add-tile input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+.skin-add-tile:focus-within {
+	outline: 2px solid var(--figma-accent);
+	outline-offset: 2px;
+}
+.skin-add-tile img {
+	margin-bottom: 12px;
+}
+.skin-add-tile strong {
+	font-weight: 500;
+}
+.skin-add-tile small {
+	color: var(--figma-muted);
+	font-size: 9px;
+}
+.skin-item {
+	position: relative;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0;
+	padding: 0;
+	text-align: center;
+	overflow: hidden;
+}
+.skin-item:hover,
+.skin-item:focus-visible {
+	background: var(--figma-control);
+	border-color: var(--figma-accent);
+}
+.skin-item.selected {
+	background: var(--figma-control);
+	border-color: var(--figma-border);
+}
+.skin-item img {
+	width: 120px;
+	height: 164px;
+	object-fit: contain;
+	image-rendering: pixelated;
+}
+.skin-item span {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	padding: 6px;
+	background: var(--figma-control);
+	font-size: 11px;
+	opacity: 0;
+}
+.skin-item:hover span,
+.skin-item:focus-visible span {
+	opacity: 1;
+}
+.skin-item b {
+	position: absolute;
+	right: 9px;
+	top: 6px;
+	font-size: 12px;
+}
+.skin-detail {
+	position: relative;
+	grid-column: 1;
+	grid-row: 1;
+	width: 183px;
+	margin-left: -13px;
+}
+.skin-selected-name {
+	display: inline-block;
+	max-width: 170px;
+	margin: 28px 0 0 9px;
+	padding: 9px 19px;
+	border-radius: 15px;
+	background: var(--figma-control);
+	font:
+		400 16px Geologica,
+		sans-serif;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.skin-detail :deep(.skin-preview) {
+	width: 183px;
+	min-height: 260px;
+	height: 260px;
+	overflow: hidden;
+}
+.skin-detail :deep(.skin-preview canvas) {
+	max-width: none;
+	width: 183px;
+	height: 260px;
+	transform: translate(-32px, -16px) scale(0.88, 0.96);
+	transform-origin: top center;
+}
+.skin-detail :deep(.skin-preview p) {
+	font-size: 11px;
+	text-align: center;
+}
+.skin-detail-hint {
+	position: absolute;
+	top: 344px;
+	left: -10px;
+	margin: 0;
+	color: var(--figma-muted);
+	font-size: 9px;
+	white-space: nowrap;
+}
+.skin-controls {
+	justify-content: center;
+	margin: 0;
+}
+.skin-edit-button {
+	min-height: 24px;
+	padding: 2px 12px;
+	border: 0;
+	border-radius: 9px;
+	background: var(--figma-control);
+	font-size: 12px;
+}
+.skin-actions {
+	grid-column: 1 / -1;
+	grid-row: 2;
+	margin-top: 130px;
+	background: var(--figma-control);
+	border-color: var(--figma-border);
+}
+.skin-dialog {
+	width: min(500px, calc(100vw - 32px));
+	height: min(489px, calc(100vh - 32px));
+	max-width: none;
+	max-height: none;
+	padding: 0;
+	border: 1.5px solid var(--figma-border);
+	border-radius: 27px;
+	background: var(--figma-control);
+	color: var(--figma-text);
+	font-family: Geologica, sans-serif;
+	overflow: hidden;
+	outline: none;
+}
+.skin-dialog:focus {
+	box-shadow: none;
+}
+.skin-dialog::backdrop {
+	background: #000b;
+}
+.skin-dialog > header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 92px;
+	padding: 0 31px;
+	border-bottom: 1.5px solid var(--figma-border);
+}
+.skin-dialog > header h2 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+}
+.skin-dialog > header button {
+	display: grid;
+	place-items: center;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--figma-text);
+	font:
+		30px/1 Inter,
+		sans-serif;
+	cursor: pointer;
+}
+.skin-dialog-body {
+	position: relative;
+	display: grid;
+	grid-template-columns: 218px minmax(0, 1fr);
+	gap: 0;
+	height: 315px;
+	padding: 26px 30px 0;
+}
+.skin-dialog-body :deep(.skin-preview) {
+	width: 180px;
+	height: 270px;
+	min-height: 0;
+	overflow: hidden;
+	transform: translateY(-16px);
+}
+.skin-dialog-body :deep(.skin-preview canvas) {
+	width: 180px;
+	height: 270px;
+	transform: translateY(-77px) scale(1.25, 0.9);
+}
+.skin-rotate-hint {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	left: 39px;
+	top: 268px;
+	margin: 0;
+	color: var(--figma-muted);
+	font-size: 9px;
+}
+.skin-dialog-fields {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 13px;
+	font-size: 16px;
+	font-weight: 500;
+}
+.skin-dialog-fields > label {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 11px;
+}
+.skin-texture-field {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 11px;
+}
+.skin-replace-button {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	width: 154px;
+	padding: 9px 10px;
+	border-radius: 12px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font-size: 10px;
+	cursor: pointer;
+}
+.skin-replace-button:focus-within {
+	outline: 2px solid var(--figma-accent);
+	outline-offset: 2px;
+}
+.skin-replace-button input {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+}
+.skin-dialog-fields input[type='file'],
+.skin-dialog-fields > label > button {
+	width: 154px;
+	font-size: 10px;
+}
+.skin-dialog-fields input[type='file']::file-selector-button,
+.skin-dialog-fields > label > button {
+	padding: 9px 10px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--figma-border);
+	color: var(--figma-text);
+	font-family: Geologica, sans-serif;
+}
+.skin-dialog-fields input[type='text'] {
+	width: 190px;
+}
+.skin-dialog-fields fieldset {
+	display: flex;
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+.skin-dialog-fields legend {
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+.skin-dialog-fields fieldset label {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 10px;
+}
+.skin-dialog-fields input[type='radio'] {
+	width: 13px;
+	height: 13px;
+	margin: 0;
+	accent-color: var(--figma-accent);
+}
+.skin-dialog-fields > label:last-child button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 84px;
+	gap: 0;
+}
+.skin-dialog-fields > label:last-child {
+	margin-top: 10px;
+}
+.skin-dialog-fields > label:last-child button span:first-child {
+	font-size: 20px;
+}
+.skin-dialog-fields > label:last-child button span:last-child {
+	font-size: 10px;
+}
+.skin-dialog > footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 21px;
+	padding: 25px 31px 0;
+}
+.skin-dialog > footer .button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 31px;
+	border-radius: 10px;
+	font-size: 16px;
+}
+.skin-dialog > footer .secondary {
+	width: 123px;
+}
+.skin-dialog > footer .primary {
+	width: 175px;
+	background: var(--figma-accent);
+}
+.skin-dialog > .skin-error {
+	position: absolute;
+	left: 30px;
+	bottom: 5px;
+	font-size: 10px;
+}
+@media (max-width: 1080px) {
+	.skin-list {
+		grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	}
+	.skin-add-tile,
+	.skin-item {
+		width: 100%;
+	}
+}
+@media (max-width: 720px) {
+	.skin-layout {
+		grid-template-columns: 1fr;
+	}
+	.skin-detail,
+	.skin-list,
+	.skin-actions {
+		grid-column: 1;
+		grid-row: auto;
+	}
+	.skin-list {
+		max-height: none;
+	}
+	.skin-dialog-body {
+		grid-template-columns: 1fr;
+		overflow: auto;
 	}
 }
 </style>

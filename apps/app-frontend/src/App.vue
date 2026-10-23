@@ -17,6 +17,7 @@ import { enable, disable, isEnabled } from '@tauri-apps/plugin-autostart'
 import AppIcon from './components/AppIcon.vue'
 import AppNavbar from './components/AppNavbar.vue'
 import JavaRuntimeDialog from './components/JavaRuntimeDialog.vue'
+import FigmaGlobalSettings from './components/FigmaGlobalSettings.vue'
 import SettingsSidebar from './components/SettingsSidebar.vue'
 import ElyLoginDialog from './components/ElyLoginDialog.vue'
 import LibraryPage from './components/LibraryPage.vue'
@@ -53,27 +54,83 @@ const navigation = computed<{ id: Page; label: string; icon: string }[]>(() =>
 		? [
 				{ id: 'home', label: 'Home', icon: 'home' },
 				{ id: 'library', label: 'Library', icon: 'folder' },
-				{ id: 'content', label: 'Mods & packs', icon: 'game' },
 				{ id: 'accounts', label: 'Accounts', icon: 'accounts' },
 				{ id: 'skins', label: 'Skins', icon: 'accounts' },
+				{ id: 'content', label: 'Mods & packs', icon: 'game' },
 				{ id: 'settings', label: 'Settings', icon: 'settings' },
 			]
 		: [
 				{ id: 'home', label: messages.navigation.home, icon: 'home' },
 				{ id: 'library', label: 'Библиотека', icon: 'folder' },
-				{ id: 'content', label: 'Моды и сборки', icon: 'game' },
 				{ id: 'accounts', label: messages.navigation.accounts, icon: 'accounts' },
 				{ id: 'skins', label: 'Скины', icon: 'accounts' },
+				{ id: 'content', label: 'Моды и сборки', icon: 'game' },
 				{ id: 'settings', label: messages.navigation.settings, icon: 'settings' },
 			],
 )
 const page = ref<Page>('home')
+async function createFromSidebar() {
+	setPage('library')
+	await nextTick()
+	window.document.getElementById('create-instance-button')?.click()
+}
 const operations = useGameOperations()
 const launcherUpdates = useLauncherUpdates()
 const launcherUpdateNotes = computed(() =>
 	renderProjectMarkdown(launcherUpdates.candidate.value?.notes || ''),
 )
 const routeDetail = ref<string | null>(null)
+const packLogSearch = ref('')
+type PackLogLevel = 'errors' | 'warnings' | 'information'
+const packLogFilter = ref<'all' | PackLogLevel>('all')
+const packLogLines = ref<string[]>([])
+const packLogError = ref('')
+const packLogOpen = ref(false)
+let packLogRequest = 0
+let packLogTimer: ReturnType<typeof setInterval> | undefined
+async function refreshPackLog() {
+	const instanceId = page.value === 'library' ? routeDetail.value : null
+	if (!instanceId) return
+	const request = ++packLogRequest
+	try {
+		const text = await gameApi.gameLogTail(instanceId)
+		if (request !== packLogRequest || routeDetail.value !== instanceId) return
+		packLogLines.value = text.split(/\r?\n/).filter(Boolean).slice(-200)
+		packLogError.value = ''
+	} catch (reason) {
+		if (request !== packLogRequest || routeDetail.value !== instanceId) return
+		packLogError.value = String(reason)
+	}
+}
+watch([page, routeDetail], () => {
+	packLogRequest++
+	packLogLines.value = []
+	packLogError.value = ''
+	packLogOpen.value = false
+	if (page.value === 'library' && routeDetail.value) void refreshPackLog()
+})
+const visiblePackLogLines = computed(() => {
+	const operationLines = operations.active.value
+		.filter((job) => job.instance_id === routeDetail.value)
+		.map((job) => ({
+			text: operationMessage(job),
+			level: (job.error ? 'errors' : 'information') as PackLogLevel,
+		}))
+	const gameLines = packLogLines.value.map((line) => ({
+		text: line,
+		level: (/\b(?:ERROR|FATAL)\b/i.test(line)
+			? 'errors'
+			: /\bWARN(?:ING)?\b/i.test(line)
+				? 'warnings'
+				: 'information') as PackLogLevel,
+	}))
+	const query = packLogSearch.value.toLocaleLowerCase()
+	return [...operationLines, ...gameLines].filter(
+		(line) =>
+			(packLogFilter.value === 'all' || line.level === packLogFilter.value) &&
+			line.text.toLocaleLowerCase().includes(query),
+	)
+})
 const snapshot = ref<Snapshot | null>(null)
 const draft = ref<Settings | null>(null)
 let customizationTimer: ReturnType<typeof setTimeout> | undefined
@@ -285,8 +342,17 @@ const activeAccount = computed(() => snapshot.value?.accounts.find((account) => 
 const selectedAccount = computed(() =>
 	snapshot.value?.accounts.find((account) => account.uuid === selectedUuid.value),
 )
+function serializeSettings(value: Settings | null | undefined) {
+	return JSON.stringify(value, (_key, item) =>
+		item && typeof item === 'object' && !Array.isArray(item)
+			? Object.fromEntries(
+					Object.entries(item).sort(([left], [right]) => left.localeCompare(right)),
+				)
+			: item,
+	)
+}
 const settingsChanged = computed(
-	() => JSON.stringify(draft.value) !== JSON.stringify(snapshot.value?.settings),
+	() => serializeSettings(draft.value) !== serializeSettings(snapshot.value?.settings),
 )
 const usernameValid = (value: string) => /^[A-Za-z0-9_]{3,16}$/.test(value)
 const accountType = (account: Account) =>
@@ -447,7 +513,7 @@ async function loadSkin(account: Account, force = false) {
 function applySnapshot(result: Snapshot) {
 	const pendingSettings = draft.value && settingsChanged.value ? draft.value : null
 	snapshot.value = result
-	if (!pendingSettings || JSON.stringify(pendingSettings) === JSON.stringify(result.settings))
+	if (!pendingSettings || serializeSettings(pendingSettings) === serializeSettings(result.settings))
 		draft.value = {
 			...result.settings,
 			release_channel: result.settings.release_channel || 'stable',
@@ -580,6 +646,25 @@ async function pickDefaultJava() {
 		error.value = errorMessage(reason)
 	}
 }
+function updateDefaultJavaPath(major: number, path: string) {
+	if (!draft.value) return
+	draft.value.java_paths = { ...draft.value.java_paths, [major]: path }
+}
+function updateWindowSize(dimension: 'width' | 'height', value: string) {
+	if (!draft.value) return
+	if (!value) {
+		draft.value.window_width = null
+		draft.value.window_height = null
+		return
+	}
+	if (dimension === 'width') {
+		draft.value.window_width = Number(value)
+		draft.value.window_height ??= 480
+	} else {
+		draft.value.window_height = Number(value)
+		draft.value.window_width ??= 854
+	}
+}
 async function saveSettings() {
 	if (!draft.value) return
 	const previous = snapshot.value?.settings
@@ -603,6 +688,9 @@ async function restart() {
 onMounted(() => {
 	void checkServer()
 	updateRoute()
+	packLogTimer = setInterval(() => {
+		if (page.value === 'library' && routeDetail.value) void refreshPackLog()
+	}, 3000)
 	void invoke<string | null>('initial_route')
 		.then((route) => {
 			if (mounted && route) {
@@ -668,6 +756,7 @@ onMounted(() => {
 onUnmounted(() => {
 	clearTimeout(noticeTimer)
 	clearTimeout(customizationTimer)
+	clearInterval(packLogTimer)
 	mounted = false
 	for (const cleanup of eventCleanup) cleanup()
 	window.removeEventListener('hashchange', updateRoute)
@@ -684,6 +773,8 @@ onUnmounted(() => {
 			'no-motion': snapshot?.settings.reduced_motion || snapshot?.settings.animations === false,
 			'no-blur': snapshot?.settings.blur === false,
 			'is-home': page === 'home',
+			'is-settings': page === 'settings',
+			'is-pack-detail': page === 'library' && !!routeDetail,
 		}"
 	>
 		<a href="#main-content" class="skip-link" @click.prevent="focusMain">Перейти к содержимому</a>
@@ -695,6 +786,7 @@ onUnmounted(() => {
 			:skins="skins"
 			:version="version"
 			@navigate="setPage"
+			@create="createFromSidebar"
 			@account="showAccount"
 			@activate="
 				(account) => mutate('set_active', { uuid: account.uuid }, 'Активный аккаунт изменён')
@@ -1022,6 +1114,8 @@ onUnmounted(() => {
 					:settings="snapshot.settings"
 					:account-name="activeAccount?.nickname || null"
 					:operations="operations"
+					@open-log="packLogOpen = true"
+					@open-global-settings="setPage('settings')"
 				/>
 				<ContentPage
 					v-else-if="page === 'content'"
@@ -1174,319 +1268,392 @@ onUnmounted(() => {
 						</p>
 					</div>
 				</section>
-				<section v-else-if="draft" class="page settings-page">
-					<div class="page-heading">
-						<div>
-							<p class="eyebrow">НАСТРОЙ ПОД СЕБЯ</p>
-							<h1>Настройки</h1>
-							<p class="page-intro">Комфорт начинается с деталей.</p>
-						</div>
-						<button
-							class="button primary"
-							:disabled="busy || !settingsChanged"
-							@click="saveSettings"
-						>
-							{{ busy ? 'Сохраняем…' : 'Сохранить изменения' }}<AppIcon name="check" :size="17" />
-						</button>
-					</div>
-					<SettingsSidebar :language="draft?.customization.language || 'ru'" />
-					<div class="settings-content">
-						<div class="settings-section">
-							<h2><AppIcon name="settings" />Лаунчер</h2>
-							<div class="setting-row">
-								<div>
-									<label for="language">Язык интерфейса</label>
-									<p>Язык интерфейса UrodLauncher</p>
-								</div>
-								<select id="language" v-model="draft.locale">
-									<option value="ru">Русский</option>
-									<option disabled>English — скоро</option>
-								</select>
+				<section v-else-if="draft" class="page settings-page figma-settings-page">
+					<FigmaGlobalSettings
+						:settings="draft"
+						:data-dir="snapshot.data_dir"
+						:busy="busy"
+						:changed="settingsChanged"
+						@close="setPage('library')"
+						@save="saveSettings"
+						@update-memory="draft.memory_mb = $event"
+						@update-window-size="updateWindowSize"
+						@update-java-path="updateDefaultJavaPath"
+						@update-download-parallelism="draft.download_parallelism = $event"
+					/>
+					<details class="figma-settings-legacy">
+						<summary>Другие настройки лаунчера</summary>
+						<div class="page-heading">
+							<div>
+								<p class="eyebrow">НАСТРОЙ ПОД СЕБЯ</p>
+								<h1>Настройки</h1>
+								<p class="page-intro">Комфорт начинается с деталей.</p>
 							</div>
-							<div class="setting-row">
-								<div>
-									<strong>Запуск вместе с системой</strong>
-									<p>
-										{{
-											autostartAvailable
-												? 'Открывать UrodLauncher при входе в систему'
-												: 'Недоступно в текущей среде'
-										}}
-									</p>
-								</div>
-								<button
-									class="switch"
-									:class="{ on: autostart }"
-									role="switch"
-									:aria-checked="autostart"
-									aria-label="Запуск вместе с системой"
-									:disabled="!autostartAvailable"
-									@click="toggleAutostart"
-								>
-									<span />
-								</button>
-							</div>
-						</div>
-						<div class="settings-section launcher-updates-section">
-							<h2><AppIcon name="refresh" />Обновления лаунчера</h2>
-							<div class="setting-row">
-								<div>
-									<strong>Автоматическая проверка</strong>
-									<p>
-										Искать обновления при запуске. Установка начнётся только после подтверждения.
-									</p>
-								</div>
-								<button
-									class="switch"
-									:class="{ on: draft.auto_updates }"
-									role="switch"
-									:aria-checked="draft.auto_updates"
-									aria-label="Автоматическая проверка обновлений"
-									@click="draft.auto_updates = !draft.auto_updates"
-								>
-									<span />
-								</button>
-							</div>
-							<div class="setting-row">
-								<div>
-									<label for="release-channel">Канал версий</label>
-									<p>Stable не получает Beta автоматически. Сохраните выбор перед проверкой.</p>
-								</div>
-								<select id="release-channel" v-model="draft.release_channel">
-									<option value="stable">Stable · стабильный</option>
-									<option value="beta">Beta · предварительный</option>
-								</select>
-							</div>
-							<div class="setting-row launcher-update-check-row">
-								<div>
-									<strong>Текущая версия — {{ version }}</strong>
-									<p>
-										Канал: {{ snapshot.settings.release_channel === 'beta' ? 'Beta' : 'Stable' }}
-									</p>
-								</div>
-								<button
-									class="button secondary"
-									:disabled="
-										!online ||
-										settingsChanged ||
-										['checking', 'downloading', 'installing', 'restarting'].includes(
-											launcherUpdates.phase.value,
-										)
-									"
-									@click="launcherUpdates.check(snapshot.settings.release_channel)"
-								>
-									<AppIcon name="refresh" :size="17" />{{
-										launcherUpdates.phase.value === 'checking'
-											? 'Проверяем…'
-											: 'Проверить обновления'
-									}}
-								</button>
-							</div>
-							<div
-								v-if="settingsChanged || launcherUpdates.phase.value !== 'idle'"
-								class="launcher-update-state"
-								aria-live="polite"
+							<button
+								class="button primary"
+								:disabled="busy || !settingsChanged"
+								@click="saveSettings"
 							>
-								<p v-if="settingsChanged" class="field-help">
-									Сохраните настройки, чтобы применить выбранный канал обновлений.
-								</p>
-								<p v-if="launcherUpdates.phase.value === 'checking'" role="status">
-									<span class="spinner" />Проверка обновлений…
-								</p>
-								<p v-else-if="launcherUpdates.phase.value === 'current'" role="status">
-									<AppIcon name="check" :size="17" /> Установлена последняя доступная версия.
-								</p>
-								<div
-									v-else-if="launcherUpdates.phase.value === 'available'"
-									class="launcher-update-available"
-								>
-									<strong
-										>Доступно обновление {{ launcherUpdates.candidate.value?.version }}</strong
+								{{ busy ? 'Сохраняем…' : 'Сохранить изменения' }}<AppIcon name="check" :size="17" />
+							</button>
+						</div>
+						<SettingsSidebar :language="draft?.customization.language || 'ru'" />
+						<div class="settings-content">
+							<div class="settings-section">
+								<h2><AppIcon name="settings" />Лаунчер</h2>
+								<div class="setting-row">
+									<div>
+										<label for="language">Язык интерфейса</label>
+										<p>Язык интерфейса UrodLauncher</p>
+									</div>
+									<select id="language" v-model="draft.locale">
+										<option value="ru">Русский</option>
+										<option disabled>English — скоро</option>
+									</select>
+								</div>
+								<div class="setting-row">
+									<div>
+										<strong>Запуск вместе с системой</strong>
+										<p>
+											{{
+												autostartAvailable
+													? 'Открывать UrodLauncher при входе в систему'
+													: 'Недоступно в текущей среде'
+											}}
+										</p>
+									</div>
+									<button
+										class="switch"
+										:class="{ on: autostart }"
+										role="switch"
+										:aria-checked="autostart"
+										aria-label="Запуск вместе с системой"
+										:disabled="!autostartAvailable"
+										@click="toggleAutostart"
 									>
-									<p>
-										Размер: {{ formatUpdateBytes(launcherUpdates.candidate.value?.size_bytes) }} ·
-										Подпись будет проверена перед установкой.
+										<span />
+									</button>
+								</div>
+							</div>
+							<div class="settings-section launcher-updates-section">
+								<h2><AppIcon name="refresh" />Обновления лаунчера</h2>
+								<div class="setting-row">
+									<div>
+										<strong>Автоматическая проверка</strong>
+										<p>
+											Искать обновления при запуске. Установка начнётся только после подтверждения.
+										</p>
+									</div>
+									<button
+										class="switch"
+										:class="{ on: draft.auto_updates }"
+										role="switch"
+										:aria-checked="draft.auto_updates"
+										aria-label="Автоматическая проверка обновлений"
+										@click="draft.auto_updates = !draft.auto_updates"
+									>
+										<span />
+									</button>
+								</div>
+								<div class="setting-row">
+									<div>
+										<label for="release-channel">Канал версий</label>
+										<p>Stable не получает Beta автоматически. Сохраните выбор перед проверкой.</p>
+									</div>
+									<select id="release-channel" v-model="draft.release_channel">
+										<option value="stable">Stable · стабильный</option>
+										<option value="beta">Beta · предварительный</option>
+									</select>
+								</div>
+								<div class="setting-row launcher-update-check-row">
+									<div>
+										<strong>Текущая версия — {{ version }}</strong>
+										<p>
+											Канал: {{ snapshot.settings.release_channel === 'beta' ? 'Beta' : 'Stable' }}
+										</p>
+									</div>
+									<button
+										class="button secondary"
+										:disabled="
+											!online ||
+											settingsChanged ||
+											['checking', 'downloading', 'installing', 'restarting'].includes(
+												launcherUpdates.phase.value,
+											)
+										"
+										@click="launcherUpdates.check(snapshot.settings.release_channel)"
+									>
+										<AppIcon name="refresh" :size="17" />{{
+											launcherUpdates.phase.value === 'checking'
+												? 'Проверяем…'
+												: 'Проверить обновления'
+										}}
+									</button>
+								</div>
+								<div
+									v-if="settingsChanged || launcherUpdates.phase.value !== 'idle'"
+									class="launcher-update-state"
+									aria-live="polite"
+								>
+									<p v-if="settingsChanged" class="field-help">
+										Сохраните настройки, чтобы применить выбранный канал обновлений.
 									</p>
-									<details v-if="launcherUpdates.candidate.value?.notes">
-										<summary>Что нового</summary>
-										<!-- Release notes pass through the existing tag allowlist and DOMPurify. -->
-										<!-- eslint-disable vue/no-v-html -->
-										<div
-											class="launcher-update-notes project-markdown"
-											v-html="launcherUpdateNotes"
+									<p v-if="launcherUpdates.phase.value === 'checking'" role="status">
+										<span class="spinner" />Проверка обновлений…
+									</p>
+									<p v-else-if="launcherUpdates.phase.value === 'current'" role="status">
+										<AppIcon name="check" :size="17" /> Установлена последняя доступная версия.
+									</p>
+									<div
+										v-else-if="launcherUpdates.phase.value === 'available'"
+										class="launcher-update-available"
+									>
+										<strong
+											>Доступно обновление {{ launcherUpdates.candidate.value?.version }}</strong
+										>
+										<p>
+											Размер: {{ formatUpdateBytes(launcherUpdates.candidate.value?.size_bytes) }} ·
+											Подпись будет проверена перед установкой.
+										</p>
+										<details v-if="launcherUpdates.candidate.value?.notes">
+											<summary>Что нового</summary>
+											<!-- Release notes pass through the existing tag allowlist and DOMPurify. -->
+											<!-- eslint-disable vue/no-v-html -->
+											<div
+												class="launcher-update-notes project-markdown"
+												v-html="launcherUpdateNotes"
+											/>
+											<!-- eslint-enable vue/no-v-html -->
+										</details>
+										<div class="launcher-update-actions">
+											<button class="button primary" @click="launcherUpdates.install()">
+												Обновить
+											</button>
+											<button class="button subtle" @click="launcherUpdates.later()">Позже</button>
+										</div>
+									</div>
+									<div
+										v-else-if="
+											['downloading', 'installing', 'restarting'].includes(
+												launcherUpdates.phase.value,
+											)
+										"
+										class="launcher-update-progress"
+										role="status"
+									>
+										<strong>{{
+											launcherUpdates.phase.value === 'downloading'
+												? 'Загрузка обновления'
+												: launcherUpdates.phase.value === 'installing'
+													? 'Установка обновления'
+													: 'Перезапуск лаунчера'
+										}}</strong>
+										<progress
+											v-if="launcherUpdates.progress.value?.total_bytes"
+											:max="launcherUpdates.progress.value.total_bytes"
+											:value="launcherUpdates.progress.value.downloaded_bytes"
 										/>
-										<!-- eslint-enable vue/no-v-html -->
-									</details>
-									<div class="launcher-update-actions">
-										<button class="button primary" @click="launcherUpdates.install()">
-											Обновить
-										</button>
-										<button class="button subtle" @click="launcherUpdates.later()">Позже</button>
+										<p v-if="launcherUpdates.phase.value === 'downloading'">
+											{{ formatUpdateBytes(launcherUpdates.progress.value?.downloaded_bytes) }} /
+											{{ formatUpdateBytes(launcherUpdates.progress.value?.total_bytes) }}
+											<span v-if="launcherUpdates.progress.value?.bytes_per_second">
+												·
+												{{
+													formatUpdateBytes(launcherUpdates.progress.value.bytes_per_second)
+												}}/с</span
+											>
+										</p>
+										<p v-else>
+											{{ launcherUpdates.progress.value?.message || 'Пожалуйста, подождите…' }}
+										</p>
+									</div>
+									<div
+										v-else-if="launcherUpdates.phase.value === 'error'"
+										class="banner error"
+										role="alert"
+									>
+										{{ launcherUpdates.error.value }}
 									</div>
 								</div>
-								<div
-									v-else-if="
-										['downloading', 'installing', 'restarting'].includes(
-											launcherUpdates.phase.value,
-										)
-									"
-									class="launcher-update-progress"
-									role="status"
-								>
-									<strong>{{
-										launcherUpdates.phase.value === 'downloading'
-											? 'Загрузка обновления'
-											: launcherUpdates.phase.value === 'installing'
-												? 'Установка обновления'
-												: 'Перезапуск лаунчера'
-									}}</strong>
-									<progress
-										v-if="launcherUpdates.progress.value?.total_bytes"
-										:max="launcherUpdates.progress.value.total_bytes"
-										:value="launcherUpdates.progress.value.downloaded_bytes"
-									/>
-									<p v-if="launcherUpdates.phase.value === 'downloading'">
-										{{ formatUpdateBytes(launcherUpdates.progress.value?.downloaded_bytes) }} /
-										{{ formatUpdateBytes(launcherUpdates.progress.value?.total_bytes) }}
-										<span v-if="launcherUpdates.progress.value?.bytes_per_second">
-											·
-											{{
-												formatUpdateBytes(launcherUpdates.progress.value.bytes_per_second)
-											}}/с</span
-										>
-									</p>
-									<p v-else>
-										{{ launcherUpdates.progress.value?.message || 'Пожалуйста, подождите…' }}
-									</p>
+							</div>
+							<div class="settings-section">
+								<h2><AppIcon name="moon" />Внешний вид</h2>
+								<div class="setting-row">
+									<div>
+										<label for="theme">Тема</label>
+										<p>Тёмная палитра с тёплым акцентом</p>
+									</div>
+									<select id="theme" v-model="draft.theme">
+										<option value="dark">Тёмная</option>
+										<option value="oled">Глубокий чёрный</option>
+									</select>
 								</div>
 								<div
-									v-else-if="launcherUpdates.phase.value === 'error'"
-									class="banner error"
-									role="alert"
+									v-for="setting in [
+										{
+											key: 'animations' as const,
+											label: 'Плавные анимации',
+											detail: 'Мягкие переходы между состояниями',
+										},
+										{
+											key: 'blur' as const,
+											label: 'Прозрачность и размытие',
+											detail: 'Лёгкая глубина полупрозрачных поверхностей',
+										},
+										{
+											key: 'reduced_motion' as const,
+											label: 'Уменьшить движение',
+											detail: 'Отключить необязательные анимации',
+										},
+									]"
+									:key="setting.key"
+									class="setting-row"
 								>
-									{{ launcherUpdates.error.value }}
+									<div>
+										<strong>{{ setting.label }}</strong>
+										<p>{{ setting.detail }}</p>
+									</div>
+									<button
+										class="switch"
+										:class="{ on: draft[setting.key] }"
+										role="switch"
+										:aria-checked="draft[setting.key]"
+										:aria-label="setting.label"
+										@click="draft[setting.key] = !draft[setting.key]"
+									>
+										<span />
+									</button>
 								</div>
 							</div>
-						</div>
-						<div class="settings-section">
-							<h2><AppIcon name="moon" />Внешний вид</h2>
-							<div class="setting-row">
-								<div>
-									<label for="theme">Тема</label>
-									<p>Тёмная палитра с тёплым акцентом</p>
+							<div class="settings-section">
+								<h2><AppIcon name="game" />Minecraft</h2>
+								<div class="future-note">
+									RAM и путь к Java используются при создании своих сборок. Настройки существующих
+									профилей сохраняются отдельно.
 								</div>
-								<select id="theme" v-model="draft.theme">
-									<option value="dark">Тёмная</option>
-									<option value="oled">Глубокий чёрный</option>
-								</select>
-							</div>
-							<div
-								v-for="setting in [
-									{
-										key: 'animations' as const,
-										label: 'Плавные анимации',
-										detail: 'Мягкие переходы между состояниями',
-									},
-									{
-										key: 'blur' as const,
-										label: 'Прозрачность и размытие',
-										detail: 'Лёгкая глубина полупрозрачных поверхностей',
-									},
-									{
-										key: 'reduced_motion' as const,
-										label: 'Уменьшить движение',
-										detail: 'Отключить необязательные анимации',
-									},
-								]"
-								:key="setting.key"
-								class="setting-row"
-							>
-								<div>
-									<strong>{{ setting.label }}</strong>
-									<p>{{ setting.detail }}</p>
+								<div class="setting-row memory-row">
+									<div>
+										<label for="memory">Оперативная память</label>
+										<p>Объём RAM по умолчанию для новых сборок</p>
+									</div>
+									<div class="memory-control">
+										<output for="memory">{{ (draft.memory_mb / 1024).toFixed(1) }} ГБ</output
+										><input
+											id="memory"
+											v-model.number="draft.memory_mb"
+											type="range"
+											min="1024"
+											max="32768"
+											step="512"
+										/>
+									</div>
 								</div>
-								<button
-									class="switch"
-									:class="{ on: draft[setting.key] }"
-									role="switch"
-									:aria-checked="draft[setting.key]"
-									:aria-label="setting.label"
-									@click="draft[setting.key] = !draft[setting.key]"
-								>
-									<span />
-								</button>
-							</div>
-						</div>
-						<div class="settings-section">
-							<h2><AppIcon name="game" />Minecraft</h2>
-							<div class="future-note">
-								RAM и путь к Java используются при создании своих сборок. Настройки существующих
-								профилей сохраняются отдельно.
-							</div>
-							<div class="setting-row memory-row">
-								<div>
-									<label for="memory">Оперативная память</label>
-									<p>Объём RAM по умолчанию для новых сборок</p>
-								</div>
-								<div class="memory-control">
-									<output for="memory">{{ (draft.memory_mb / 1024).toFixed(1) }} ГБ</output
+								<div class="setting-row stacked">
+									<label for="java">Путь к Java</label
 									><input
-										id="memory"
-										v-model.number="draft.memory_mb"
-										type="range"
-										min="1024"
-										max="32768"
-										step="512"
+										id="java"
+										v-model="draft.java_path"
+										name="java-path"
+										autocomplete="off"
+										spellcheck="false"
+										placeholder="Автоматически после установки сборки"
 									/>
+									<button class="button secondary" @click="pickDefaultJava">
+										Выбрать Java вручную
+									</button>
+								</div>
+								<div class="setting-row stacked">
+									<label for="game-directory">Папка игры · будущая настройка</label
+									><input
+										id="game-directory"
+										:value="`${snapshot.data_dir}/instances`"
+										readonly
+										name="game-directory"
+										autocomplete="off"
+										spellcheck="false"
+										aria-describedby="game-directory-help"
+									/>
+									<p id="game-directory-help" class="field-help">
+										Сборки хранятся в отдельной папке UrodLauncher. Выбор другой папки появится
+										вместе с безопасным переносом данных.
+									</p>
 								</div>
 							</div>
-							<div class="setting-row stacked">
-								<label for="java">Путь к Java</label
-								><input
-									id="java"
-									v-model="draft.java_path"
-									name="java-path"
-									autocomplete="off"
-									spellcheck="false"
-									placeholder="Автоматически после установки сборки"
-								/>
-								<button class="button secondary" @click="pickDefaultJava">
-									Выбрать Java вручную
-								</button>
+							<div class="settings-section compact-section">
+								<h2><AppIcon name="folder" />Данные приложения</h2>
+								<p class="data-directory">{{ snapshot.data_dir }}</p>
+								<div class="settings-bottom">
+									<button class="button subtle" @click="aboutDialog?.showModal()">
+										<AppIcon name="info" :size="17" />О приложении и лицензии</button
+									><button
+										class="button subtle"
+										:disabled="busy || authenticating"
+										@click="restart"
+									>
+										<AppIcon name="refresh" :size="17" />Перезапустить
+									</button>
+								</div>
 							</div>
-							<div class="setting-row stacked">
-								<label for="game-directory">Папка игры · будущая настройка</label
-								><input
-									id="game-directory"
-									:value="`${snapshot.data_dir}/instances`"
-									readonly
-									name="game-directory"
-									autocomplete="off"
-									spellcheck="false"
-									aria-describedby="game-directory-help"
-								/>
-								<p id="game-directory-help" class="field-help">
-									Сборки хранятся в отдельной папке UrodLauncher. Выбор другой папки появится вместе
-									с безопасным переносом данных.
-								</p>
-							</div>
+							<CustomizationPanel v-if="draft" v-model="draft.customization" />
 						</div>
-						<div class="settings-section compact-section">
-							<h2><AppIcon name="folder" />Данные приложения</h2>
-							<p class="data-directory">{{ snapshot.data_dir }}</p>
-							<div class="settings-bottom">
-								<button class="button subtle" @click="aboutDialog?.showModal()">
-									<AppIcon name="info" :size="17" />О приложении и лицензии</button
-								><button class="button subtle" :disabled="busy || authenticating" @click="restart">
-									<AppIcon name="refresh" :size="17" />Перезапустить
-								</button>
-							</div>
-						</div>
-						<CustomizationPanel v-if="draft" v-model="draft.customization" />
-					</div>
+					</details>
 				</section>
 			</template>
 		</main>
+		<aside
+			v-if="page === 'library' || page === 'content' || page === 'skins'"
+			class="figma-news"
+			:class="{
+				'figma-pack-log': page === 'library' && !!routeDetail,
+				'compact-open': packLogOpen,
+			}"
+			:aria-label="page === 'library' && routeDetail ? 'Журнал сборки' : 'Новости сообщества'"
+		>
+			<template v-if="page === 'library' && routeDetail">
+				<div class="figma-pack-log-controls">
+					<input
+						v-model="packLogSearch"
+						type="search"
+						aria-label="Поиск по журналу"
+						placeholder="Поиск"
+					/><span title="Журнал игры и операций сборки">Игра</span>
+					<button class="pack-log-close" aria-label="Закрыть журнал" @click="packLogOpen = false">
+						Закрыть
+					</button>
+				</div>
+				<div class="figma-pack-log-filters">
+					<button :class="{ selected: packLogFilter === 'all' }" @click="packLogFilter = 'all'">
+						Всё</button
+					><button
+						:class="{ selected: packLogFilter === 'errors' }"
+						@click="packLogFilter = 'errors'"
+					>
+						Ошибки</button
+					><button
+						:class="{ selected: packLogFilter === 'warnings' }"
+						@click="packLogFilter = 'warnings'"
+					>
+						Предупреждения</button
+					><button
+						:class="{ selected: packLogFilter === 'information' }"
+						@click="packLogFilter = 'information'"
+					>
+						Информация
+					</button>
+				</div>
+				<div class="figma-pack-log-lines" role="log" aria-label="Журнал сборки">
+					<p v-if="packLogError" role="alert">{{ packLogError }}</p>
+					<p v-for="(line, index) in visiblePackLogLines" :key="index">&gt; {{ line.text }}</p>
+					<p v-if="!packLogError && !visiblePackLogLines.length">&gt;_консоль</p>
+				</div>
+			</template>
+			<template v-else>
+				<h2>НОВОСТИ</h2>
+				<a href="https://t.me/YrodNews" target="_blank" rel="noopener noreferrer"
+					>Открыть официальный канал новостей</a
+				>
+			</template>
+		</aside>
 		<dialog
 			ref="offlineDialog"
 			class="modal offline-modal"

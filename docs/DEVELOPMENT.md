@@ -13,8 +13,12 @@ On Arch/EndeavourOS, install `base-devel rust nodejs pnpm webkit2gtk-4.1 openssl
 
 The debug-only `UROD_TEST_DATA_DIR` environment variable selects an isolated absolute test data directory whose basename starts with `urod`. It must never be used for normal profiles.
 
+Settings retain the legacy `java_path` field for existing data and add `java_paths`, a map from required Java major to a validated executable path. Old settings deserialize with an empty map. During launch, an explicit pack Java path wins; otherwise `core_launch` passes the matching global path to the engine without writing it into pack metadata. When neither path exists, the engine discovers or downloads a compatible runtime. A changed major must be rejected by `save_settings` before persistence.
+
+`download_parallelism` defaults to 6 for older settings JSON and is validated in the range 1–10. `AppState::engine` reads it when opening the engine and constructs the shared download semaphore at that size. Saving a new value therefore requires an application restart before it affects downloads. The UI keeps the independent write limit disabled because no corresponding semaphore exists. The backup-folder command opens only the canonical `backups` child of the launcher data directory; it creates the directory if needed but does not generate a backup.
+
 ## Checks
 
-Run `pnpm prepr:frontend:app`, `pnpm build`, Rust fmt/check/clippy/test, and the native boundary audit from [RELEASE.md](RELEASE.md). Check visual changes in the running Tauri app at both 860 px and 1240 px. The screenshot reference for this project is [here](screenshots/urod-0.1.0/home.png).
+Run `pnpm prepr:frontend:app`, `pnpm build`, Rust fmt/check/clippy/test, and the native boundary audit from [RELEASE.md](RELEASE.md). Check visual changes in the running Tauri app at both 860 px and 1240 px. Current Figma comparisons and real Tauri screenshots are recorded in [FIGMA_IMPLEMENTATION_MAP.md](FIGMA_IMPLEMENTATION_MAP.md); historical 0.1.0 screenshots remain under `screenshots/urod-0.1.0`.
 
 Application data lives in a separate `urod-launcher` directory. Native credentials use a separate UrodLauncher service. No automatic import from NCreate is performed. The community pack and signed auto-updates remain unavailable until UrodLauncher has real manifests and its own signing key.

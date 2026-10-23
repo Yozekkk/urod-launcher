@@ -31,7 +31,15 @@ pub struct Settings {
 	pub blur: bool,
 	pub reduced_motion: bool,
 	pub memory_mb: u32,
+	#[serde(default = "default_download_parallelism")]
+	pub download_parallelism: u8,
+	#[serde(default)]
+	pub window_width: Option<u32>,
+	#[serde(default)]
+	pub window_height: Option<u32>,
 	pub java_path: String,
+	#[serde(default)]
+	pub java_paths: std::collections::BTreeMap<u32, String>,
 	pub game_directory: String,
 	pub auto_updates: bool,
 	#[serde(default = "stable_channel")]
@@ -48,7 +56,11 @@ impl Default for Settings {
 			blur: true,
 			reduced_motion: false,
 			memory_mb: 4096,
+			download_parallelism: default_download_parallelism(),
+			window_width: None,
+			window_height: None,
 			java_path: String::new(),
+			java_paths: std::collections::BTreeMap::new(),
 			game_directory: String::new(),
 			auto_updates: false,
 			release_channel: stable_channel(),
@@ -278,11 +290,25 @@ impl Store {
 		self.snapshot().await
 	}
 	pub async fn settings(&self, settings: Settings) -> Result<Snapshot> {
+		let dimensions_invalid = match (settings.window_width, settings.window_height) {
+			(None, None) => false,
+			(Some(width), Some(height)) => {
+				!(320..=7680).contains(&width) || !(240..=4320).contains(&height)
+			}
+			_ => true,
+		};
 		if !["stable", "beta"].contains(&settings.release_channel.as_str())
 			|| settings.locale != "ru"
 			|| !["dark", "oled"].contains(&settings.theme.as_str())
 			|| !(512..=32768).contains(&settings.memory_mb)
+			|| !(1..=10).contains(&settings.download_parallelism)
+			|| dimensions_invalid
 			|| settings.java_path.len() > 4096
+			|| settings.java_paths.len() > 16
+			|| settings
+				.java_paths
+				.iter()
+				.any(|(major, path)| !(8..=99).contains(major) || path.len() > 4096)
 			|| settings.game_directory.len() > 4096
 		{
 			return Err("Проверьте значения настроек".into());
@@ -297,6 +323,9 @@ impl Store {
 }
 fn stable_channel() -> String {
 	"stable".into()
+}
+fn default_download_parallelism() -> u8 {
+	6
 }
 async fn initialize_update_preference(pool: &SqlitePool) -> Result<()> {
 	let mut tx = pool.begin().await.map_err(db_error)?;
@@ -523,6 +552,7 @@ mod tests {
 		assert_eq!(snapshot.accounts.len(), 2);
 		assert_eq!(snapshot.settings.memory_mb, 8192);
 		assert_eq!(snapshot.settings.java_path, "/custom/java");
+		assert!(snapshot.settings.java_paths.is_empty());
 		assert_eq!(snapshot.settings.theme, "oled");
 		assert_eq!(snapshot.settings.release_channel, "stable");
 		assert!(snapshot.settings.auto_updates);
@@ -692,6 +722,91 @@ mod tests {
 			"beta"
 		);
 		settings.release_channel = "arbitrary".into();
+		assert!(store.settings(settings).await.is_err());
+		store.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[tokio::test]
+	async fn java_paths_persist_and_reject_invalid_major() {
+		let directory = std::env::temp_dir().join(format!("urod-java-settings-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone()).await.expect("store");
+		let mut settings = Settings::default();
+		settings.java_paths.insert(21, "/java-21/bin/java".into());
+		store.settings(settings.clone()).await.expect("save");
+		assert_eq!(
+			store
+				.snapshot()
+				.await
+				.expect("snapshot")
+				.settings
+				.java_paths
+				.get(&21)
+				.map(String::as_str),
+			Some("/java-21/bin/java")
+		);
+		settings.java_paths.insert(7, "/java-7/bin/java".into());
+		assert!(store.settings(settings).await.is_err());
+		store.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[tokio::test]
+	async fn window_dimensions_persist_and_require_a_valid_pair() {
+		let directory =
+			std::env::temp_dir().join(format!("urod-window-settings-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone()).await.expect("store");
+		let mut settings = Settings {
+			window_width: Some(1280),
+			window_height: Some(720),
+			..Settings::default()
+		};
+		store
+			.settings(settings.clone())
+			.await
+			.expect("save dimensions");
+		let saved = store.snapshot().await.expect("snapshot").settings;
+		assert_eq!(
+			(saved.window_width, saved.window_height),
+			(Some(1280), Some(720))
+		);
+		settings.window_height = None;
+		assert!(store.settings(settings.clone()).await.is_err());
+		settings.window_height = Some(100);
+		assert!(store.settings(settings).await.is_err());
+		store.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[tokio::test]
+	async fn download_parallelism_persists_and_rejects_out_of_range_values() {
+		let mut legacy = serde_json::to_value(Settings::default()).expect("settings json");
+		legacy
+			.as_object_mut()
+			.expect("settings object")
+			.remove("download_parallelism");
+		let migrated: Settings = serde_json::from_value(legacy).expect("legacy settings");
+		assert_eq!(migrated.download_parallelism, 6);
+		let directory =
+			std::env::temp_dir().join(format!("urod-download-settings-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone()).await.expect("store");
+		let mut settings = Settings {
+			download_parallelism: 3,
+			..Settings::default()
+		};
+		store
+			.settings(settings.clone())
+			.await
+			.expect("save parallelism");
+		assert_eq!(
+			store
+				.snapshot()
+				.await
+				.expect("snapshot")
+				.settings
+				.download_parallelism,
+			3
+		);
+		settings.download_parallelism = 0;
+		assert!(store.settings(settings.clone()).await.is_err());
+		settings.download_parallelism = 11;
 		assert!(store.settings(settings).await.is_err());
 		store.pool.close().await;
 		tokio::fs::remove_dir_all(directory).await.expect("cleanup");

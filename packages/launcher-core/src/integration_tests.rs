@@ -22,8 +22,40 @@ fn create(name: &str, loader: Loader) -> CreateInstance {
 		loader,
 		loader_version: (loader != Loader::Vanilla).then(|| "0.16.0".into()),
 		memory_mb: 2048,
+		window_width: None,
+		window_height: None,
 		java_path: None,
 	}
+}
+
+#[tokio::test]
+async fn pack_window_override_persists_and_rejects_incomplete_dimensions() {
+	let (_directory, engine) = engine().await;
+	let mut request = create("Window override", Loader::Vanilla);
+	request.window_width = Some(1024);
+	request.window_height = Some(576);
+	let instance = engine.create_instance(request.clone()).await.unwrap();
+	let loaded = engine.instance(&instance.id).await.unwrap();
+	assert_eq!(
+		(loaded.window_width, loaded.window_height),
+		(Some(1024), Some(576))
+	);
+	request.window_height = None;
+	assert!(
+		engine
+			.edit_instance(&instance.id, request.clone())
+			.await
+			.is_err()
+	);
+	let loaded = engine.instance(&instance.id).await.unwrap();
+	assert_eq!(
+		(loaded.window_width, loaded.window_height),
+		(Some(1024), Some(576))
+	);
+	request.window_width = None;
+	engine.edit_instance(&instance.id, request).await.unwrap();
+	let loaded = engine.instance(&instance.id).await.unwrap();
+	assert_eq!((loaded.window_width, loaded.window_height), (None, None));
 }
 fn fixture(e: &Engine, url: &str, value: &Value) {
 	e.downloads.fixture(url, serde_json::to_vec(value).unwrap());

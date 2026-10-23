@@ -1,0 +1,239 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/1cc3af03-5935-433f-b792-6e6d4dd51fe8";
+const imgAvatarHead3531 = `${assetPathPrefix}/2aa90.png`;
+const imgFrame5293 = `${assetPathPrefix}/8aecb.png`;
+const imgAvatarBody351 = `${assetPathPrefix}/b0958.png`;
+const imgArrow1Stroke = `${assetPathPrefix}/78a3e.svg`;
+const imgArrow1Stroke1 = `${assetPathPrefix}/41782.svg`;
+const imgVector = `${assetPathPrefix}/f1283.svg`;
+const imgColor = `${assetPathPrefix}/332c7.svg`;
+const imgVector1 = `${assetPathPrefix}/03486.svg`;
+const imgVector2 = `${assetPathPrefix}/df15d.svg`;
+const imgVector3 = `${assetPathPrefix}/fd48a.svg`;
+const imgFrame813 = `${assetPathPrefix}/27ace.svg`;
+const imgVector419Stroke = `${assetPathPrefix}/50e33.svg`;
+const img = `${assetPathPrefix}/319d1.svg`;
+const imgGroup571 = `${assetPathPrefix}/2927a.svg`;
+const imgVector4 = `${assetPathPrefix}/88ae8.svg`;
+const imgFrame819 = `${assetPathPrefix}/8e05e.svg`;
+const img1 = `${assetPathPrefix}/55119.svg`;
+const imgGroup587 = `${assetPathPrefix}/914b6.svg`;
+
+export default function Frame816() {
+  return (
+    <div className="bg-[#0c0c0c] relative size-full" data-node-id="3:1012">
+      <div className="absolute left-[22px] size-[42px] top-[32px]" data-node-id="3:1013" data-name="avatarHead3 (53) 1">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <img alt="" className="absolute left-[-40.91%] max-w-none size-[180.3%] top-[-40.91%]" src={imgAvatarHead3531} />
+        </div>
+      </div>
+      <div className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[0] left-[85px] not-italic text-[#848488] text-[0px] top-[34px] whitespace-nowrap" data-node-id="3:1014" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+        <p className="font-['Geologica:Medium'] font-medium leading-[normal] mb-0 text-[#c12926] text-[20px]" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          LIikholesye
+        </p>
+        <p className="font-['Geologica:Light'] font-light leading-[normal] text-[12px]" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Аккаунт Microsoft
+        </p>
+      </div>
+      <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[984px] not-italic text-[20px] text-white top-[47px] whitespace-nowrap" data-node-id="3:1015" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+        urodlauncher
+      </p>
+      <div className="absolute bg-[#131313] h-[605px] left-[115px] top-[115px] w-[831px]" data-node-id="3:1016" />
+      <div className="absolute bg-[#333] h-[26px] left-[940px] rounded-[8px] top-[122px] w-[5px]" data-node-id="3:1017" />
+      <div className="absolute flex h-[4px] items-center justify-center left-[940px] top-[115px] w-[5px]" data-node-id="3:1018">
+        <div className="-rotate-90 flex-none">
+          <div className="h-[5px] relative w-[4px]" data-name="Arrow 1 (Stroke)">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgArrow1Stroke} />
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[4px] items-center justify-center left-[940px] top-[716px] w-[5px]" data-node-id="3:1019">
+        <div className="flex-none rotate-90">
+          <div className="h-[5px] relative w-[4px]" data-name="Arrow 1 (Stroke)">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgArrow1Stroke1} />
+          </div>
+        </div>
+      </div>
+      <div className="absolute flex h-[4px] items-center justify-center left-[795px] top-[770px] w-[5px]" data-node-id="3:1020">
+        <div className="flex-none rotate-90">
+          <div className="h-[5px] relative w-[4px]" data-name="Arrow 1 (Stroke)">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgArrow1Stroke1} />
+          </div>
+        </div>
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[328px]" data-node-id="3:1021" data-name="Frame 529 3">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgFrame5293} />
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[384px]" data-node-id="3:1022" data-name="Frame 529 4">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgFrame5293} />
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[440px]" data-node-id="3:1023" data-name="Frame 529 5">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgFrame5293} />
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[496px]" data-node-id="3:1024" data-name="Frame 529 6">
+        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgFrame5293} />
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[115px]" data-node-id="3:1025" data-name="Vector">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector} />
+      </div>
+      <div className="absolute h-[11px] left-[46px] top-[171px] w-[23px]" data-node-id="3:1026" data-name="🎨-Color">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgColor} />
+      </div>
+      <div className="absolute h-[20px] left-[49px] top-[217px] w-[17px]" data-node-id="3:1027" data-name="Vector">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector1} />
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[272px]" data-node-id="3:1028" data-name="Vector">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector2} />
+      </div>
+      <div className="absolute inset-[90.83%_94.45%_6.25%_3.91%]" data-node-id="3:1029" data-name="Vector">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector3} />
+      </div>
+      <div className="absolute bg-[#333] h-px left-[946px] top-[115px] w-[219px]" data-node-id="3:1030" />
+      <div className="absolute h-[17px] left-[881px] top-[51px] w-[65px]" data-node-id="3:1031">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame813} />
+      </div>
+      <div className="absolute flex h-[12px] items-center justify-center left-[341px] top-[153px] w-[17px]" data-node-id="3:1034">
+        <div className="flex-none rotate-90">
+          <div className="h-[17px] relative w-[12px]" data-name="Vector 419 (Stroke)">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector419Stroke} />
+          </div>
+        </div>
+      </div>
+      <div className="absolute left-[47px] size-[21px] top-[552px]" data-node-id="3:1035" data-name="+">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={img} />
+      </div>
+      <div className="absolute left-[1124px] size-[32px] top-[43px]" data-node-id="3:1036">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup571} />
+      </div>
+      <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[153px] not-italic text-[20px] text-white top-[147px] whitespace-nowrap" data-node-id="3:1041" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+        Выбор скина
+      </p>
+      <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[371px] not-italic text-[#c12926] text-[20px] top-[147px] whitespace-nowrap" data-node-id="3:1042" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+        Сохраненные скины
+      </p>
+      <div className="absolute contents left-[140px] top-[194px]" data-node-id="3:1043">
+        <div className="absolute contents left-[140px] top-[222px]" data-node-id="3:1044">
+          <div className="absolute h-[257px] left-[161px] top-[272px] w-[120px]" data-node-id="3:1045" data-name="avatarBody3 (5) 1">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <img alt="" className="absolute h-full left-[-58.33%] max-w-none top-0 w-[214.17%]" src={imgAvatarBody351} />
+            </div>
+          </div>
+          <div className="absolute bg-[#202020] content-stretch flex items-center justify-center left-[149px] px-[19px] py-[10px] rounded-[15px] top-[222px]" data-node-id="3:1046">
+            <p className="[word-break:break-word] font-['Minecraft_Rus:Regular'] leading-[normal] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap" data-node-id="3:1047">
+              Likholesye
+            </p>
+          </div>
+          <div className="absolute bg-[#202020] content-stretch flex gap-[3px] items-center left-[170px] px-[12px] py-[5px] rounded-[9px] top-[564px]" data-node-id="3:1048">
+            <div className="relative shrink-0 size-[13px]" data-node-id="3:1049" data-name="Vector">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector4} />
+            </div>
+            <p className="[word-break:break-word] font-['Geologica:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[12px] text-white whitespace-nowrap" data-node-id="3:1050" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Изменить
+            </p>
+          </div>
+          <div className="absolute contents left-[140px] top-[538px]" data-node-id="3:1051">
+            <div className="absolute h-[9px] left-[140px] top-[539px] w-[15.699px]" data-node-id="3:1052">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame819} />
+            </div>
+            <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[160.7px] not-italic text-[#848488] text-[9px] top-[538px] whitespace-nowrap" data-node-id="3:1056" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Перетащите, чтобы повернуть
+            </p>
+          </div>
+        </div>
+        <div className="absolute contents leading-[0] left-[336px] top-[194px]" data-node-id="3:1057">
+          <div className="absolute content-stretch flex gap-[14px] items-center left-[336px] top-[194px]" data-node-id="3:1058">
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1059">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-dashed col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1060" />
+              <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[23px] mt-[52px] place-items-start relative row-1" data-node-id="3:1061">
+                <div className="col-1 ml-[33px] mt-0 relative row-1 size-[25px]" data-node-id="3:1062" data-name="+">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={img1} />
+                </div>
+                <p className="[word-break:break-word] col-1 font-['Geologica:Medium'] font-medium leading-[normal] ml-0 mt-[46px] not-italic relative row-1 text-[12px] text-white whitespace-nowrap" data-node-id="3:1063" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+                  Добавить скин
+                </p>
+                <p className="[word-break:break-word] col-1 font-['Geologica:Medium'] font-medium leading-[normal] ml-px mt-[60px] not-italic relative row-1 text-[#848488] text-[9.5px] whitespace-nowrap" data-node-id="3:1064" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+                  Ператащите сюда
+                </p>
+              </div>
+            </div>
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1065">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1066" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1067" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1068">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1069" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1070" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1071">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1072" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1073" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute content-stretch flex gap-[14px] items-center left-[336px] top-[384px]" data-node-id="3:1074">
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1075">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1076" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1077" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1078">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1079" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1080" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1081">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1082" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1083" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+            <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:1084">
+              <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid col-1 h-[176px] ml-0 mt-0 relative rounded-[22px] row-1 w-[136px]" data-node-id="3:1085" />
+              <div className="col-1 h-[167px] ml-[16px] mt-[8px] relative row-1 w-[107px]" data-node-id="3:1086" data-name="avatarBody3 (5) 2">
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <img alt="" className="absolute h-[131.14%] left-[-54.21%] max-w-none top-[-7.19%] w-[204.67%]" src={imgAvatarBody351} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[959px] not-italic text-[20px] text-white top-[133px] whitespace-nowrap" data-node-id="3:1087" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+        НОВОСТИ
+      </p>
+      <div className="absolute border border-[#333] border-solid h-[98px] left-[959px] rounded-[20px] top-[175px] w-[206px]" data-node-id="3:1088" style={{ backgroundImage: "linear-gradient(-58.272243143188746deg, rgb(26, 26, 26) 1.7999%, rgb(38, 38, 38) 94.367%)" }} />
+      <p className="[word-break:break-word] absolute font-['Geologica_Roman:Light'] h-[44px] leading-[0.897] left-[959px] not-italic text-[#e7e7e7] text-[14px] top-[287px] w-[206px]" data-node-id="3:1089">{`Мы уничтожим каждую базу этой хуйни. `}</p>
+      <div className="absolute h-[15.647px] left-[1187px] top-[52.68px] w-[63px]" data-node-id="3:1090">
+        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup587} />
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+These styles are contained in the design: BLACK3: #131313, ээээ гра: , WHITE 2: #E7E7E7.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

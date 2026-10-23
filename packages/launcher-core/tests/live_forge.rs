@@ -20,6 +20,8 @@ async fn install_forge_1_21_1() {
 			loader: Loader::Forge,
 			loader_version: Some("52.1.14".into()),
 			memory_mb: 4096,
+			window_width: None,
+			window_height: None,
 			java_path: None,
 		})
 		.await
@@ -35,7 +37,7 @@ async fn install_forge_1_21_1() {
 			.launch(
 				&instance.id,
 				LaunchIdentity {
-					nickname: "NCreateQA".into(),
+					nickname: "UrodQA".into(),
 					uuid: "88611cf2-09a6-3ea9-b10a-62faecf8157a".into(),
 					access_token: "0".into(),
 					user_type: "legacy".into(),

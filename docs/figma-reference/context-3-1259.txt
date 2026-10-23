@@ -1,0 +1,121 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/95b32e80-9fc9-4178-8084-555ea3a78e6f";
+const imgAvatarBody351 = `${assetPathPrefix}/b0958.png`;
+const imgVector421 = `${assetPathPrefix}/2f29e.svg`;
+const imgVector = `${assetPathPrefix}/70ec6.svg`;
+const imgFrame819 = `${assetPathPrefix}/8e05e.svg`;
+const imgGroup566 = `${assetPathPrefix}/2e380.svg`;
+const imgEllipse159 = `${assetPathPrefix}/b8955.svg`;
+const imgEllipse160 = `${assetPathPrefix}/fe845.svg`;
+const imgEllipse162 = `${assetPathPrefix}/76221.svg`;
+const imgVector1 = `${assetPathPrefix}/a7f4e.svg`;
+const imgVector2 = `${assetPathPrefix}/92af7.svg`;
+const imgVectorStroke = `${assetPathPrefix}/7989a.svg`;
+
+export default function Frame822() {
+  return (
+    <div className="bg-[#202020] border-[#333] border-[1.5px] border-solid relative rounded-[27px] size-full" data-node-id="3:1259">
+      <div className="absolute h-0 left-[-1.5px] top-[90.5px] w-[500px]" data-node-id="3:1260">
+        <div className="absolute inset-[-0.75px_0]">
+          <img alt="" className="block max-w-none size-full" src={imgVector421} />
+        </div>
+      </div>
+      <div className="absolute contents left-[29.5px] top-[37.5px]" data-node-id="3:1261">
+        <div className="-translate-x-1/2 absolute content-stretch flex items-center justify-between left-1/2 top-[39px] w-[438px]" data-node-id="3:1262">
+          <p className="[word-break:break-word] font-['Geologica_Roman:SemiBold'] leading-none not-italic relative shrink-0 text-[20px] text-center text-white whitespace-nowrap" data-node-id="3:1263">
+            Редактирование скина
+          </p>
+          <div className="relative shrink-0 size-[14px]" data-node-id="3:1264" data-name="Vector">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector} />
+          </div>
+        </div>
+        <div className="absolute h-[257px] left-[59px] top-[106px] w-[120px]" data-node-id="3:1265" data-name="avatarBody3 (5) 1">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <img alt="" className="absolute h-full left-[-58.33%] max-w-none top-0 w-[214.17%]" src={imgAvatarBody351} />
+          </div>
+        </div>
+        <div className="absolute contents left-[40px] top-[363px]" data-node-id="3:1266">
+          <div className="absolute h-[9px] left-[40px] top-[364px] w-[15.699px]" data-node-id="3:1267">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame819} />
+          </div>
+          <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[60.7px] not-italic text-[#848488] text-[9px] top-[363px] whitespace-nowrap" data-node-id="3:1271" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Перетащите, чтобы повернуть
+          </p>
+        </div>
+        <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[250px] not-italic text-[17px] text-white top-[116px] whitespace-nowrap" data-node-id="3:1272" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Текстура
+        </p>
+        <div className="absolute bg-[#333] content-stretch flex gap-[10px] items-center justify-center left-[250px] px-[16px] py-[10px] rounded-[13px] top-[150px]" data-node-id="3:1273">
+          <div className="h-[12.774px] relative shrink-0 w-[10.31px]" data-node-id="3:1274">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup566} />
+          </div>
+          <p className="[word-break:break-word] font-['Geologica:SemiBold'] font-semibold leading-[normal] not-italic relative shrink-0 text-[10px] text-white whitespace-nowrap" data-node-id="3:1277" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Заменить текстуру
+          </p>
+        </div>
+        <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[250px] not-italic text-[17px] text-white top-[196px] whitespace-nowrap" data-node-id="3:1278" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Стиль рук
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[250px] not-italic text-[17px] text-white top-[263px] whitespace-nowrap" data-node-id="3:1279" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Плащ
+        </p>
+        <div className="absolute contents left-[250px] top-[229px]" data-node-id="3:1280">
+          <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[270px] not-italic text-[10px] text-white top-[230px] whitespace-nowrap" data-node-id="3:1281" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Стив
+          </p>
+          <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[333px] not-italic text-[10px] text-white top-[230px] whitespace-nowrap" data-node-id="3:1282" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            Алекс
+          </p>
+          <div className="-translate-x-1/2 absolute left-[calc(50%+6.5px)] size-[9px] top-[231px]" data-node-id="3:1283">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgEllipse159} />
+          </div>
+          <div className="absolute left-[250px] size-[13px] top-[229px]" data-node-id="3:1284">
+            <div className="absolute inset-[-5.77%]">
+              <img alt="" className="block max-w-none size-full" src={imgEllipse160} />
+            </div>
+          </div>
+          <div className="absolute left-[313px] size-[13px] top-[229px]" data-node-id="3:1285">
+            <div className="absolute inset-[-5.77%]">
+              <img alt="" className="block max-w-none size-full" src={imgEllipse162} />
+            </div>
+          </div>
+        </div>
+        <div className="absolute bg-[#333] h-[83px] left-[250px] rounded-[8px] top-[290px] w-[52px]" data-node-id="3:1286" />
+        <div className="absolute contents left-[266px] top-[318px]" data-node-id="3:1287">
+          <div className="absolute left-[270px] size-[11px] top-[318px]" data-node-id="3:1288" data-name="Vector">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector1} />
+          </div>
+          <p className="[word-break:break-word] absolute font-['Geologica:Medium'] font-medium leading-[normal] left-[266px] not-italic text-[10px] text-white top-[331px] whitespace-nowrap" data-node-id="3:1289" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+            НЕТ
+          </p>
+        </div>
+        <div className="absolute content-stretch flex gap-[21px] items-center left-[148px] top-[433px]" data-node-id="3:1290">
+          <div className="bg-[#333] content-stretch flex gap-[10px] items-center justify-center px-[10px] py-[5px] relative rounded-[9px] shrink-0" data-node-id="3:1291">
+            <div className="relative shrink-0 size-[13px]" data-node-id="3:1292" data-name="Vector">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector2} />
+            </div>
+            <p className="[word-break:break-word] font-['Geologica:Medium'] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap" data-node-id="3:1293" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Отменить
+            </p>
+          </div>
+          <div className="bg-[#c12926] content-stretch flex gap-[10px] items-center justify-center px-[10px] py-[5px] relative rounded-[9px] shrink-0" data-node-id="3:1294">
+            <div className="relative shrink-0 size-[15px]" data-node-id="3:1295" data-name="Vector (Stroke)">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVectorStroke} />
+            </div>
+            <p className="[word-break:break-word] font-['Geologica:Medium'] font-medium leading-[normal] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap" data-node-id="3:1296" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Сохранить скин
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

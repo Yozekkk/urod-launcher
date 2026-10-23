@@ -34,6 +34,10 @@ pub struct Instance {
 	pub manifest_version: Option<String>,
 	pub status: String,
 	pub memory_mb: u32,
+	#[serde(default)]
+	pub window_width: Option<u32>,
+	#[serde(default)]
+	pub window_height: Option<u32>,
 	pub java_path: Option<String>,
 	pub directory: String,
 	#[serde(default)]
@@ -52,6 +56,10 @@ pub struct CreateInstance {
 	pub loader_version: Option<String>,
 	#[serde(default = "default_memory")]
 	pub memory_mb: u32,
+	#[serde(default)]
+	pub window_width: Option<u32>,
+	#[serde(default)]
+	pub window_height: Option<u32>,
 	#[serde(default)]
 	pub java_path: Option<String>,
 }

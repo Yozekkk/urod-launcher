@@ -15,15 +15,17 @@
   <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-arch.svg" alt="Arch Linux downloads" width="290"></a>
 </p>
 
-> These buttons lead to the release page. Version 0.1.0 installers were built in [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), but no release has been published; direct release file links are therefore unavailable. Version 0.1.0 is not declared Stable.
+> These buttons lead to the release page. The Figma redesign is still under verification; version 1.0.0 Stable has not been released. See the [readiness audit](docs/STABLE_1.0.0_AUDIT.md) for blockers. Version 0.1.0 installers were built in [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), but no release has been published.
 
-<p align="center"><img src="docs/screenshots/urod-0.1.0/home.png" alt="Real UrodLauncher home screen" width="1000"></p>
+<p align="center"><img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Real UrodLauncher library window during Figma implementation" width="1000"></p>
+
+This image was captured from the running Tauri app at 1280×720. The empty library reflects the isolated test profile. See the [Figma implementation map and comparison](docs/FIGMA_IMPLEMENTATION_MAP.md).
 
 ## Features
 
 - Microsoft Minecraft, Ely.by and Offline accounts, with multiple profiles.
 - Separate Vanilla, Fabric, Forge, NeoForge and Quilt instances; pack import and export, including `.mrpack`.
-- Public Modrinth mod and modpack catalog; Java, memory and JVM settings; downloads and game logs.
+- Public Modrinth mod, shader, resource pack and modpack catalog; Java and memory controls, downloads and game logs. Custom JVM arguments are not yet available in the interface.
 - Download integrity checks, managed file updates and rollback where supported by the inherited engine.
 - Persistent local PNG skin library with 3D preview and Classic/Slim variants. Applying a skin to a Microsoft account sends it to the official Minecraft Services API from the native process and checks the profile afterwards. This still needs verification with a real licensed account.
 - 40 customization controls for themes, colors, background, motion and layout, with presets and JSON import/export. The language control changes the document language and primary navigation; a complete English interface translation remains to be done.
@@ -31,15 +33,11 @@
 
 | Library | Catalog |
 | --- | --- |
-| <img src="docs/screenshots/urod-0.1.0/library.png" alt="UrodLauncher Library"> | <img src="docs/screenshots/urod-0.1.0/content.png" alt="UrodLauncher catalog"> |
-| Accounts | Skins |
-| <img src="docs/screenshots/urod-0.1.0/accounts.png" alt="UrodLauncher Accounts"> | <img src="docs/screenshots/urod-0.1.0/skins.png" alt="UrodLauncher skin library"> |
+| <img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Library during Figma implementation"> | <img src="docs/screenshots/figma-rc/gallery-1280x720.png" alt="Live Modrinth catalog in the new layout"> |
+| Skins | Edit skin dialog |
+| <img src="docs/screenshots/figma-rc/skins-1280x720.png" alt="Skin library with a test PNG"> | <img src="docs/screenshots/figma-rc/edit-skin-1280x720.png" alt="Edit skin dialog"> |
 
-<p align="center"><img src="docs/screenshots/urod-0.1.0/settings.png" alt="UrodLauncher settings" width="1000"></p>
-
-[Customization screen](docs/screenshots/urod-0.1.0/customization.png)
-
-These are screenshots of the native application on EndeavourOS, using a test Offline account and test skins. [Small window](docs/screenshots/urod-0.1.0/home-small.png).
+The new screenshots were captured from the native app on EndeavourOS with an isolated skin test profile. [Historical 0.1.0 screenshots](docs/screenshots/urod-0.1.0/home.png) are kept separately. Settings still need full transfer and visual verification.
 
 ## Installation
 
@@ -58,6 +56,18 @@ The Arch package can also be built from source with the [PKGBUILD](packaging/arc
 Microsoft sign-in uses OAuth, Xbox/XSTS and Minecraft Authentication. Ely.by uses its supported authentication flow. An Offline profile is useful in single-player and on servers that allow it; it does not grant a Minecraft license.
 
 In **Skins**, add a 64×64 or 64×32 PNG (up to 1 MB), choose Classic/Steve or Slim/Alex, select an account, then press **Apply**. For Microsoft accounts the native process uploads the PNG to Minecraft Services and verifies the profile response. For Offline accounts, the skin appears locally in the launcher. Uploading to Ely.by from the launcher is not supported yet, and the interface says so. Tokens are not sent to Vue.
+
+## Packs and Java
+
+In **Library**, create a pack, choose its Minecraft version and loader, install the game, and select an account before playing. You can browse Modrinth mods, shaders and resource packs for the selected pack, then search, disable, update or remove installed files. `.mrpack` import and export remain available in the pack's additional actions.
+
+In **Settings → Java locations**, specify separate executables for Java 21 and Java 25 or find installed runtimes with **Detect**. The launcher verifies an executable's major version before saving it. With no configured path, the engine finds a compatible Java and downloads a verified runtime during launch if needed. A pack-specific Java path takes priority. Installing a recommended runtime directly from this settings panel is not yet available.
+
+Global settings let you set Minecraft window width and height. Both values are validated before saving and passed to the game at launch; leave the fields empty to use the game's defaults. The selected pack's journal shows recent Minecraft output and launcher operations, with search and severity filters. In a narrow window, open it with **Журнал**. Fullscreen control, custom Java arguments, environment variables and launch commands are not available yet.
+
+In an individual pack's **Overrides** settings, you can enable its own window width and height. The pack values take priority over the global values; turning the switch off restores the global dimensions.
+
+In **Resource management**, set 1–10 concurrent downloads; the new limit applies after restarting the launcher. The backup button opens the directory containing any database migration backups. Creating backups on demand and setting an independent disk-write limit are not available yet.
 
 ## Gorod Urodov
 

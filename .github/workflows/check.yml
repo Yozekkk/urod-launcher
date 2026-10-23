@@ -34,6 +34,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y build-essential pkg-config libssl-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf xdg-utils
       - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod
       - run: pnpm prepr:frontend:app
       - run: pnpm build
       - run: node --test scripts/release-assets.test.mjs
@@ -57,6 +58,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: pnpm install --frozen-lockfile
+      - run: cargo test --locked -p urod-launcher-core verified_download_replaces_file_and_keeps_destination_on_rename_error
       - run: pnpm app:build --bundles nsis --config tauri.ci.conf.json
       - uses: actions/upload-artifact@v4
         with:
