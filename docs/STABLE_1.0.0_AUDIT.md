@@ -11,6 +11,7 @@ Status on 2026-10-19: **release blocked; the repository remains version 0.1.0 De
 | Functional skin library | PNG upload, safe native validation, in-place texture and model editing, and persistence exercised in isolated Tauri data; PNG drop opened the add dialog and full-body thumbnail rendered. Bad replacement data left the saved record intact; changing an active offline skin cleared its active marker. | Pass for those paths; Microsoft live upload unavailable |
 | Settings persistence | Global RAM changed to 6144 MB and survived WebView reload; pack RAM changed to 6144 MB, pack renamed and duplicated through the new native UI | Pass for these paths in isolated data |
 | Frontend check | TypeScript, ESLint, Prettier and 18 tests, including shader/resource pack compatibility | Pass |
+| Production dependency audit | A 2026-10-23 CI run failed on five newly reported DOMPurify/markdown-it advisories. Both direct packages have been moved to the maintainers' patched 3.4.17/15.0.3 versions; local `pnpm audit --prod`, frozen lockfile install, 18 frontend tests and build pass. | Local pass; new CI run pending |
 | Rust check | `cargo check --locked -p urod-launcher` | Pass |
 | Rust lint | `cargo clippy --locked -p urod-launcher --all-targets -- -D warnings` | Pass after fixing seven redundant borrows in the vendored Daedalus adapter |
 | Rust tests | `cargo test --locked --workspace` | Pass for enabled tests; ignored live tests run separately |

@@ -23,6 +23,7 @@
 - Added separate, validated Java 21 and 25 paths from Figma `3:104`, with runtime detection, native path selection and launch-time selection. Per-pack Java overrides retain priority; a global default no longer becomes a saved pack override during launch.
 - Verified live install, start and stop for Minecraft 1.21.1 with Vanilla, Fabric, Quilt, Forge and NeoForge; repeated the Vanilla launch.
 - Patched the transitive `source-map-js` dependency to 1.2.2 after a production dependency audit found GHSA-68fv-2mgg-jv7q.
+- Updated DOMPurify to 3.4.17 and markdown-it to 15.0.3 after new security advisories made the production dependency audit fail; the local audit and untrusted-Markdown tests pass again.
 - Replaced bundled desktop icons with rasterizations of the original Figma launcher mark.
 - Included the project's NOTICE attribution as a Tauri resource so future Windows and Debian bundles carry it alongside the GPL license.
 - Corrected active `AGENTS.md` project instructions and seven Daedalus Clippy warnings.
