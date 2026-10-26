@@ -12,6 +12,13 @@ export type SavedSkin = {
 	active_for: string[]
 	preview: Skin | null
 }
+type SkinHistoryEntry = {
+	id: number
+	account_uuid: string
+	skin_id: string | null
+	skin_name: string
+	applied_at: string
+}
 const props = defineProps<{
 	accounts: Account[]
 	activeAccount: Account | null | undefined
@@ -19,6 +26,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ applied: [account: Account] }>()
 const items = shallowRef<SavedSkin[]>([])
+const history = shallowRef<SkinHistoryEntry[]>([])
+let historyRequest = 0
 const thumbnails = shallowRef<Record<string, string>>({})
 const thumbnailCache = new Map<string, { texture: string; slim: boolean; image: string }>()
 let thumbnailViewer: SkinViewer | null = null
@@ -42,6 +51,21 @@ const editOpen = shallowRef(false)
 const selected = computed(() => items.value.find((item) => item.id === selectedId.value))
 const account = computed(() => props.accounts.find((item) => item.uuid === accountId.value))
 const active = computed(() => selected.value?.active_for.includes(accountId.value) ?? false)
+async function loadHistory() {
+	const id = accountId.value
+	const request = ++historyRequest
+	if (!id) {
+		history.value = []
+		return
+	}
+	try {
+		const entries = await invoke<SkinHistoryEntry[]>('skin_library_history', { account: id })
+		if (request === historyRequest) history.value = entries
+	} catch (reason) {
+		if (request === historyRequest) error.value = String(reason)
+	}
+}
+watch(accountId, () => void loadHistory())
 watch(
 	() => props.activeAccount?.uuid,
 	(value) => {
@@ -126,6 +150,7 @@ async function run(command: string, args: Record<string, unknown>, success: stri
 	message.value = ''
 	try {
 		items.value = await invoke<SavedSkin[]>(command, args)
+		if (command === 'skin_library_apply' || command === 'skin_library_reset') await loadHistory()
 		message.value = success
 		if (account.value && (command === 'skin_library_apply' || command === 'skin_library_reset'))
 			emit('applied', account.value)
@@ -396,6 +421,24 @@ function reset() {
 					Переименовать
 				</button>
 				<p v-if="message" role="status" aria-live="polite" class="skin-success">{{ message }}</p>
+				<details v-if="account && history.length" class="skin-history">
+					<summary>История скинов ({{ history.length }})</summary>
+					<ul>
+						<li v-for="entry in history" :key="entry.id">
+							<button
+								type="button"
+								:disabled="!entry.skin_id || !items.some((item) => item.id === entry.skin_id)"
+								:title="entry.skin_id ? 'Выбрать для повторного применения' : 'Стандартный скин'"
+								@click="selectedId = entry.skin_id || ''"
+							>
+								{{ entry.skin_name }}
+							</button>
+							<time :datetime="entry.applied_at">{{
+								new Date(entry.applied_at).toLocaleString('ru-RU')
+							}}</time>
+						</li>
+					</ul>
+				</details>
 			</div>
 		</div>
 		<dialog
@@ -674,6 +717,42 @@ function reset() {
 }
 .skin-success {
 	color: #9be5b0 !important;
+}
+.skin-history {
+	font:
+		400 12px/1.4 Geologica,
+		sans-serif;
+	color: var(--figma-muted);
+}
+.skin-history summary {
+	cursor: pointer;
+}
+.skin-history ul {
+	max-height: 144px;
+	margin: 8px 0 0;
+	padding: 0;
+	list-style: none;
+	overflow: auto;
+}
+.skin-history li {
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 4px 0;
+}
+.skin-history li button {
+	border: 0;
+	background: transparent;
+	color: var(--figma-text);
+	text-align: left;
+	cursor: pointer;
+}
+.skin-history li button:disabled {
+	color: var(--figma-muted);
+	cursor: default;
+}
+.skin-history time {
+	white-space: nowrap;
 }
 .skin-error {
 	color: #ff8a88 !important;

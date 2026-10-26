@@ -120,6 +120,8 @@ impl Store {
 			.await
 			.map_err(db_error)?;
 		migrate(&pool, &directory).await?;
+		sqlx::query("CREATE TABLE IF NOT EXISTS skin_history (id INTEGER PRIMARY KEY, account_uuid TEXT NOT NULL, skin_id TEXT, skin_name TEXT NOT NULL, applied_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')))")
+			.execute(&pool).await.map_err(db_error)?;
 		initialize_update_preference(&pool).await?;
 		Ok(Self { pool, directory })
 	}
@@ -167,8 +169,9 @@ impl Store {
 			.fetch_one(&mut *tx)
 			.await
 			.map_err(db_error)?;
-		let duplicate: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM accounts WHERE uuid = ?")
+		let duplicate: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM accounts WHERE uuid = ? OR (kind = 'offline' AND nickname = ? COLLATE NOCASE)")
 			.bind(&uuid)
+			.bind(nickname)
 			.fetch_one(&mut *tx)
 			.await
 			.map_err(db_error)?;
@@ -181,7 +184,6 @@ impl Store {
 	}
 	pub async fn rename(&self, uuid: &str, nickname: &str) -> Result<Snapshot> {
 		validate_nickname(nickname)?;
-		let new_uuid = offline_uuid(nickname).to_string();
 		let mut tx = self.pool.begin().await.map_err(db_error)?;
 		let kind: Option<String> = sqlx::query_scalar("SELECT kind FROM accounts WHERE uuid = ?")
 			.bind(uuid)
@@ -193,9 +195,9 @@ impl Store {
 			Some(_) => return Err("Имя меняется у провайдера аккаунта".into()),
 			None => return Err("Аккаунт не найден".into()),
 		}
-		if new_uuid != uuid
-			&& sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM accounts WHERE uuid = ?")
-				.bind(&new_uuid)
+		if sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM accounts WHERE kind = 'offline' AND nickname = ? COLLATE NOCASE AND uuid != ?")
+				.bind(nickname)
+				.bind(uuid)
 				.fetch_one(&mut *tx)
 				.await
 				.map_err(db_error)?
@@ -203,7 +205,12 @@ impl Store {
 		{
 			return Err("Этот офлайн аккаунт уже добавлен".into());
 		}
-		sqlx::query("UPDATE accounts SET uuid = ?, nickname = ?, skin_provider = 'fallback', skin_url = NULL WHERE uuid = ?").bind(new_uuid).bind(nickname).bind(uuid).execute(&mut *tx).await.map_err(db_error)?;
+		sqlx::query("UPDATE accounts SET nickname = ? WHERE uuid = ?")
+			.bind(nickname)
+			.bind(uuid)
+			.execute(&mut *tx)
+			.await
+			.map_err(db_error)?;
 		tx.commit().await.map_err(db_error)?;
 		self.snapshot().await
 	}
@@ -500,13 +507,85 @@ mod tests {
 		assert_eq!(snapshot.accounts.iter().filter(|a| a.active).count(), 1);
 		assert!(snapshot.accounts.iter().any(|a| a.active
 			&& a.nickname == "RenamedQA"
-			&& a.uuid == offline_uuid("RenamedQA").to_string()));
+			&& a.uuid == offline_uuid("SecondQA").to_string()));
 		reopened
-			.remove(&offline_uuid("RenamedQA").to_string())
+			.remove(&offline_uuid("SecondQA").to_string())
 			.await
 			.expect("remove");
 		assert!(reopened.snapshot().await.expect("snapshot").accounts[0].active);
 		reopened.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[tokio::test]
+	async fn ten_offline_accounts_keep_uuids_and_settings_through_twenty_reopens() {
+		let directory =
+			std::env::temp_dir().join(format!("urod-account-stress-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone())
+			.await
+			.expect("isolated store");
+		let original: Vec<_> = (0..10).map(|n| format!("UrodTest{n:02}")).collect();
+		for name in &original {
+			store
+				.add_offline(name)
+				.await
+				.expect("create offline account");
+		}
+		assert!(store.add_offline("urodtest00").await.is_err());
+		for (number, name) in original.iter().enumerate() {
+			let uuid = offline_uuid(name).to_string();
+			store.activate(&uuid).await.expect("switch account");
+			let renamed = format!("UrodNew{number:02}");
+			let snapshot = store.rename(&uuid, &renamed).await.expect("rename account");
+			assert!(snapshot.accounts.iter().any(|account| account.uuid == uuid
+				&& account.nickname == renamed
+				&& account.active));
+		}
+		let mut settings = store.snapshot().await.unwrap().settings;
+		settings.memory_mb = 6144;
+		settings.java_path = "/test/java/bin/java".into();
+		settings.customization = serde_json::json!({"fontFamily":"Inter", "customBackground":"data:image/png;base64,YWJj"});
+		store.settings(settings).await.expect("persist settings");
+		store.pool.close().await;
+		for _ in 0..20 {
+			let reopened = Store::open(directory.clone()).await.expect("reopen");
+			let snapshot = reopened.snapshot().await.expect("snapshot");
+			assert_eq!(snapshot.accounts.len(), 10);
+			assert_eq!(
+				snapshot
+					.accounts
+					.iter()
+					.filter(|account| account.active)
+					.count(),
+				1
+			);
+			for (number, name) in original.iter().enumerate() {
+				let account = snapshot
+					.accounts
+					.iter()
+					.find(|account| account.uuid == offline_uuid(name).to_string())
+					.expect("stable uuid");
+				assert_eq!(account.nickname, format!("UrodNew{number:02}"));
+			}
+			assert_eq!(snapshot.settings.memory_mb, 6144);
+			assert_eq!(snapshot.settings.java_path, "/test/java/bin/java");
+			assert_eq!(snapshot.settings.customization["fontFamily"], "Inter");
+			assert_eq!(
+				snapshot.settings.customization["customBackground"],
+				"data:image/png;base64,YWJj"
+			);
+			reopened.pool.close().await;
+		}
+		let store = Store::open(directory.clone()).await.expect("final reopen");
+		let uuid = offline_uuid(&original[0]).to_string();
+		store.remove(&uuid).await.expect("delete");
+		let recreated = store.add_offline(&original[0]).await.expect("recreate");
+		assert!(
+			recreated
+				.accounts
+				.iter()
+				.any(|account| account.uuid == uuid)
+		);
+		store.pool.close().await;
 		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
 	}
 	async fn legacy_fixture(directory: &std::path::Path, duplicate_active: bool) -> SqlitePool {

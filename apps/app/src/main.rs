@@ -111,9 +111,7 @@ async fn rename_offline(
 ) -> Result<Snapshot> {
 	local(&window)?;
 	let store = state.store().await?;
-	let result = store.rename(&uuid, &nickname).await?;
-	let _ = tokio::fs::remove_file(store.directory.join("skins").join(format!("{uuid}.png"))).await;
-	Ok(result)
+	store.rename(&uuid, &nickname).await
 }
 #[tauri::command]
 async fn set_active(
@@ -272,6 +270,15 @@ async fn skin_library_list(
 ) -> Result<Vec<skin_library::SavedSkin>> {
 	local(&window)?;
 	skin_library::list(state.store().await?).await
+}
+#[tauri::command]
+async fn skin_library_history(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	account: String,
+) -> Result<Vec<skin_library::SkinHistoryEntry>> {
+	local(&window)?;
+	skin_library::history(state.store().await?, &account).await
 }
 #[tauri::command]
 async fn skin_library_save(
@@ -563,6 +570,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		save_customization,
 		skin,
 		skin_library_list,
+		skin_library_history,
 		skin_library_save,
 		skin_library_rename,
 		skin_library_update,
@@ -634,6 +642,7 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		save_customization,
 		skin,
 		skin_library_list,
+		skin_library_history,
 		skin_library_save,
 		skin_library_rename,
 		skin_library_update,
