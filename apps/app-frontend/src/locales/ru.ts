@@ -1,5 +1,5 @@
 export const ru = {
-	navigation: { home: 'Главная', accounts: 'Аккаунты', settings: 'Настройки' },
+	navigation: { accounts: 'Аккаунты', settings: 'Настройки' },
 	common: {
 		soon: 'Скоро',
 		recommended: 'Рекомендуем',

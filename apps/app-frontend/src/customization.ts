@@ -79,7 +79,7 @@ export const sections: { title: string; fields: Field[] }[] = [
 			choices('palette', 'Акцентная палитра', ['red', 'crimson', 'violet', 'blue', 'custom']),
 			color('accentCustom', 'Свой акцент'),
 			color('secondaryColor', 'Дополнительный цвет'),
-			choices('fontFamily', 'Шрифт', ['Manrope', 'Poppins', 'system-ui']),
+			choices('fontFamily', 'Шрифт', ['Geologica', 'Inter', 'Manrope', 'Poppins', 'system-ui']),
 			range('fontSize', 'Размер текста', 12, 18, 1),
 			range('fontWeight', 'Толщина шрифта', 400, 700, 100),
 			range('scale', 'Масштаб', 0.8, 1.3, 0.05),
@@ -125,9 +125,6 @@ export const sections: { title: string; fields: Field[] }[] = [
 			choices('navStyle', 'Стиль навигации', ['tabs', 'pills', 'underline']),
 			range('sidebarWidth', 'Ширина панели', 180, 300, 10),
 			choices('density', 'Плотность', ['compact', 'comfortable', 'spacious']),
-			choices('homeOrder', 'Порядок главной', ['community-first', 'server-first']),
-			toggle('showServer', 'Карточка сервера'),
-			toggle('showNews', 'Блок новостей'),
 			choices('cardStyle', 'Стиль карточек', ['solid', 'outline', 'glass']),
 			range('libraryColumns', 'Колонки библиотеки', 1, 4, 1),
 		],
@@ -145,6 +142,11 @@ export const sections: { title: string; fields: Field[] }[] = [
 	},
 ]
 export const fields = sections.flatMap((section) => section.fields)
+const legacyHomeFields = [
+	choices('homeOrder', 'Порядок главной', ['community-first', 'server-first']),
+	toggle('showServer', 'Карточка сервера'),
+	toggle('showNews', 'Блок новостей'),
+]
 const hex = /^#[0-9a-fA-F]{6}$/
 export function validateCustomization(input: unknown): Customization {
 	if (!input || typeof input !== 'object' || Array.isArray(input))
@@ -153,7 +155,7 @@ export function validateCustomization(input: unknown): Customization {
 	if (Object.keys(source).some((key) => !(key in defaults)))
 		throw Error('Файл содержит неизвестные параметры')
 	const result = { ...defaults } as Customization
-	for (const field of fields) {
+	for (const field of [...fields, ...legacyHomeFields]) {
 		const value =
 			field.key === 'homeOrder' && source[field.key] === 'academy-first'
 				? 'community-first'
@@ -186,11 +188,20 @@ export function validateCustomization(input: unknown): Customization {
 	return result
 }
 export function normalizeCustomization(input: unknown): Customization {
-	try {
-		return validateCustomization(input || {})
-	} catch {
-		return { ...defaults }
+	const result = { ...defaults } as Customization
+	if (!input || typeof input !== 'object' || Array.isArray(input)) return result
+	const source = input as Record<string, unknown>
+	for (const key of Object.keys(defaults) as (keyof Customization)[]) {
+		if (!(key in source)) continue
+		try {
+			;(result as unknown as Record<string, unknown>)[key] = validateCustomization({
+				[key]: source[key],
+			})[key]
+		} catch {
+			// Keep valid saved options when one older or damaged option cannot be used.
+		}
 	}
+	return result
 }
 export const presets: Record<string, Partial<Customization>> = {
 	Город: {
@@ -232,7 +243,6 @@ export function applyCustomization(input: unknown) {
 	root.dataset.pageTransition = value.pageTransition
 	root.dataset.focusGlow = String(value.focusGlow)
 	root.dataset.buttonMotion = String(value.buttonMotion)
-	root.dataset.homeOrder = value.homeOrder
 	root.dataset.playPosition = value.playPosition
 	root.dataset.showVersions = String(value.showVersions)
 	root.dataset.showModCount = String(value.showModCount)

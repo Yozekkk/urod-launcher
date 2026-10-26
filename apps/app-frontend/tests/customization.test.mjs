@@ -8,11 +8,20 @@ import {
 	validateCustomization,
 } from '../src/customization.ts'
 
-test('all forty controls have unique persisted keys and schema validation', () => {
-	assert.equal(fields.length, 40)
-	assert.deepEqual(new Set(fields.map((field) => field.key)), new Set(Object.keys(defaults)))
+test('visible customization excludes three obsolete home controls while all forty keys remain valid', () => {
+	assert.equal(fields.length, 37)
+	assert.deepEqual(new Set(fields.map((field) => field.key)).size, 37)
+	assert.deepEqual(
+		new Set(Object.keys(defaults).filter((key) => !fields.some((field) => field.key === key))),
+		new Set(['homeOrder', 'showServer', 'showNews']),
+	)
 	assert.deepEqual(validateCustomization(JSON.parse(JSON.stringify(defaults))), defaults)
 	assert.deepEqual(normalizeCustomization({ theme: 'invalid' }), defaults)
+	assert.equal(
+		normalizeCustomization({ fontFamily: 'Inter', theme: 'invalid' }).fontFamily,
+		'Inter',
+	)
+	assert.equal(normalizeCustomization({ fontFamily: 'Geologica' }).fontFamily, 'Geologica')
 	assert.throws(() => validateCustomization({ unknown: true }), /неизвестные/)
 	assert.throws(
 		() => validateCustomization({ customBackground: 'javascript:alert(1)' }),

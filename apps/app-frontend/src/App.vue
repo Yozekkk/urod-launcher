@@ -26,24 +26,11 @@ import ContentPage from './components/ContentPage.vue'
 import CustomizationPanel from './components/CustomizationPanel.vue'
 import { applyCustomization, normalizeCustomization } from './customization'
 import OperationPanel from './components/OperationPanel.vue'
-import { isTerminalPhase, operationPercent, useGameOperations } from './game-operations'
+import { operationPercent, useGameOperations } from './game-operations'
 import { parseLauncherRoute, type Page } from './routes'
-import {
-	officialEdition,
-	type Account,
-	type EditionId,
-	type Settings,
-	type Skin,
-	type Snapshot,
-} from './models'
-import {
-	gameApi,
-	loaderNames,
-	type EditionAvailability,
-	type Instance,
-	type UpdatePlan,
-} from './game-api'
-import { configureEditionInstaller, canInstallEdition, installEdition } from './edition-installer'
+import { type Account, type Settings, type Skin, type Snapshot } from './models'
+import { gameApi } from './game-api'
+import { configureEditionInstaller } from './edition-installer'
 import { formatUpdateBytes, useLauncherUpdates } from './launcher-updates'
 import { renderProjectMarkdown } from './project-markdown'
 import { messages } from './i18n'
@@ -52,23 +39,21 @@ import { parseJavaFailure } from './java-runtime'
 const navigation = computed<{ id: Page; label: string; icon: string }[]>(() =>
 	draft.value?.customization.language === 'en'
 		? [
-				{ id: 'home', label: 'Home', icon: 'home' },
 				{ id: 'library', label: 'Library', icon: 'folder' },
+				{ id: 'content', label: 'Catalog', icon: 'game' },
 				{ id: 'accounts', label: 'Accounts', icon: 'accounts' },
 				{ id: 'skins', label: 'Skins', icon: 'accounts' },
-				{ id: 'content', label: 'Mods & packs', icon: 'game' },
 				{ id: 'settings', label: 'Settings', icon: 'settings' },
 			]
 		: [
-				{ id: 'home', label: messages.navigation.home, icon: 'home' },
 				{ id: 'library', label: 'Библиотека', icon: 'folder' },
+				{ id: 'content', label: 'Каталог', icon: 'game' },
 				{ id: 'accounts', label: messages.navigation.accounts, icon: 'accounts' },
 				{ id: 'skins', label: 'Скины', icon: 'accounts' },
-				{ id: 'content', label: 'Моды и сборки', icon: 'game' },
 				{ id: 'settings', label: messages.navigation.settings, icon: 'settings' },
 			],
 )
-const page = ref<Page>('home')
+const page = ref<Page>('library')
 async function createFromSidebar() {
 	setPage('library')
 	await nextTick()
@@ -161,103 +146,8 @@ watch(
 )
 const loading = ref(true)
 const busy = ref(false)
-const editionAvailability = ref<EditionAvailability | null>(null)
-const editionLoading = ref(true)
-const currentEdition = computed(() =>
-	editionAvailability.value?.channel === (snapshot.value?.settings.release_channel || 'stable')
-		? editionAvailability.value
-		: null,
-)
-const editionModel = computed(() => ({
-	...officialEdition,
-	manifest:
-		currentEdition.value?.available && currentEdition.value.manifest
-			? JSON.stringify(currentEdition.value.manifest)
-			: null,
-}))
-const officialManifest = computed(() =>
-	currentEdition.value?.available ? currentEdition.value.manifest : null,
-)
-const officialInstance = ref<Instance | null>(null)
-const officialLoading = ref(true)
-const officialLoadError = ref(false)
-const officialUpdate = ref<UpdatePlan | null>(null)
-const officialUpdatePhase = ref<'checking' | 'current' | 'available' | 'error'>('checking')
-const officialBusy = ref(false)
-const officialJob = computed(() =>
-	operations.active.value.find(
-		(job) =>
-			(job.operation === 'install_edition' && !job.instance_id) ||
-			(['update_edition', 'resume_edition', 'install_game'].includes(job.operation) &&
-				job.instance_id === officialInstance.value?.id),
-	),
-)
-const officialDownloadBytes = computed(
-	() => officialManifest.value?.files.reduce((sum, file) => sum + file.size, 0) ?? null,
-)
-const bytes = new Intl.NumberFormat('ru', { maximumFractionDigits: 1 })
-const officialSize = computed(() =>
-	officialDownloadBytes.value === null
-		? 'Размер уточняется'
-		: `Файлы сборки: ${bytes.format(officialDownloadBytes.value / 1048576)} МБ`,
-)
-let editionGeneration = 0
-async function loadEditions() {
-	const generation = ++editionGeneration
-	editionLoading.value = true
-	try {
-		const result = await gameApi.editions(snapshot.value?.settings.release_channel || 'stable')
-		if (mounted && generation === editionGeneration)
-			editionAvailability.value = result.find((item) => item.id === officialEdition.id) ?? null
-	} catch {
-		if (mounted && generation === editionGeneration) editionAvailability.value = null
-	} finally {
-		if (mounted && generation === editionGeneration) editionLoading.value = false
-	}
-}
-let officialGeneration = 0
-async function loadOfficialState() {
-	const generation = ++officialGeneration
-	officialLoading.value = true
-	try {
-		const instances = await gameApi.instances()
-		if (!mounted || generation !== officialGeneration) return
-		officialLoadError.value = false
-		const instance = instances.find(
-			(item) => item.kind === 'official' && item.edition === officialEdition.id,
-		)
-		officialInstance.value = instance ?? null
-		officialUpdate.value = null
-		if (!instance || instance.status !== 'ready' || !instance.manifest_version) {
-			officialUpdatePhase.value = 'current'
-			return
-		}
-		officialUpdatePhase.value = 'checking'
-		try {
-			const plan = await gameApi.checkEditionUpdate(
-				instance.id,
-				snapshot.value?.settings.release_channel || 'stable',
-			)
-			if (mounted && generation === officialGeneration) {
-				officialUpdate.value = plan
-				officialUpdatePhase.value =
-					plan.from_version !== plan.to_version ||
-					plan.added.length + plan.changed.length + plan.removed.length > 0
-						? 'available'
-						: 'current'
-			}
-		} catch {
-			if (mounted && generation === officialGeneration) officialUpdatePhase.value = 'error'
-		}
-	} catch {
-		if (mounted && generation === officialGeneration) {
-			officialLoadError.value = true
-			officialUpdatePhase.value = 'error'
-		}
-	} finally {
-		if (mounted && generation === officialGeneration) officialLoading.value = false
-	}
-}
+const authenticating = ref(false)
+const authProvider = ref<'microsoft' | 'ely_by'>('microsoft')
 configureEditionInstaller(async ({ editionId }) => {
 	await operations.track(
 		await gameApi.installEdition(editionId, snapshot.value?.settings.release_channel || 'stable'),
@@ -265,36 +155,6 @@ configureEditionInstaller(async ({ editionId }) => {
 	notice.value = 'Установка сборки сообщества началась'
 	return true
 })
-watch(
-	() => snapshot.value?.settings.release_channel,
-	() => {
-		void loadEditions()
-		void loadOfficialState()
-	},
-)
-watch(
-	() =>
-		operations.jobs.value
-			.filter(
-				(job) =>
-					isTerminalPhase(job.phase) &&
-					[
-						'install_edition',
-						'update_edition',
-						'resume_edition',
-						'install_game',
-						'launch',
-						'stop',
-					].includes(job.operation),
-			)
-			.map((job) => job.id)
-			.join(','),
-	() => void loadOfficialState(),
-)
-const installingEdition = ref<EditionId | null>(null)
-const officialActionBusy = computed(
-	() => installingEdition.value !== null || officialBusy.value || !!officialJob.value,
-)
 const error = ref('')
 const notice = ref('')
 let noticeTimer: ReturnType<typeof setTimeout> | undefined
@@ -306,17 +166,6 @@ watch(notice, (value) => {
 		}, 5000)
 })
 const online = ref(navigator.onLine)
-const serverStatus = ref<'checking' | 'online' | 'offline' | 'unknown'>('checking')
-async function checkServer() {
-	serverStatus.value = 'checking'
-	try {
-		serverStatus.value = (await invoke<boolean>('urodgame_status')) ? 'online' : 'offline'
-	} catch {
-		serverStatus.value = 'unknown'
-	}
-}
-const authenticating = ref(false)
-const authProvider = ref<'microsoft' | 'ely_by'>('microsoft')
 const elyLoginDialog = ref<InstanceType<typeof ElyLoginDialog> | null>(null)
 const authStage = ref<'browser' | 'minecraft'>('browser')
 const eventCleanup: UnlistenFn[] = []
@@ -376,6 +225,8 @@ function showElyLogin() {
 }
 function updateRoute() {
 	const route = parseLauncherRoute(location.hash)
+	const canonical = `#/${route.page}${route.detail ? `/${route.detail}` : ''}`
+	if (location.hash !== canonical) window.history.replaceState(null, '', canonical)
 	page.value = route.page
 	routeDetail.value = route.detail
 }
@@ -392,99 +243,6 @@ function connectivity() {
 	if (online.value)
 		for (const account of snapshot.value?.accounts || [])
 			if (skins[account.uuid]?.status === 'network_error') void loadSkin(account, true)
-}
-async function startEditionInstall() {
-	if (
-		officialActionBusy.value ||
-		officialInstance.value ||
-		officialLoadError.value ||
-		!canInstallEdition(editionModel.value)
-	)
-		return
-	installingEdition.value = officialEdition.id
-	error.value = ''
-	try {
-		if (!(await installEdition(editionModel.value))) notice.value = 'Установка отменена'
-	} catch (reason) {
-		error.value = errorMessage(reason)
-	} finally {
-		installingEdition.value = null
-	}
-}
-async function resumeOfficialInstall() {
-	const instance = officialInstance.value
-	if (!instance || officialActionBusy.value) return
-	officialBusy.value = true
-	error.value = ''
-	try {
-		await operations.track(
-			await gameApi.resumeEditionInstall(
-				instance.id,
-				snapshot.value?.settings.release_channel || 'stable',
-			),
-		)
-		notice.value = 'Продолжаем установку сборки сообщества'
-	} catch (reason) {
-		error.value = errorMessage(reason)
-	} finally {
-		officialBusy.value = false
-	}
-}
-async function updateOfficial() {
-	const instance = officialInstance.value
-	if (!instance || officialActionBusy.value) return
-	officialBusy.value = true
-	error.value = ''
-	try {
-		const plan = await gameApi.checkEditionUpdate(
-			instance.id,
-			snapshot.value?.settings.release_channel || 'stable',
-		)
-		if (plan.conflicts.length) {
-			error.value =
-				'Обновление затрагивает ваши файлы. Откройте сборку в библиотеке, чтобы проверить конфликт.'
-			return
-		}
-		if (
-			plan.from_version === plan.to_version &&
-			!plan.added.length &&
-			!plan.changed.length &&
-			!plan.removed.length
-		) {
-			notice.value = 'Сборка уже актуальна'
-			return
-		}
-		await operations.track(
-			await gameApi.applyEditionUpdate(
-				instance.id,
-				snapshot.value?.settings.release_channel || 'stable',
-			),
-		)
-		notice.value = 'Обновление сборки началось'
-	} catch (reason) {
-		error.value = errorMessage(reason)
-	} finally {
-		officialBusy.value = false
-	}
-}
-async function playOfficial() {
-	const instance = officialInstance.value
-	if (!instance || instance.status !== 'ready' || officialActionBusy.value) return
-	if (!activeAccount.value) {
-		error.value = 'Добавьте или выберите активный аккаунт на странице «Аккаунты».'
-		return
-	}
-	officialBusy.value = true
-	error.value = ''
-	try {
-		await gameApi.launch(instance.id)
-		notice.value = 'Minecraft запущен'
-		await loadOfficialState()
-	} catch (reason) {
-		error.value = errorMessage(reason)
-	} finally {
-		officialBusy.value = false
-	}
 }
 async function loadSkin(account: Account, force = false) {
 	if (!force && (skins[account.uuid] || skinLoading[account.uuid])) return
@@ -686,20 +444,11 @@ async function restart() {
 }
 
 onMounted(() => {
-	void checkServer()
+	window.history.replaceState(null, '', '#/library')
 	updateRoute()
 	packLogTimer = setInterval(() => {
 		if (page.value === 'library' && routeDetail.value) void refreshPackLog()
 	}, 3000)
-	void invoke<string | null>('initial_route')
-		.then((route) => {
-			if (mounted && route) {
-				const parsed = parseLauncherRoute(route)
-				location.hash = `/${parsed.page}${parsed.detail ? `/${parsed.detail}` : ''}`
-				updateRoute()
-			}
-		})
-		.catch(() => {})
 	window.addEventListener('hashchange', updateRoute)
 	window.addEventListener('online', connectivity)
 	window.addEventListener('offline', connectivity)
@@ -772,7 +521,6 @@ onUnmounted(() => {
 			oled: snapshot?.settings.theme === 'oled',
 			'no-motion': snapshot?.settings.reduced_motion || snapshot?.settings.animations === false,
 			'no-blur': snapshot?.settings.blur === false,
-			'is-home': page === 'home',
 			'is-settings': page === 'settings',
 			'is-pack-detail': page === 'library' && !!routeDetail,
 		}"
@@ -879,237 +627,8 @@ onUnmounted(() => {
 					:cancelling="operations.cancelling.value === job.id"
 					@cancel="operations.cancel(job.id)"
 				/>
-				<section v-if="page === 'home'" class="page home-page">
-					<article class="official-pack-card" aria-labelledby="official-pack-title">
-						<div class="official-pack-top">
-							<span>ГОРОД УРОДОВ · MINECRAFT</span>
-							<span class="official-pack-badge"><AppIcon name="check" :size="13" />Сообщество</span>
-						</div>
-						<div class="official-pack-body">
-							<div class="official-pack-art" aria-hidden="true">
-								<span class="official-pack-halo" />
-								<img src="/brand/logo.svg" width="512" height="512" alt="" />
-								<span class="official-pack-art-word">ГОРОД УРОДОВ</span>
-							</div>
-							<div class="official-pack-copy">
-								<p class="edition-label">{{ officialEdition.label }}</p>
-								<h2 id="official-pack-title">{{ officialEdition.name }}</h2>
-								<p class="official-pack-description">{{ officialEdition.description }}</p>
-								<dl v-if="officialManifest || officialInstance" class="official-pack-facts">
-									<div>
-										<dt>Версия сборки</dt>
-										<dd>
-											{{ officialManifest?.version || officialInstance?.manifest_version || '—' }}
-										</dd>
-									</div>
-									<div>
-										<dt>Minecraft</dt>
-										<dd>
-											{{ officialManifest?.minecraft || officialInstance?.game_version || '—' }}
-										</dd>
-									</div>
-									<div>
-										<dt>Загрузчик</dt>
-										<dd>
-											{{
-												loaderNames[
-													officialManifest?.loader.kind || officialInstance?.loader || 'vanilla'
-												]
-											}}
-											{{
-												officialManifest?.loader.version || officialInstance?.loader_version || ''
-											}}
-										</dd>
-									</div>
-								</dl>
-								<p v-if="officialManifest || officialInstance" class="official-pack-size">
-									{{ officialSize }}
-								</p>
-								<p
-									v-if="
-										officialManifest || officialInstance || officialLoading || officialLoadError
-									"
-									class="official-pack-status"
-									role="status"
-								>
-									<span
-										class="official-pack-status-dot"
-										:class="{
-											active:
-												officialInstance?.status === 'ready' && !!officialInstance.manifest_version,
-										}"
-									/>
-									{{
-										officialLoading || editionLoading
-											? 'Проверяем сборку…'
-											: officialLoadError
-												? 'Не удалось проверить установку'
-												: officialJob
-													? operationTitle(officialJob.operation)
-													: officialInstance?.status === 'running'
-														? 'Игра запущена'
-														: officialInstance &&
-															  (!officialInstance.manifest_version ||
-																	!['ready', 'running'].includes(officialInstance.status))
-															? 'Нужно завершить установку сборки сообщества'
-															: officialInstance && officialUpdatePhase === 'available'
-																? `Доступно обновление ${officialUpdate?.to_version}`
-																: officialInstance && officialUpdatePhase === 'error'
-																	? 'Не удалось проверить обновления'
-																	: officialInstance
-																		? 'Готова к игре'
-																		: canInstallEdition(editionModel)
-																			? 'Готова к установке'
-																			: 'Публикация сборки готовится'
-									}}
-								</p>
-								<p v-else class="official-pack-hint">
-									Специальная сборка сообщества появится после публикации проверенного manifest.
-								</p>
-								<div v-if="officialJob" class="official-pack-progress" aria-live="polite">
-									<div class="official-pack-progress-track">
-										<span :style="{ width: `${operationPercent(officialJob) ?? 0}%` }" />
-									</div>
-									<small>{{ operationMessage(officialJob) }}</small>
-								</div>
-								<div class="official-pack-actions">
-									<a class="button primary" href="#/library">Открыть библиотеку</a>
-									<button
-										v-if="
-											officialInstance &&
-											officialInstance.status !== 'running' &&
-											(!officialInstance.manifest_version ||
-												!['ready', 'running'].includes(officialInstance.status))
-										"
-										class="button secondary"
-										:disabled="officialActionBusy"
-										@click="resumeOfficialInstall"
-									>
-										<AppIcon name="refresh" :size="17" />Завершить установку
-									</button>
-									<button
-										v-else-if="officialInstance && officialUpdatePhase === 'available'"
-										class="button primary"
-										:disabled="officialActionBusy || officialInstance.status === 'running'"
-										@click="updateOfficial"
-									>
-										<AppIcon name="refresh" :size="17" />Обновить
-									</button>
-									<button
-										v-else-if="officialInstance"
-										class="button primary"
-										:disabled="
-											officialActionBusy || officialInstance.status !== 'ready' || !activeAccount
-										"
-										@click="playOfficial"
-									>
-										<AppIcon name="game" :size="17" />{{
-											officialInstance.status === 'running' ? 'Игра запущена' : 'Играть'
-										}}
-									</button>
-									<button
-										v-else-if="canInstallEdition(editionModel)"
-										class="button secondary"
-										:disabled="
-											officialLoading ||
-											officialLoadError ||
-											officialActionBusy ||
-											!canInstallEdition(editionModel)
-										"
-										@click="startEditionInstall"
-									>
-										<AppIcon name="game" :size="17" />{{
-											officialActionBusy
-												? 'Устанавливаем…'
-												: canInstallEdition(editionModel)
-													? 'Установить'
-													: 'Скоро'
-										}}
-									</button>
-									<button
-										v-if="
-											officialInstance &&
-											officialInstance.manifest_version &&
-											officialUpdatePhase === 'available' &&
-											officialInstance.status === 'ready'
-										"
-										class="button secondary"
-										:disabled="officialActionBusy || !activeAccount"
-										@click="playOfficial"
-									>
-										Играть
-									</button>
-									<a
-										v-if="officialInstance"
-										class="button subtle"
-										:href="`#/library/${officialInstance.id}`"
-										>Открыть в библиотеке</a
-									>
-								</div>
-								<p
-									v-if="officialInstance?.status === 'ready' && !activeAccount"
-									class="official-pack-hint"
-								>
-									Чтобы играть, <a href="#/accounts">выберите аккаунт Minecraft</a>.
-								</p>
-							</div>
-						</div>
-					</article>
-					<div v-if="draft?.customization.showServer" class="urodgame-card">
-						<div>
-							<p class="eyebrow">ГОРОД УРОДОВ · URODGAME</p>
-							<h2>Сервер сообщества</h2>
-							<p>Адрес: <strong>gorodurodov.ru</strong></p>
-							<p class="server-state" role="status" aria-live="polite">
-								{{
-									serverStatus === 'checking'
-										? 'Проверяем подключение…'
-										: serverStatus === 'online'
-											? 'Сервер отвечает'
-											: serverStatus === 'offline'
-												? 'Подключение сейчас недоступно'
-												: 'Не удалось проверить подключение'
-								}}
-							</p>
-						</div>
-						<div class="urodgame-links">
-							<button class="button secondary" @click="checkServer">Проверить снова</button
-							><a
-								class="button secondary"
-								href="https://gorodurodov.ru"
-								target="_blank"
-								rel="noopener noreferrer"
-								>Официальный сайт</a
-							>
-						</div>
-					</div>
-					<div v-if="draft?.customization.showNews" class="urodnews-card">
-						<div>
-							<p class="eyebrow">НОВОСТИ СООБЩЕСТВА</p>
-							<h2>YrodNews</h2>
-							<p>Официальный канал Города Уродов. Анонсы и события открываются в Telegram.</p>
-						</div>
-						<a
-							class="button secondary"
-							href="https://t.me/YrodNews"
-							target="_blank"
-							rel="noopener noreferrer"
-							>Открыть канал</a
-						>
-					</div>
-					<div class="home-footer">
-						<AppIcon name="shield" :size="20" />
-						<p>
-							Твой мир. Твои правила.<span
-								>Сохраняй собственные миры и моды — обновляются только официальные файлы
-								сборки.</span
-							>
-						</p>
-						<span class="release-tag">ГОРОД УРОДОВ</span>
-					</div>
-				</section>
 				<LibraryPage
-					v-else-if="page === 'library'"
+					v-if="page === 'library'"
 					:detail="routeDetail"
 					:settings="snapshot.settings"
 					:account-name="activeAccount?.nickname || null"

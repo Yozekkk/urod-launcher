@@ -20,7 +20,6 @@ const emit = defineEmits<{
 }>()
 const menu = ref<HTMLDialogElement | null>(null)
 const figmaIcons: Record<Page, string> = {
-	home: '/figma/f1283.svg',
 	library: '/figma/332c7.svg',
 	accounts: '/figma/03486.svg',
 	skins: '/figma/df15d.svg',
@@ -77,7 +76,9 @@ function goForward() {
 				<button aria-label="Назад" @click="goBack">‹</button>
 				<button aria-label="Вперёд" @click="goForward">›</button>
 			</div>
-			<a href="#/home" class="figma-wordmark" @click.prevent="navigate('home')">urodlauncher</a>
+			<a href="#/library" class="figma-wordmark" @click.prevent="navigate('library')"
+				>urodlauncher</a
+			>
 			<button class="figma-about" aria-label="О приложении" @click="emit('about')">
 				<img src="/figma/2927a.svg" width="32" height="32" alt="" />
 			</button>
