@@ -1,6 +1,8 @@
 # Verification record
 
-Updated: 2026-10-23. Branch: `release/1.0.0-figma-stable`. Results describe only checks observed on this Linux host and in the linked CI runs. Native tests used isolated launcher data under `/tmp/urod-figma-rc` and `.qa-runtime/urod-figma-native`; live loader tests used an ignored local cache in `.qa-runtime`.
+Updated: 2026-10-26. Branch: `release/1.0.0-figma-stable`. Results describe only checks observed on this Linux host and in the linked CI runs. Native tests used isolated launcher data under `/tmp/urod-figma-rc` and `.qa-runtime/urod-figma-native`; live loader tests used an ignored local cache in `.qa-runtime`.
+
+The 2026-10-26 Library First, account and skin-history checks are recorded separately in [TEST-REPORT.md](TEST-REPORT.md). They include 20 full Tauri launches and the latest 125 passing frontend/Rust tests. This table also retains historical 0.1.0 checks instead of relabeling them as current Stable results. [CI run 40004657297](https://github.com/Yozekkk/urod-launcher/actions/runs/40004657297) passed on the prior commit; CI for the Library First changes is pending.
 
 | Command or scenario | Outcome |
 | --- | --- |

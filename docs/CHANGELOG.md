@@ -2,6 +2,10 @@
 
 ## Unreleased work toward 1.0.0
 
+- Made Library the start screen on every process launch, removed Home from the sidebar and redirected legacy Home hashes. Catalog, Accounts, Skins and Settings remain accessible.
+- Kept offline account UUIDs stable across nickname changes and added case-insensitive duplicate-name checks, preserving their account-bound local skins.
+- Added SQLite-backed, account-specific skin selection history with timestamps and a restore path in the skin page. Isolated QA imported 15 PNGs and found the same accounts, skins and history after 20 full Tauri launches, including one forced termination.
+- Added the bundled Figma Geologica/Inter fonts to customization choices and kept valid saved options when one damaged option is rejected. Home-only controls were hidden while their legacy keys remain readable.
 - Imported original UrodLauncher Figma SVG/PNG assets and the Geologica/Inter fonts with OFL notices.
 - Replaced the main shell with Figma sidebar, header and news rail; reworked library and live Modrinth gallery geometry.
 - Reworked the skin page and add/edit dialogs using the inspected Figma frames. PNG upload, native validation, model choice and persistence remain functional.

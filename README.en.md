@@ -27,9 +27,9 @@ This image was captured from the running Tauri app at 1280×720. The empty libra
 - Separate Vanilla, Fabric, Forge, NeoForge and Quilt instances; pack import and export, including `.mrpack`.
 - Public Modrinth mod, shader, resource pack and modpack catalog; Java and memory controls, downloads and game logs. Custom JVM arguments are not yet available in the interface.
 - Download integrity checks, managed file updates and rollback where supported by the inherited engine.
-- Persistent local PNG skin library with 3D preview and Classic/Slim variants. Applying a skin to a Microsoft account sends it to the official Minecraft Services API from the native process and checks the profile afterwards. This still needs verification with a real licensed account.
-- 40 customization controls for themes, colors, background, motion and layout, with presets and JSON import/export. The language control changes the document language and primary navigation; a complete English interface translation remains to be done.
-- Community home page, official website link and UrodGame card (`gorodurodov.ru`). The connectivity check tests a TCP connection, not the Minecraft status protocol. News opens the official channel without inventing a feed.
+- Persistent local PNG skin library with 3D preview, Classic/Slim variants and per-account selection history on disk. Applying a skin to a Microsoft account sends it to the official Minecraft Services API from the native process and checks the profile afterwards. This still needs verification with a real licensed account.
+- 37 visible customization controls for themes, colors, background, motion and layout, with presets and JSON import/export. Three obsolete Home-only fields remain readable in saved data. The language control changes the document language and primary navigation; a complete English interface translation remains to be done.
+- The launcher opens in Library. Navigation includes Library, Catalog, Accounts, Skins and Settings; the old home route redirects to Library.
 
 | Library | Catalog |
 | --- | --- |

@@ -39,7 +39,7 @@ Original vector and raster assets returned by successful `get_design_context` ca
 | Figma source | Vue and CSS owner | Exported asset | Use |
 | --- | --- | --- | --- |
 | Shared shell in `3:1152`; app mark `3:1175` | `AppNavbar.vue`, `figma.css` | `2927a.svg`; rasterized copies in `apps/app/icons` | Header and executable/installer/window icons |
-| Shared sidebar in `3:1152` | `AppNavbar.vue`, `figma.css` | `f1283.svg`, `332c7.svg`, `03486.svg`, `df15d.svg`, `8aecb.png`, `fd48a.svg` | Home, library, account, skins, content and settings navigation |
+| Shared sidebar in `3:1152` | `AppNavbar.vue`, `figma.css` | `332c7.svg`, `8aecb.png`, `03486.svg`, `df15d.svg`, `fd48a.svg` | Library, catalog, accounts, skins and settings. The owner removed Home from the product after the Figma design; `/home` redirects to Library. |
 | Shared header in `3:1152` | `AppNavbar.vue`, `figma.css` | `2aa90.png`, `319d1.svg` | Empty account avatar and history control |
 | Skin add tile in `3:1012` | `SkinsPage.vue` | `55119.svg` | Add icon |
 | Global settings `3:47` | `FigmaGlobalSettings.vue` | `38640.svg`, `6a8c5.svg`, `bd47c.svg`, `5e6f8.svg`, `20469.svg` | Navigation, original edit/switch group and close icon |

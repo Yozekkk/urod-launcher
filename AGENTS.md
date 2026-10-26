@@ -6,7 +6,7 @@ preserved license notices are in NOTICE.md, COPYING.md and docs/UPSTREAM-AUDIT.m
 ## Architecture
 
 - apps/app: Tauri v2 native shell, isolated local storage, skins and IPC.
-- apps/app-frontend: Vue 3 desktop interface: Home, Library, Content, Accounts and Settings.
+- apps/app-frontend: Vue 3 desktop interface: Library, Content, Accounts, Skins and Settings.
 - packages/app-lib: extracted upstream Microsoft/Minecraft authentication and Ely.by providers.
 - packages/launcher-core: upstream-backed game/content installation, managed editions and transactions.
 - packages/app-lib/src/upstream: inactive source comparison; never compile it.

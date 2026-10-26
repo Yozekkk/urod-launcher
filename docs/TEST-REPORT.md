@@ -1,0 +1,36 @@
+# UrodLauncher: Library First and persistence test report
+
+Date: 2026-10-26. Branch: `release/1.0.0-figma-stable`. Tested source still has **0.1.0 Development** metadata; this report is not a Stable release certification. All new native tests used `/tmp/urod-library-first-qa-20261026`. No real account, token, password, or user data directory was used.
+
+## Results
+
+| Area | Observed result |
+| --- | --- |
+| Startup and routing | 20 separate Tauri process launches opened `#/library`; launch 10 was force-killed, and launch 11 recovered. `/home` redirected to `#/library`. Reloading from Settings opened Library. The five sidebar links are Library, Catalog, Accounts, Skins and Settings. |
+| Offline accounts | 10 synthetic accounts were created through native IPC. Each was activated in turn; one was renamed, deleted and recreated. Its UUID remained constant on rename and matched on recreation. A Rust test repeated creation, activation and rename for 10 accounts, then reopened the isolated SQLite store 20 times. |
+| Skin library | 15 distinct, valid 64×64 PNGs imported through native IPC and through a Rust test. The three chosen accounts each selected three skins; histories were account-specific, timestamped and persisted in SQLite. Every one of the 20 full launches found 15 saved skins and the account's history. The UI displayed 15 cards, 10 account options and a working WebGL canvas. Selecting an earlier history entry and applying it appended a fourth entry. |
+| Skin errors and edits | Rust tests rejected malformed and wrong-size PNGs, unsafe names and symlink replacement, and verified texture replacement, Steve/Alex model changes, rename and removal. Identical PNG bytes are permitted as separate library entries with distinct IDs; no deduplication is claimed. The new 15-PNG test also checked rename, removal and restoring a previous selection. |
+| Settings | A native save of 6144 MB RAM, `/usr/bin/java`, Inter and a 2×2 PNG background survived a full Tauri restart. The WebView then reported `--ui-font: Inter` and a PNG `--ui-bg-image`. The Rust account stress test checked RAM, Java and customization fields after 20 store reopens. All 40 legacy customization keys remain accepted by the schema; 37 controls remain visible because three controlled the removed Home page. A frontend test validates this distinction. |
+| Microsoft and Ely.by | 15 `urod-app-lib` tests passed with local mock endpoints and synthetic credentials. They cover Microsoft OAuth callback/state, token refresh, Minecraft profile identity, rejection at each network stage, expired or malformed sessions, Ely.by login/refresh/invalidation, and no token leakage in error text. A further app test mocked Minecraft skin upload: HTTP 401/503, a wrong profile and failed profile verification created no history entry; a verified response did. The OS vault integration test was ignored because an unlocked test keyring was unavailable. No live account sign-in or live Minecraft skin upload was performed. |
+| Minecraft engine | 55 core unit/integration tests passed, including installation/update transactions, hashes, cancellation, path checks, Java selection and process arguments. Prior isolated live runs of Vanilla, Fabric, Quilt, Forge and NeoForge 1.21.1 are recorded in [TESTING.md](TESTING.md); those live game runs were **not repeated** for this change. Four core tests and three live integration tests remained ignored. |
+| Frontend and security | 18 frontend tests passed, TypeScript/ESLint/Prettier passed, production build passed, boundary script passed, and `pnpm audit --prod` reported no known vulnerabilities at test time. No live token was used or logged. |
+| UI at 860 px | Native Library, Catalog, Accounts, Skins and Settings rendered without document horizontal overflow. The Library start screen and account-specific history were captured from the real Tauri window: [Library](screenshots/figma-rc/library-first-860.png), [skin history](screenshots/figma-rc/skin-history-860.png). |
+
+Counts from the full local run: **18 frontend tests, 15 authentication tests, 37 app tests and 55 core tests passed** (125 total); **10 Rust tests were ignored** (1 authentication vault, 2 app live Ely.by, 4 core manual/live and 3 full game integration tests). The native process loop and UI probes above are additional checks, not counted as unit tests. The production build warned that the lazy skins JavaScript chunk is 531 kB; the build passed.
+
+## Defects fixed
+
+1. The old Home page remained reachable and its nav link and logo target were still present. Home markup and startup routing were removed; legacy hashes now resolve to Library.
+2. Renaming an offline account recomputed its UUID and broke account-bound skin selection. Rename now retains the UUID and rejects case-insensitive duplicate offline nicknames.
+3. Skin selection history existed only as current `active_for` state. Native SQLite now records account UUID, skin ID or default-skin marker, saved name and application time, and the skin page exposes the last 100 events per account.
+4. The frontend rejected the bundled Figma Inter/Geologica fonts as customization values. They are valid choices now. A single invalid saved value no longer discards other valid customization values.
+5. Three controls that only changed the removed Home page were still visible. They were removed from the editor while their saved keys remain readable for older settings files.
+
+## Limits and open work
+
+- Microsoft and Ely.by real sign-in, Microsoft server-side skin verification with an authorized account, and Ely.by live skin retrieval remain untested. Mocks do not prove the live services.
+- One forced app kill after completed writes passed. A kill during the narrow interval between skin index replacement and SQLite history insertion, power loss, and concurrent cross-process writes were not simulated.
+- The 40 customization values have schema coverage; 37 are visible after removing Home. Every visible control was not individually exercised through the UI. The custom font variable is saved and applied, while Figma-specific components retain their prescribed Geologica/Inter typography.
+- The new branch changes have not yet passed a post-commit CI run or rebuilt installer matrix. Earlier [CI run 40004657297](https://github.com/Yozekkk/urod-launcher/actions/runs/40004657297) passed on the previous commit.
+- The debug Tauri process sampled about 381 MB RSS and its WebKit web process about 506 MB RSS while 15 skin previews were loaded. This is a point sample, not a leak test or production memory target. No performance or leak clearance is claimed.
+- See [stable readiness audit](STABLE_1.0.0_AUDIT.md) for release blockers, disabled settings and installer coverage.
