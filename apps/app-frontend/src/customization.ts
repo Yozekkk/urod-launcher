@@ -3,7 +3,7 @@ export const defaults = {
 	palette: 'red',
 	accentCustom: '#d73547',
 	secondaryColor: '#ff817f',
-	fontFamily: 'Manrope',
+	fontFamily: 'Geologica',
 	fontSize: 14,
 	fontWeight: 400,
 	scale: 1,

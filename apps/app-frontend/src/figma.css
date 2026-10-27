@@ -1309,14 +1309,21 @@ body {
 	color: var(--figma-muted);
 	cursor: pointer;
 }
-.figma-settings-legacy[open] {
+.figma-settings-legacy-grid {
 	display: grid;
 	grid-template-columns: 225px minmax(0, 1fr);
 	column-gap: 28px;
 }
-.figma-settings-legacy > summary,
-.figma-settings-legacy > .page-heading {
+.figma-settings-legacy-grid > .page-heading {
 	grid-column: 1 / -1;
+}
+.figma-settings-legacy .settings-section {
+	background: var(--figma-control);
+	border-color: var(--figma-border);
+	border-radius: 27px;
+}
+.figma-settings-legacy .settings-section h2 {
+	color: var(--figma-text);
 }
 .app-navbar.figma-header {
 	position: relative;

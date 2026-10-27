@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="UrodLauncher">
-<defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#ff645d"/><stop offset="1" stop-color="#a51123"/></linearGradient></defs>
-<rect width="256" height="256" rx="52" fill="#17191d"/>
-<path d="M45 58h38v111c0 23 18 42 45 42s45-19 45-42V58h38v111c0 45-35 77-83 77s-83-32-83-77z" fill="url(#g)"/>
-<path d="M45 58V29h32v13h25V29h32v13h25V29h32v13h20v16z" fill="#ff645d"/>
-<path d="M113 109h30v42h-30z" fill="#17191d"/>
-</svg>
