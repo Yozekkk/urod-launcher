@@ -4,17 +4,17 @@
 
 <p align="center"><a href="README.md">Русский</a> · <a href="docs/FIGMA_IMPLEMENTATION_MAP.md">Figma implementation</a> · <a href="docs/TEST-REPORT.md">Test results</a></p>
 
-> **Project status:** 0.1.0 Development. The Figma implementation is still being verified; 1.0.0 Stable remains blocked by open checks. See the [readiness audit](docs/STABLE_1.0.0_AUDIT.md).
+UrodLauncher **1.0.0 Stable** is the official release. See [tested scope and remaining limitations](docs/STABLE_1.0.0_AUDIT.md).
 
-## Development packages
+## Download 1.0.0 Stable
 
 <p align="center">
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-windows.png" alt="Windows EXE from CI" width="290"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-debian.png" alt="Debian, Ubuntu and Linux Mint DEB from CI" width="290"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-arch.png" alt="Arch, EndeavourOS and Manjaro PKG from CI" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/UrodLauncher-Setup-1.0.0.exe"><img src=".github/readme/download-windows.png" alt="Windows EXE" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/UrodLauncher-1.0.0-amd64.deb"><img src=".github/readme/download-debian.png" alt="Debian, Ubuntu and Linux Mint DEB" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/UrodLauncher-1.0.0-x86_64.pkg.tar.zst"><img src=".github/readme/download-arch.png" alt="Arch, EndeavourOS and Manjaro PKG" width="290"></a>
 </p>
 
-The buttons open a [successful GitHub Actions run](https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014). Under **Artifacts**, choose <code>windows-installer</code>, <code>debian-package</code> or <code>arch-package</code>. GitHub may require sign-in, and CI artifacts expire. These are **0.1.0 Development** packages. No Stable Release has been published; permanent releases will appear on [Releases](https://github.com/Yozekkk/urod-launcher/releases).
+The buttons download installers from the [official v1.0.0 release](https://github.com/Yozekkk/urod-launcher/releases/tag/v1.0.0). Compare each file with [SHA256SUMS.txt](https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/SHA256SUMS.txt). Windows packages are not Authenticode signed; in-app automatic updates remain disabled.
 
 ## Library opens first
 
@@ -56,13 +56,13 @@ Global settings cover Java detection, memory and window dimensions, resource man
 
 ## Installation
 
-Download the relevant CI artifact above and unpack the GitHub Actions archive. These package names were checked in the linked run:
+Download the installer directly using the button above. Official release files:
 
 | Platform | File | Install |
 | --- | --- | --- |
-| Windows 10/11 x64 | <code>UrodLauncher-Setup-0.1.0.exe</code> | Run the NSIS installer. Runtime on a real Windows host remains untested. |
-| Debian / Ubuntu / Linux Mint x64 | <code>UrodLauncher-0.1.0-amd64.deb</code> | <code>sudo apt install ./UrodLauncher-0.1.0-amd64.deb</code> |
-| Arch / EndeavourOS / Manjaro x64 | <code>UrodLauncher-0.1.0-x86_64.pkg.tar.zst</code> | <code>sudo pacman -U ./UrodLauncher-0.1.0-x86_64.pkg.tar.zst</code> |
+| Windows 10/11 x64 | <code>UrodLauncher-Setup-1.0.0.exe</code> | Run the NSIS installer. Silent installation is checked on a Windows runner; GUI runtime remains untested. |
+| Debian / Ubuntu / Linux Mint x64 | <code>UrodLauncher-1.0.0-amd64.deb</code> | <code>sudo apt install ./UrodLauncher-1.0.0-amd64.deb</code> |
+| Arch / EndeavourOS / Manjaro x64 | <code>UrodLauncher-1.0.0-x86_64.pkg.tar.zst</code> | <code>sudo pacman -U ./UrodLauncher-1.0.0-x86_64.pkg.tar.zst</code> |
 
 Source builds require Node.js, pnpm, Rust and Tauri's system libraries. Linux needs WebKitGTK 4.1. See [DEVELOPMENT.md](docs/DEVELOPMENT.md) and [RELEASE.md](docs/RELEASE.md). Automatic UrodLauncher updates remain safely disabled until the project has its own signing key and endpoint.
 

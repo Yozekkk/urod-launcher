@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased work toward 1.0.0
+## 1.0.0 Stable
 
 - Made Library the start screen on every process launch, removed Home from the sidebar and redirected legacy Home hashes. Catalog, Accounts, Skins and Settings remain accessible.
 - Kept offline account UUIDs stable across nickname changes and added case-insensitive duplicate-name checks, preserving their account-bound local skins.
@@ -34,5 +34,7 @@
 - Included the project's NOTICE attribution as a Tauri resource so future Windows and Debian bundles carry it alongside the GPL license.
 - Removed duplicated WebKit/GTK entries from explicit Debian dependencies after the package control file showed that Tauri already adds them.
 - Corrected active `AGENTS.md` project instructions and seven Daedalus Clippy warnings.
+- Removed the retired geometric logo and old README graphics; rebuilt both README files with the owner's Figma mark, bundled Geologica, and real Tauri screenshots.
+- Corrected the WebKit grid layout for the supplemental settings editor and verified the main sections at multiple window sizes.
 
-The 1.0.0 release is not issued. See [the readiness audit](STABLE_1.0.0_AUDIT.md) for remaining gates. Historical 0.1.0 records remain in the repository.
+The [readiness audit](STABLE_1.0.0_AUDIT.md) records the exact verified scope and remaining limitations. Historical 0.1.0 records remain in the repository.

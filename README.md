@@ -4,17 +4,17 @@
 
 <p align="center"><a href="README.en.md">English</a> · <a href="docs/FIGMA_IMPLEMENTATION_MAP.md">Дизайн из Figma</a> · <a href="docs/TEST-REPORT.md">Результаты тестов</a></p>
 
-> **Состояние проекта:** 0.1.0 Development. Интерфейс переносится из Figma; выпуск 1.0.0 Stable пока заблокирован оставшимися проверками. [Аудит готовности](docs/STABLE_1.0.0_AUDIT.md).
+UrodLauncher **1.0.0 Stable** — официальный выпуск. [Что проверено и какие ограничения остаются](docs/STABLE_1.0.0_AUDIT.md).
 
-## Тестовые пакеты
+## Скачать 1.0.0 Stable
 
 <p align="center">
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-windows.png" alt="Windows — EXE из CI" width="290"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-debian.png" alt="Debian, Ubuntu, Linux Mint — DEB из CI" width="290"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-arch.png" alt="Arch, EndeavourOS, Manjaro — PKG из CI" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/UrodLauncher-Setup-1.0.0.exe"><img src=".github/readme/download-windows.png" alt="Windows — EXE" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/UrodLauncher-1.0.0-amd64.deb"><img src=".github/readme/download-debian.png" alt="Debian, Ubuntu, Linux Mint — DEB" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/UrodLauncher-1.0.0-x86_64.pkg.tar.zst"><img src=".github/readme/download-arch.png" alt="Arch, EndeavourOS, Manjaro — PKG" width="290"></a>
 </p>
 
-Кнопки открывают [успешную сборку GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014). Внизу страницы откройте **Artifacts**: <code>windows-installer</code>, <code>debian-package</code> или <code>arch-package</code>. GitHub может потребовать вход; CI-артефакты хранятся ограниченное время. Это пакеты **0.1.0 Development**, а не выпущенный Stable Release. Страница постоянных выпусков — [Releases](https://github.com/Yozekkk/urod-launcher/releases).
+Кнопки скачивают установщики из [официального релиза v1.0.0](https://github.com/Yozekkk/urod-launcher/releases/tag/v1.0.0). Сверьте файл с [SHA256SUMS.txt](https://github.com/Yozekkk/urod-launcher/releases/download/v1.0.0/SHA256SUMS.txt). Пакеты не подписаны Authenticode; автоматическое обновление лаунчера отключено.
 
 ## Библиотека — стартовый экран
 
@@ -56,13 +56,13 @@
 
 ## Установка
 
-Скачайте нужный CI-артефакт по кнопкам выше и распакуйте архив GitHub Actions. Названия пакетов, проверенные в этом запуске:
+Скачайте пакет напрямую по кнопке выше. Файлы официального выпуска:
 
 | Платформа | Файл | Команда |
 | --- | --- | --- |
-| Windows 10/11 x64 | <code>UrodLauncher-Setup-0.1.0.exe</code> | Запустите NSIS-установщик. Исполнение в настоящей Windows ещё не проверено. |
-| Debian / Ubuntu / Linux Mint x64 | <code>UrodLauncher-0.1.0-amd64.deb</code> | <code>sudo apt install ./UrodLauncher-0.1.0-amd64.deb</code> |
-| Arch / EndeavourOS / Manjaro x64 | <code>UrodLauncher-0.1.0-x86_64.pkg.tar.zst</code> | <code>sudo pacman -U ./UrodLauncher-0.1.0-x86_64.pkg.tar.zst</code> |
+| Windows 10/11 x64 | <code>UrodLauncher-Setup-1.0.0.exe</code> | Запустите NSIS-установщик. Тихая установка проверяется на Windows runner; запуск GUI на Windows не проверен. |
+| Debian / Ubuntu / Linux Mint x64 | <code>UrodLauncher-1.0.0-amd64.deb</code> | <code>sudo apt install ./UrodLauncher-1.0.0-amd64.deb</code> |
+| Arch / EndeavourOS / Manjaro x64 | <code>UrodLauncher-1.0.0-x86_64.pkg.tar.zst</code> | <code>sudo pacman -U ./UrodLauncher-1.0.0-x86_64.pkg.tar.zst</code> |
 
 Для сборки из исходников нужны Node.js, pnpm, Rust и системные библиотеки Tauri. На Linux требуется WebKitGTK 4.1. Инструкции: [DEVELOPMENT.md](docs/DEVELOPMENT.md) и [RELEASE.md](docs/RELEASE.md). Автообновление UrodLauncher безопасно отключено до появления собственного ключа подписи и endpoint.
 

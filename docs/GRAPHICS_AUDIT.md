@@ -17,4 +17,4 @@ The former hand-authored geometric U at <code>apps/app-frontend/public/brand/log
 
 The README graphics use **Geologica only**. The variable TTF is bundled with the app and covered by [OFL-Geologica.txt](../apps/app-frontend/public/fonts/OFL-Geologica.txt). The current Figma interface uses Geologica for main screens; some settings headings use Inter in the source design. The README generator uses no Inter, Manrope, Poppins, system font or downloaded font.
 
-The README download graphics open the verified CI run containing three 0.1.0 Development artifacts. GitHub Actions artifacts expire and may require sign-in. No Stable release, signature or checksum is claimed.
+The README download graphics link directly to the three named v1.0.0 release files. The graphic labels show version 1.0.0; the files are not claimed to carry Authenticode or Tauri updater signatures. The release workflow generates `SHA256SUMS.txt` from the actual installer and source files.

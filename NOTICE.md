@@ -1,10 +1,10 @@
 # Source and licensing
 
-UrodLauncher 0.1.0 is a separate GPL-3.0-only derivative of NCreate Launcher.
+UrodLauncher 1.0.0 is a separate GPL-3.0-only derivative of NCreate Launcher.
 It keeps the existing Rust/Tauri/Vue architecture and adapted NCreate code. The
 skin manager was informed by the open-source Millida Launcher; no Millida
 service, account infrastructure, keys or branded artwork are included.
-The work toward the next UrodLauncher interface uses assets exported from the
+The UrodLauncher interface uses assets exported from the
 owner's Figma file `nxRBVO5kqVue97M5fgKDvZ`, including the launcher mark at
 node `3:1175`. See apps/app-frontend/public/brand/PROVENANCE.md and
 docs/FIGMA_IMPLEMENTATION_MAP.md. The earlier UrodLauncher logo and city

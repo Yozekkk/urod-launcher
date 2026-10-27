@@ -81,9 +81,9 @@ def main() -> None:
 	OUT.mkdir(parents=True, exist_ok=True)
 	banner("banner.png", "Minecraft-лаунчер Города Уродов", "Библиотека  ·  Каталог  ·  Скины")
 	banner("banner-en.png", "Minecraft launcher for Gorod Urodov", "Library  ·  Catalog  ·  Skins")
-	button("download-windows.png", "Windows", "EXE  ·  x64  ·  CI")
-	button("download-debian.png", "Debian / Ubuntu", "Linux Mint  ·  DEB  ·  CI")
-	button("download-arch.png", "Arch / EndeavourOS", "Manjaro  ·  PKG  ·  CI")
+	button("download-windows.png", "Windows", "EXE  ·  x64  ·  1.0.0")
+	button("download-debian.png", "Debian / Ubuntu", "Linux Mint  ·  DEB  ·  1.0.0")
+	button("download-arch.png", "Arch / EndeavourOS", "Manjaro  ·  PKG  ·  1.0.0")
 
 
 if __name__ == "__main__":

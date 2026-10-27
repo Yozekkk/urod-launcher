@@ -1,6 +1,14 @@
 # UrodLauncher: Library First and persistence test report
 
-Updated: 2026-10-27. Branch: `release/1.0.0-figma-stable`. Tested source still has **0.1.0 Development** metadata; this report is not a Stable release certification. Native tests used isolated directories under `/tmp`, including `/tmp/urod-library-first-qa-20261026` and the E2E script's temporary directory. No real account, token, password, or user data directory was used.
+Updated: 2026-10-27. Branch: `release/1.0.0-figma-stable`. The current release candidate has **1.0.0** metadata. Earlier sections retain the 0.1.0 Development test evidence instead of silently relabelling it as new 1.0.0 live testing. Native tests used isolated directories under `/tmp`, including `/tmp/urod-library-first-qa-20261026` and the E2E script's temporary directory. No real account, token, password, or user data directory was used.
+
+## 1.0.0 release-candidate checks
+
+`pnpm install --frozen-lockfile`, TypeScript, ESLint, Prettier, **19 frontend tests**, frontend production build and `pnpm audit --prod` passed. `cargo check --offline`, `cargo fmt --check`, strict `cargo clippy --all-targets -- -D warnings`, and **107 Rust tests** passed on the three UrodLauncher packages; 10 live/manual Rust tests remained ignored. The release-version check found matching 1.0.0 values in Cargo, Tauri, pnpm, Arch metadata, the skin API user agent and README direct download names. The stage-2 boundary and release asset tests passed.
+
+A local 1.0.0 Debian package was built from this source. Its control metadata reports `Version: 1.0.0` and `Architecture: amd64` with WebKitGTK, GTK and xdg-utils dependencies. Its data archive contains the executable, desktop entry, Figma-derived icons, GPL LICENSE and NOTICE. The optimized 1.0.0 binary opened a real native Tauri window on this desktop with an isolated data directory and showed Library as the first screen. This was a smoke test, not a full replay of every Minecraft/account scenario or a Debian installed-app test. The prior 20-launch persistence and game tests below are still useful regression evidence for unchanged code.
+
+The GitHub 1.0.0 package matrix must pass before the tag is published. The Windows workflow now performs a silent NSIS install and checks the installed executable version; it does not open the Windows GUI. Live Microsoft/Ely.by credentials and server-side skin change remain unavailable, and the disabled Figma controls remain documented in the [readiness audit](STABLE_1.0.0_AUDIT.md).
 
 ## Final graphics and README verification (2026-10-27)
 
