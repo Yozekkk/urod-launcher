@@ -1,103 +1,90 @@
-<p align="center"><img src=".github/readme/banner-en.svg" alt="UrodLauncher for Gorod Urodov" width="1200"></p>
+<p align="center"><img src=".github/readme/banner-en.png" alt="UrodLauncher — Minecraft launcher for Gorod Urodov" width="1200"></p>
 
-<p align="center">An independent Minecraft launcher built with Tauri 2, Rust and Vue 3 for the whole <a href="https://gorodurodov.ru">Gorod Urodov</a> community and your own worlds.</p>
+<p align="center"><strong>Your packs, content and skins in one launcher for Gorod Urodov and your own worlds.</strong></p>
+
+<p align="center"><a href="README.md">Русский</a> · <a href="docs/FIGMA_IMPLEMENTATION_MAP.md">Figma implementation</a> · <a href="docs/TEST-REPORT.md">Test results</a></p>
+
+> **Project status:** 0.1.0 Development. The Figma implementation is still being verified; 1.0.0 Stable remains blocked by open checks. See the [readiness audit](docs/STABLE_1.0.0_AUDIT.md).
+
+## Development packages
 
 <p align="center">
-  <a href="README.md">Русский</a> ·
-  <a href="https://github.com/Yozekkk/urod-launcher/actions/workflows/check.yml"><img alt="Desktop checks" src="https://img.shields.io/github/actions/workflow/status/Yozekkk/urod-launcher/check.yml?branch=main&label=checks"></a>
-  <a href="LICENSE"><img alt="GPL-3.0-only" src="https://img.shields.io/badge/license-GPL--3.0--only-cb3449"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/releases"><img alt="Releases" src="https://img.shields.io/badge/version-0.1.0%20development-202833"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-windows.png" alt="Windows EXE from CI" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-debian.png" alt="Debian, Ubuntu and Linux Mint DEB from CI" width="290"></a>
+  <a href="https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014"><img src=".github/readme/download-arch.png" alt="Arch, EndeavourOS and Manjaro PKG from CI" width="290"></a>
 </p>
 
-<p align="center">
-  <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-windows.svg" alt="Windows downloads" width="290"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-debian.svg" alt="Debian Linux downloads" width="290"></a>
-  <a href="https://github.com/Yozekkk/urod-launcher/releases"><img src=".github/readme/download-arch.svg" alt="Arch Linux downloads" width="290"></a>
-</p>
+The buttons open a [successful GitHub Actions run](https://github.com/Yozekkk/urod-launcher/actions/runs/40458957014). Under **Artifacts**, choose <code>windows-installer</code>, <code>debian-package</code> or <code>arch-package</code>. GitHub may require sign-in, and CI artifacts expire. These are **0.1.0 Development** packages. No Stable Release has been published; permanent releases will appear on [Releases](https://github.com/Yozekkk/urod-launcher/releases).
 
-> These buttons lead to the release page. The Figma redesign is still under verification; version 1.0.0 Stable has not been released. See the [readiness audit](docs/STABLE_1.0.0_AUDIT.md) for blockers. Version 0.1.0 installers were built in [GitHub Actions](https://github.com/Yozekkk/urod-launcher/actions/runs/38515455380), but no release has been published.
+## Library opens first
 
-<p align="center"><img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Real UrodLauncher library window during Figma implementation" width="1000"></p>
+Every launch opens the Library. Create a pack, choose Vanilla, Fabric, Forge, NeoForge or Quilt, install Minecraft, start and stop the game, and find, sort, import or export your packs.
 
-This image was captured from the running Tauri app at 1280×720. The empty library reflects the isolated test profile. See the [Figma implementation map and comparison](docs/FIGMA_IMPLEMENTATION_MAP.md).
+<p align="center"><img src="docs/screenshots/readme/library.png" alt="Real UrodLauncher Library window with two isolated test packs" width="1000"></p>
+
+<sub>Captured from the running Tauri app at 1280×720 with isolated test data. Blank cover slots belong to packs without custom icons.</sub>
 
 ## Features
 
-- Microsoft Minecraft, Ely.by and Offline accounts, with multiple profiles.
-- Separate Vanilla, Fabric, Forge, NeoForge and Quilt instances; pack import and export, including `.mrpack`.
-- Public Modrinth mod, shader, resource pack and modpack catalog; Java and memory controls, downloads and game logs. Custom JVM arguments are not yet available in the interface.
-- Download integrity checks, managed file updates and rollback where supported by the inherited engine.
-- Persistent local PNG skin library with 3D preview, Classic/Slim variants and per-account selection history on disk. Applying a skin to a Microsoft account sends it to the official Minecraft Services API from the native process and checks the profile afterwards. This still needs verification with a real licensed account.
-- 37 visible customization controls for themes, colors, background, motion and layout, with presets and JSON import/export. Three obsolete Home-only fields remain readable in saved data. The language control changes the document language and primary navigation; a complete English interface translation remains to be done.
-- The launcher opens in Library. Navigation includes Library, Catalog, Accounts, Skins and Settings; the old home route redirects to Library.
-
-| Library | Catalog |
+| Catalog | Accounts |
 | --- | --- |
-| <img src="docs/screenshots/figma-rc/library-1280x720.png" alt="Library during Figma implementation"> | <img src="docs/screenshots/figma-rc/gallery-1280x720.png" alt="Live Modrinth catalog in the new layout"> |
-| Skins | Edit skin dialog |
-| <img src="docs/screenshots/figma-rc/skins-1280x720.png" alt="Skin library with a test PNG"> | <img src="docs/screenshots/figma-rc/edit-skin-1280x720.png" alt="Edit skin dialog"> |
+| <img src="docs/screenshots/readme/catalog.png" alt="Live Modrinth catalog in UrodLauncher" width="520"> | <img src="docs/screenshots/readme/accounts.png" alt="Microsoft, Ely.by and a test Offline account" width="520"> |
+| Browse Modrinth mods, shaders, resource packs and modpacks. Compatibility filters use the Minecraft version and loader. | Microsoft, Ely.by and Offline profiles can be stored and switched. Live sign-in is not claimed as tested without authorized credentials. |
 
-The new screenshots were captured from the native app on EndeavourOS with an isolated skin test profile. [Historical 0.1.0 screenshots](docs/screenshots/urod-0.1.0/home.png) are kept separately. Settings still need full transfer and visual verification.
+A selected pack has installed-content controls, a game log, Java and memory settings. The engine verifies download hashes and supports cancellation and recovery where implemented.
+
+## Skins
+
+<p align="center"><img src="docs/screenshots/readme/skins.png" alt="Real UrodLauncher skin library and 3D preview" width="1000"></p>
+
+Import a 64×64 or 64×32 PNG up to 1 MB, choose Classic/Steve or Slim/Alex, rotate the 3D model, rename a skin or replace its texture. Per-account application history persists on disk.
+
+<details>
+<summary>View skin history</summary>
+<p align="center"><img src="docs/screenshots/figma-rc/skin-history-860.png" alt="A test account's skin history after restarts" width="700"></p>
+</details>
+
+Offline skins are applied locally in the launcher. For Microsoft accounts, the native process uploads the PNG to Minecraft Services and checks the profile response; a real licensed-account upload has not yet been verified. Ely.by skin upload is unavailable in the app.
+
+## Settings and customization
+
+| Figma-based settings | Additional customization |
+| --- | --- |
+| <img src="docs/screenshots/readme/settings.png" alt="UrodLauncher global settings based on Figma" width="520"> | <img src="docs/screenshots/readme/customization.png" alt="Customization editor in the running UrodLauncher app" width="520"> |
+
+Global settings cover Java detection, memory and window dimensions, resource management and concurrent downloads. Packs can override Java and window dimensions. The additional editor exposes 37 customization controls; three old Home-only values remain readable for compatibility with saved data. Values survive application restarts. Unsupported synchronization, launch commands and other controls are visibly disabled.
 
 ## Installation
 
-Open [Releases](https://github.com/Yozekkk/urod-launcher/releases), choose the package for your OS and compare its SHA-256 hash with `SHA256SUMS.txt` from the same release.
+Download the relevant CI artifact above and unpack the GitHub Actions archive. These package names were checked in the linked run:
 
-| System | Package | Install after publication |
+| Platform | File | Install |
 | --- | --- | --- |
-| Windows 10/11 x64 | `UrodLauncher-Setup-0.1.0.exe` | Run the NSIS installer for the current user. |
-| Debian, Ubuntu, Linux Mint x64 | `UrodLauncher-0.1.0-amd64.deb` | `sudo apt install ./UrodLauncher-0.1.0-amd64.deb` |
-| Arch, EndeavourOS, Manjaro x64 | `UrodLauncher-0.1.0-x86_64.pkg.tar.zst` | `sudo pacman -U ./UrodLauncher-0.1.0-x86_64.pkg.tar.zst` |
+| Windows 10/11 x64 | <code>UrodLauncher-Setup-0.1.0.exe</code> | Run the NSIS installer. Runtime on a real Windows host remains untested. |
+| Debian / Ubuntu / Linux Mint x64 | <code>UrodLauncher-0.1.0-amd64.deb</code> | <code>sudo apt install ./UrodLauncher-0.1.0-amd64.deb</code> |
+| Arch / EndeavourOS / Manjaro x64 | <code>UrodLauncher-0.1.0-x86_64.pkg.tar.zst</code> | <code>sudo pacman -U ./UrodLauncher-0.1.0-x86_64.pkg.tar.zst</code> |
 
-The Arch package can also be built from source with the [PKGBUILD](packaging/arch/PKGBUILD) after building the binary. macOS support is not offered.
-
-## Accounts and skins
-
-Microsoft sign-in uses OAuth, Xbox/XSTS and Minecraft Authentication. Ely.by uses its supported authentication flow. An Offline profile is useful in single-player and on servers that allow it; it does not grant a Minecraft license.
-
-In **Skins**, add a 64×64 or 64×32 PNG (up to 1 MB), choose Classic/Steve or Slim/Alex, select an account, then press **Apply**. For Microsoft accounts the native process uploads the PNG to Minecraft Services and verifies the profile response. For Offline accounts, the skin appears locally in the launcher. Uploading to Ely.by from the launcher is not supported yet, and the interface says so. Tokens are not sent to Vue.
-
-## Packs and Java
-
-In **Library**, create a pack, choose its Minecraft version and loader, install the game, and select an account before playing. You can browse Modrinth mods, shaders and resource packs for the selected pack, then search, disable, update or remove installed files. `.mrpack` import and export remain available in the pack's additional actions.
-
-In **Settings → Java locations**, specify separate executables for Java 21 and Java 25 or find installed runtimes with **Detect**. The launcher verifies an executable's major version before saving it. With no configured path, the engine finds a compatible Java and downloads a verified runtime during launch if needed. A pack-specific Java path takes priority. Installing a recommended runtime directly from this settings panel is not yet available.
-
-Global settings let you set Minecraft window width and height. Both values are validated before saving and passed to the game at launch; leave the fields empty to use the game's defaults. The selected pack's journal shows recent Minecraft output and launcher operations, with search and severity filters. In a narrow window, open it with **Журнал**. Fullscreen control, custom Java arguments, environment variables and launch commands are not available yet.
-
-In an individual pack's **Overrides** settings, you can enable its own window width and height. The pack values take priority over the global values; turning the switch off restores the global dimensions.
-
-In **Resource management**, set 1–10 concurrent downloads; the new limit applies after restarting the launcher. The backup button opens the directory containing any database migration backups. Creating backups on demand and setting an independent disk-write limit are not available yet.
-
-## Gorod Urodov
-
-UrodGame server address: `gorodurodov.ru`. A dedicated community pack will appear once a real manifest with verifiable files and versions is published. Until then, users can create ordinary instances and use the launcher without community registration. [Official website](https://gorodurodov.ru).
+Source builds require Node.js, pnpm, Rust and Tauri's system libraries. Linux needs WebKitGTK 4.1. See [DEVELOPMENT.md](docs/DEVELOPMENT.md) and [RELEASE.md](docs/RELEASE.md). Automatic UrodLauncher updates remain safely disabled until the project has its own signing key and endpoint.
 
 ## FAQ
 
-**Why is the community pack unavailable?** No manifest has been supplied yet. The launcher does not reuse the NCreate Server pack or invent Minecraft versions and mods.
+<details>
+<summary>Does an Offline profile grant a Minecraft license?</summary>
+<p>No. It works in single-player and on servers that accept Offline authentication.</p>
+</details>
 
-**How are launcher updates handled?** The inherited signed updater and Stable/Beta channel structure remain, but UrodLauncher automatic updates are disabled until its own signing key and endpoint exist. Install verified packages manually.
+<details>
+<summary>Is the community pack available?</summary>
+<p>A verified Gorod Urodov pack manifest has not been published. You can create and launch your own packs.</p>
+</details>
 
-**Are NCreate profiles imported?** No. UrodLauncher has its own app identifier, data directory and credential store.
+<details>
+<summary>Do accounts, skins and settings survive restarts?</summary>
+<p>Yes. An isolated native test completed 20 launches with 10 Offline accounts, 15 skins, separate history and 40 saved customization values. Microsoft and Ely.by live scenarios remain open. See the <a href="docs/TEST-REPORT.md">test report</a>.</p>
+</details>
 
-**Where are friends and chat?** Only models and a future API interface exist. No working social service is claimed. See the [contract](docs/SOCIAL-API.md).
+## Documentation and license
 
-## Requirements and source build
+[Figma implementation map](docs/FIGMA_IMPLEMENTATION_MAP.md) · [Design system](docs/DESIGN_SYSTEM.md) · [Testing](docs/TESTING.md) · [Security review](docs/SECURITY_REVIEW.md) · [Graphics provenance](docs/GRAPHICS_AUDIT.md)
 
-Use Windows 10/11 x64 or a modern Linux x64 system, with access to authentication and download endpoints. Starting Minecraft requires a compatible Java version. Linux requires WebKitGTK 4.1; package dependencies are listed in CI and the PKGBUILD.
-
-```bash
-git clone https://github.com/Yozekkk/urod-launcher.git
-cd urod-launcher
-pnpm install --frozen-lockfile
-pnpm prepr:frontend:app
-cargo check --locked -p urod-launcher -p urod-app-lib -p urod-launcher-core --all-targets
-pnpm app:dev
-```
-
-Build packages with `pnpm app:build --bundles deb` on Debian/Ubuntu or `pnpm app:build --bundles nsis` on Windows. On Arch, run `pnpm app:build --no-bundle` and then `makepkg -f` in `packaging/arch`. See [RELEASE.md](docs/RELEASE.md) for CI and release requirements.
-
-## License and attribution
-
-UrodLauncher derives from [NCreate Launcher](https://github.com/Yozekkk/ncreate-launcher), which includes modified portions of the [Modrinth App](https://github.com/modrinth/code). The skin manager approach was studied from the open-source [Millida Launcher](https://github.com/millida/launcher); Millida infrastructure is not used. Source is distributed under [GPL-3.0-only](LICENSE). Attribution and font notices: [NOTICE.md](NOTICE.md), [COPYING.md](COPYING.md), [art provenance](apps/app-frontend/public/brand/PROVENANCE.md). This project is not affiliated with Mojang or Microsoft.
+UrodLauncher derives from [NCreate Launcher](https://github.com/Yozekkk/ncreate-launcher) and modified parts of [Modrinth App](https://github.com/modrinth/code). Source is distributed under [GPL-3.0-only](LICENSE). Required author and license notices are preserved in [NOTICE.md](NOTICE.md) and [COPYING.md](COPYING.md). This project is not affiliated with Mojang or Microsoft.

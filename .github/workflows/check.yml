@@ -36,6 +36,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm audit --prod
       - run: pnpm prepr:frontend:app
+      - run: python3 scripts/check-readme-assets.py
       - run: pnpm build
       - run: node --test scripts/release-assets.test.mjs
       - run: cargo fmt --package urod-launcher --package urod-app-lib --package urod-launcher-core --check

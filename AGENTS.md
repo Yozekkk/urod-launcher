@@ -41,3 +41,11 @@ instances support installation and launch through the native engine. Updater
 endpoints and signing are disabled until real UrodLauncher signing keys exist. Preserve
 all GPL notices when redistributing source or binaries. Check docs/STABLE_1.0.0_AUDIT.md
 for observed results and external authentication/signing limits.
+
+The application and package mark is the owner's Figma node `3:1175` in file
+`nxRBVO5kqVue97M5fgKDvZ`. `apps/app/icons/figma-mark.svg` and
+`apps/app-frontend/public/figma/2927a.svg` preserve the same export; package
+PNG and ICO variants are rasterizations. The former geometric U logo and its
+README SVG banners were removed from the current tree. README graphics use the
+Figma mark and palette, bundled Geologica and real native screenshots. See
+`docs/GRAPHICS_AUDIT.md` before adding graphical material.

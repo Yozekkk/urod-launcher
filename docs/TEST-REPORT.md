@@ -2,6 +2,20 @@
 
 Updated: 2026-10-27. Branch: `release/1.0.0-figma-stable`. Tested source still has **0.1.0 Development** metadata; this report is not a Stable release certification. Native tests used isolated directories under `/tmp`, including `/tmp/urod-library-first-qa-20261026` and the E2E script's temporary directory. No real account, token, password, or user data directory was used.
 
+## Final graphics and README verification (2026-10-27)
+
+The retired hand-authored geometric logo was removed from the app and README graphics. The current application/package mark was reconfirmed as Figma node `3:1175`; the README uses its existing SVG export, the bundled Geologica font, Figma colors and six new captures from a running Tauri window. [Graphics provenance](GRAPHICS_AUDIT.md) records the asset decisions. Historical screenshots containing the retired mark were removed from the current tree; Git history remains available.
+
+| Check | Observed result |
+| --- | --- |
+| Frontend | 19 tests passed; TypeScript, ESLint and Prettier passed; production build passed. The lazy skins chunk still emits a 531 kB advisory. |
+| Rust | 107 tests passed (15 authentication, 37 application, 55 core); 10 were ignored as documented below. `cargo fmt --check` and strict `cargo clippy --all-targets -- -D warnings` passed. |
+| Dependency and release scripts | `pnpm audit --prod` found no known vulnerabilities; stage-2 boundary script and release asset test passed. |
+| README | Both Markdown files rendered through GitHub's Markdown API. A local checker verified 22 PNG references and 30 local links across both languages, PNG completion, and no remote README images or retired logo references. All three download buttons point to a successful GitHub Actions run whose Windows EXE, Debian DEB and Arch PKG artifacts were downloaded and inspected. The buttons accurately describe them as 0.1.0 Development CI artifacts, not a Stable release. |
+| Native interface | Real Tauri window checked at 860×620, 1240×820 and 1280×720. Library, Catalog, Accounts, Skins and Settings all rendered without document horizontal overflow or broken images; `/home` redirected to Library. Six 1280×720 captures were saved in `docs/screenshots/readme/`. The customization editor's WebKit grid issue was corrected and checked again at 860×620 and 1280×720. |
+
+This pass reused the preceding 20-launch persistence and Minecraft play tests reported below; those scenarios were not rerun after the README and layout-only changes. The native captures used synthetic QA account/pack data and did not touch the normal user profile. Windows execution, fresh network installation, real Microsoft/Ely.by credentials, and live skin upload remain unverified.
+
 ## Results
 
 | Area | Observed result |
@@ -27,6 +41,7 @@ The 20-launch persistence scenario is repeatable with [`scripts/library-first-e2
 3. Skin selection history existed only as current `active_for` state. Native SQLite now records account UUID, skin ID or default-skin marker, saved name and application time, and the skin page exposes the last 100 events per account.
 4. The frontend rejected the bundled Figma Inter/Geologica fonts as customization values. They are valid choices now. A single invalid saved value no longer discards other valid customization values.
 5. Three controls that only changed the removed Home page were still visible. They were removed from the editor while their saved keys remain readable for older settings files.
+6. The supplemental settings editor put CSS grid directly on a native `<details>` element. WebKit placed its contents in a narrow first column. The content now has a grid wrapper, and native captures confirmed the corrected width and Figma surface styling.
 
 ## Limits and open work
 

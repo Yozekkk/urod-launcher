@@ -21,6 +21,6 @@ Settings retain the legacy `java_path` field for existing data and add `java_pat
 
 ## Checks
 
-Run `pnpm prepr:frontend:app`, `pnpm build`, Rust fmt/check/clippy/test, and the native boundary audit from [RELEASE.md](RELEASE.md). Check visual changes in the running Tauri app at both 860 px and 1240 px. Current Figma comparisons and real Tauri screenshots are recorded in [FIGMA_IMPLEMENTATION_MAP.md](FIGMA_IMPLEMENTATION_MAP.md); historical 0.1.0 screenshots remain under `screenshots/urod-0.1.0`.
+Run `pnpm prepr:frontend:app`, `pnpm build`, Rust fmt/check/clippy/test, and the native boundary audit from [RELEASE.md](RELEASE.md). Check visual changes in the running Tauri app at both 860 px and 1240 px. Current Figma comparisons and real Tauri screenshots are recorded in [FIGMA_IMPLEMENTATION_MAP.md](FIGMA_IMPLEMENTATION_MAP.md). Historical 0.1.0 UI captures with the retired U logo were removed from the current tree; their Git history was preserved. The historical Minecraft launch capture remains under `screenshots/urod-0.1.0`.
 
 Application data lives in a separate `urod-launcher` directory. Native credentials use a separate UrodLauncher service. No automatic import from NCreate is performed. The community pack and signed auto-updates remain unavailable until UrodLauncher has real manifests and its own signing key.
