@@ -1381,7 +1381,7 @@ onUnmounted(() => {
 				alt="Значок UrodLauncher"
 			/>
 			<h2 id="about-title">UrodLauncher</h2>
-			<p class="profile-type">Версия {{ version }} · Предварительная</p>
+			<p class="profile-type">Версия {{ version }} · Stable</p>
 			<p>Minecraft-лаунчер Города Уродов.</p>
 			<p>
 				Основан на открытом desktop-коде Modrinth App (Theseus). Copyright © Modrinth и участники

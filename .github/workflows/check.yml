@@ -37,6 +37,7 @@ jobs:
       - run: pnpm audit --prod
       - run: pnpm prepr:frontend:app
       - run: python3 scripts/check-readme-assets.py
+      - run: node scripts/check-release-version.mjs
       - run: pnpm build
       - run: node --test scripts/release-assets.test.mjs
       - run: cargo fmt --package urod-launcher --package urod-app-lib --package urod-launcher-core --check
@@ -61,6 +62,21 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: cargo test --locked -p urod-launcher-core verified_download_replaces_file_and_keeps_destination_on_rename_error
       - run: pnpm app:build --bundles nsis --config tauri.ci.conf.json
+      - name: Validate and silently install Windows NSIS package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $expected = (Get-Content package.json | ConvertFrom-Json).version
+          $installer = Get-ChildItem target/release/bundle/nsis -Filter "UrodLauncher-Setup-$expected.exe" | Select-Object -First 1
+          if (-not $installer -or $installer.Length -lt 1000000) { throw 'Missing or truncated NSIS installer' }
+          $process = Start-Process -FilePath $installer.FullName -ArgumentList '/S' -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "NSIS installation failed: $($process.ExitCode)" }
+          $app = Get-ChildItem $env:LOCALAPPDATA -Filter UrodLauncher.exe -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $app) { throw 'Installed UrodLauncher.exe was not found' }
+          if ($app.VersionInfo.ProductVersion -notmatch '^1\.0\.0(?:\.|$)') {
+            throw "Installed binary has unexpected version: $($app.VersionInfo.ProductVersion)"
+          }
+          Write-Host "Installed $($app.FullName), version $($app.VersionInfo.ProductVersion)"
       - uses: actions/upload-artifact@v4
         with:
           name: windows-installer
@@ -87,9 +103,11 @@ jobs:
       - run: pnpm app:build --bundles deb --config tauri.ci.conf.json
       - name: Install and inspect Debian package
         run: |
+          version=$(node -p "require('./package.json').version")
           deb=$(find target/release/bundle/deb -maxdepth 1 -name 'UrodLauncher-*-amd64.deb' -print -quit)
           test -n "$deb"
           dpkg-deb --info "$deb"
+          test "$(dpkg-deb --field "$deb" Version)" = "$version"
           sudo apt-get install -y "./$deb"
           package=$(dpkg-deb --field "$deb" Package)
           dpkg -L "$package" | grep '/usr/bin/'
@@ -118,12 +136,16 @@ jobs:
       - run: pnpm app:build --no-bundle --config tauri.ci.conf.json
       - name: Build and inspect pacman package
         run: |
+          version=$(node -p "require('./package.json').version")
           useradd -m builder
           chown -R builder:builder packaging/arch
           su builder -s /bin/bash -c 'cd packaging/arch && makepkg --force --nodeps --nocheck'
           mkdir -p target/release/bundle/arch
-          cp packaging/arch/*.pkg.tar.zst target/release/bundle/arch/UrodLauncher-0.1.0-x86_64.pkg.tar.zst
+          source=$(find packaging/arch -maxdepth 1 -name "urod-launcher-${version}-1-x86_64.pkg.tar.zst" -print -quit)
+          test -n "$source"
+          cp "$source" "target/release/bundle/arch/UrodLauncher-${version}-x86_64.pkg.tar.zst"
           pacman -Qp target/release/bundle/arch/*.pkg.tar.zst
+          pacman -Qp target/release/bundle/arch/*.pkg.tar.zst | grep "urod-launcher ${version}-1"
           bsdtar -tf target/release/bundle/arch/*.pkg.tar.zst | grep 'usr/bin/urod-launcher'
           pacman -U --noconfirm target/release/bundle/arch/*.pkg.tar.zst
           pacman -Q urod-launcher

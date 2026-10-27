@@ -1,4 +1,4 @@
-name: Draft desktop release
+name: UrodLauncher desktop release
 
 on:
   push:
@@ -31,6 +31,7 @@ jobs:
         env:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
+          node scripts/check-release-version.mjs "$RELEASE_TAG"
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           import { releaseNames } from './scripts/release-assets.mjs';
@@ -47,9 +48,9 @@ jobs:
           cd release-assets
           sha256sum UrodLauncher-* > SHA256SUMS.txt
           sha256sum -c SHA256SUMS.txt
-      - name: Create reviewable draft only
+      - name: Create release draft with verified packages
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "UrodLauncher $RELEASE_TAG" --notes "Installer packages and GPL source. Automated checks passed. This draft requires manual release review. Signed in-app updates are not configured."
+          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "UrodLauncher $RELEASE_TAG Stable" --notes-file docs/RELEASE_NOTES_1.0.0.md
