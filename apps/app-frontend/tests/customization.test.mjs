@@ -64,3 +64,22 @@ test('previous home order keeps other saved customization values', () => {
 	assert.equal(migrated.homeOrder, 'community-first')
 	assert.equal(migrated.fontSize, 16)
 })
+
+test('all forty customization values survive validation and normalization together', () => {
+	const changed = { ...defaults }
+	for (const field of fields) {
+		const current = changed[field.key]
+		if (field.kind === 'select')
+			changed[field.key] = field.options.find((option) => option !== current)
+		if (field.kind === 'range') changed[field.key] = current === field.min ? field.max : field.min
+		if (field.kind === 'color') changed[field.key] = '#123456'
+		if (field.kind === 'toggle') changed[field.key] = !current
+	}
+	changed.customBackground = 'data:image/png;base64,YWJj'
+	changed.homeOrder = 'server-first'
+	changed.showServer = false
+	changed.showNews = false
+	assert.equal(Object.keys(changed).length, 40)
+	assert.deepEqual(validateCustomization(changed), changed)
+	assert.deepEqual(normalizeCustomization(changed), changed)
+})
