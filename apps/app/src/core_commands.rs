@@ -391,11 +391,8 @@ pub async fn core_launch(
 		.login
 		.try_lock()
 		.map_err(|_| "Дождитесь завершения операции с аккаунтом".to_string())?;
-	let account = state
-		.store()
-		.await?
-		.snapshot()
-		.await?
+	let snapshot = state.store().await?.snapshot().await?;
+	let account = snapshot
 		.accounts
 		.into_iter()
 		.find(|a| a.active)
@@ -438,7 +435,15 @@ pub async fn core_launch(
 		xuid: None,
 		authlib_injector,
 	};
-	let launch = e.launch(&instance_id, identity);
+	let launch = e.launch_with_options(
+		&instance_id,
+		identity,
+		&snapshot.settings.java_paths,
+		snapshot
+			.settings
+			.window_width
+			.zip(snapshot.settings.window_height),
+	);
 	tokio::pin!(launch);
 	let mut tick = tokio::time::interval(std::time::Duration::from_millis(500));
 	loop {
@@ -466,6 +471,18 @@ pub async fn core_stop(
 	engine(&window, &state)
 		.await?
 		.stop(&instance_id)
+		.await
+		.map_err(core_error)
+}
+#[tauri::command]
+pub async fn core_game_log_tail(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	instance_id: String,
+) -> Result<String> {
+	engine(&window, &state)
+		.await?
+		.game_log_tail(&instance_id)
 		.await
 		.map_err(core_error)
 }
@@ -546,6 +563,43 @@ pub async fn core_open_folder(
 	app.opener()
 		.open_path(path.to_string_lossy().into_owned(), None::<&str>)
 		.map_err(|_| "Не удалось открыть папку".to_string())
+}
+#[tauri::command]
+pub async fn core_open_backup_folder(
+	window: tauri::WebviewWindow,
+	app: tauri::AppHandle,
+	state: tauri::State<'_, AppState>,
+) -> Result<()> {
+	local(&window)?;
+	let store = state.store().await?;
+	let path = store.directory.join("backups");
+	match tokio::fs::symlink_metadata(&path).await {
+		Ok(metadata) if !metadata.is_dir() || metadata.file_type().is_symlink() => {
+			return Err("Некорректная папка резервных копий".into());
+		}
+		Ok(_) => {}
+		Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+			tokio::fs::create_dir(&path)
+				.await
+				.map_err(|_| "Не удалось создать папку резервных копий".to_string())?;
+		}
+		Err(_) => return Err("Папка резервных копий недоступна".into()),
+	}
+	let data_directory = tokio::fs::canonicalize(&store.directory)
+		.await
+		.map_err(|_| "Каталог приложения недоступен".to_string())?;
+	let backup_directory = tokio::fs::canonicalize(&path)
+		.await
+		.map_err(|_| "Папка резервных копий недоступна".to_string())?;
+	if backup_directory.parent() != Some(data_directory.as_path()) {
+		return Err("Некорректная папка резервных копий".into());
+	}
+	app.opener()
+		.open_path(
+			backup_directory.to_string_lossy().into_owned(),
+			None::<&str>,
+		)
+		.map_err(|_| "Не удалось открыть папку резервных копий".into())
 }
 async fn pick(app: tauri::AppHandle, save: bool, icon: bool) -> Result<Option<PathBuf>> {
 	tokio::task::spawn_blocking(move || {
@@ -785,6 +839,33 @@ pub async fn core_resume_edition_install(
 	))
 }
 
+#[tauri::command]
+pub async fn core_java_runtimes(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+) -> Result<Vec<urod_launcher_core::JavaRuntime>> {
+	engine(&window, &state)
+		.await?
+		.java_runtimes()
+		.await
+		.map_err(core_error)
+}
+#[tauri::command]
+pub async fn core_detect_instance_java(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	instance_id: String,
+) -> Result<Option<urod_launcher_core::JavaRuntime>> {
+	let engine = engine(&window, &state).await?;
+	let required = engine
+		.required_java(&instance_id)
+		.await
+		.map_err(core_error)?;
+	let runtimes = engine.java_runtimes().await.map_err(core_error)?;
+	Ok(runtimes
+		.into_iter()
+		.find(|runtime| runtime.major == required))
+}
 #[tauri::command]
 pub async fn core_pick_java(
 	window: tauri::WebviewWindow,

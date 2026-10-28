@@ -2,14 +2,24 @@
 import { onMounted, onUnmounted, useTemplateRef, watch } from 'vue'
 import { SkinViewer } from 'skinview3d'
 
-const props = defineProps<{ texture: string | null; slim: boolean; reducedMotion?: boolean }>()
+const props = defineProps<{
+	texture: string | null
+	slim: boolean
+	reducedMotion?: boolean
+	width?: number
+	height?: number
+}>()
 const canvas = useTemplateRef<HTMLCanvasElement>('canvas')
 let viewer: SkinViewer | null = null
 onMounted(() => {
 	if (!canvas.value) return
 	try {
-		viewer = new SkinViewer({ canvas: canvas.value, width: 260, height: 320 })
-		viewer.autoRotate = !props.reducedMotion
+		viewer = new SkinViewer({
+			canvas: canvas.value,
+			width: props.width ?? 260,
+			height: props.height ?? 320,
+		})
+		viewer.autoRotate = false
 		viewer.autoRotateSpeed = 0.35
 		viewer.controls.enableZoom = false
 		viewer.controls.enablePan = false
@@ -28,12 +38,6 @@ watch(
 		}
 	},
 )
-watch(
-	() => props.reducedMotion,
-	(value) => {
-		if (viewer) viewer.autoRotate = !value
-	},
-)
 onUnmounted(() => {
 	viewer?.dispose()
 	viewer = null
@@ -41,7 +45,7 @@ onUnmounted(() => {
 </script>
 <template>
 	<div class="skin-preview" aria-label="Трёхмерный просмотр скина">
-		<canvas ref="canvas" width="260" height="320" aria-hidden="true" />
+		<canvas ref="canvas" :width="width ?? 260" :height="height ?? 320" aria-hidden="true" />
 		<p v-if="!texture">Выберите скин из библиотеки</p>
 	</div>
 </template>
@@ -50,9 +54,9 @@ onUnmounted(() => {
 	display: grid;
 	place-items: center;
 	min-height: 340px;
-	background: radial-gradient(circle at 50% 35%, #96323e44, transparent 65%), #15171b;
-	border: 1px solid #ffffff14;
-	border-radius: 20px;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
 }
 .skin-preview canvas {
 	max-width: 100%;

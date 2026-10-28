@@ -28,6 +28,8 @@ export type Instance = {
 	manifest_version: string | null
 	status: string
 	memory_mb: number
+	window_width: number | null
+	window_height: number | null
 	java_path: string | null
 	directory: string
 	icon?: string | null
@@ -40,6 +42,8 @@ export type CreateInstance = {
 	loader: Loader
 	loader_version: string | null
 	memory_mb: number
+	window_width?: number | null
+	window_height?: number | null
 	java_path: string | null
 }
 export type InstalledContent = {
@@ -56,7 +60,7 @@ export type InstalledContent = {
 	managed: boolean
 	source_url: string | null
 }
-export type ContentKind = 'mod' | 'modpack'
+export type ContentKind = 'mod' | 'modpack' | 'resourcepack' | 'shader'
 export type SearchRequest = {
 	query: string
 	kind: ContentKind
@@ -174,11 +178,15 @@ export type UpdatePlan = {
 
 export type JavaRuntime = { path: string; major: number; architecture: string }
 export const gameApi = {
+	javaRuntimes: () => invoke<JavaRuntime[]>('core_java_runtimes'),
+	detectInstanceJava: (instanceId: string) =>
+		invoke<JavaRuntime | null>('core_detect_instance_java', { instanceId }),
 	pickJava: (instanceId: string | null = null) =>
 		invoke<JavaRuntime | null>('core_pick_java', { instanceId }),
 	selectJava: (instanceId: string, path: string) =>
 		invoke<JavaRuntime>('core_select_java', { instanceId, path }),
 	javaDownload: (major: number) => invoke<void>('core_java_download', { major }),
+	gameLogTail: (instanceId: string) => invoke<string>('core_game_log_tail', { instanceId }),
 	editions: (channel: 'stable' | 'beta') =>
 		invoke<EditionAvailability[]>('core_editions', { channel }),
 	installEdition: (editionId: string, channel: 'stable' | 'beta') =>
@@ -227,6 +235,7 @@ export const gameApi = {
 		invoke<LoaderVersion[]>('core_loader_versions', { loader, gameVersion }),
 	categories: (kind: ContentKind) => invoke<string[]>('core_categories', { kind }),
 	openFolder: (instanceId: string) => invoke<void>('core_open_folder', { instanceId }),
+	openBackupFolder: () => invoke<void>('core_open_backup_folder'),
 	pickIcon: (instanceId: string) => invoke<Instance | null>('pick_instance_icon', { instanceId }),
 	pickImport: () => invoke<string | null>('pick_import_pack'),
 	importPack: (path: string, name: string) => invoke<Instance>('core_import_pack', { path, name }),
@@ -238,12 +247,13 @@ export const gameApi = {
 export function compatibleVersions(
 	versions: ProjectVersion[],
 	instance: Instance | undefined,
+	kind: string = 'mod',
 ): ProjectVersion[] {
 	if (!instance) return []
 	return versions.filter(
 		(version) =>
 			version.game_versions.includes(instance.game_version) &&
-			version.loaders.includes(instance.loader),
+			(kind !== 'mod' || version.loaders.includes(instance.loader)),
 	)
 }
 export function statusLabel(status: string): string {

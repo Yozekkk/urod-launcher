@@ -1,0 +1,160 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/7a6fb9ca-8de0-4ced-9d53-2f646a2801a8";
+const imgFrame5292 = `${assetPathPrefix}/8aecb.png`;
+const imgVector421 = `${assetPathPrefix}/83a6f.svg`;
+const imgGroup609 = `${assetPathPrefix}/5e6f8.svg`;
+const imgGroup566 = `${assetPathPrefix}/7c452.svg`;
+const imgVector = `${assetPathPrefix}/992df.svg`;
+const imgVector1 = `${assetPathPrefix}/20469.svg`;
+const imgVector422 = `${assetPathPrefix}/a355e.svg`;
+const imgVector2 = `${assetPathPrefix}/2de22.svg`;
+const imgVector3 = `${assetPathPrefix}/10e4c.svg`;
+const imgVectorStroke = `${assetPathPrefix}/d0c6a.svg`;
+
+export default function Frame854() {
+  return (
+    <div className="bg-[#202020] overflow-clip relative rounded-[27px] size-full" data-node-id="3:648">
+      <div className="absolute h-0 left-0 top-[92px] w-[878px]" data-node-id="3:649">
+        <div className="absolute inset-[-0.75px_0]">
+          <img alt="" className="block max-w-none size-full" src={imgVector421} />
+        </div>
+      </div>
+      <div className="absolute content-stretch flex flex-col gap-[14px] items-start leading-[0] left-[279px] top-[122px] w-[505px]" data-node-id="3:650">
+        <div className="[word-break:break-word] font-['Geologica:Regular'] font-normal min-w-full not-italic relative shrink-0 text-[#848488] text-[13px] w-[min-content] whitespace-pre-wrap" data-node-id="3:651" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          <p className="leading-[normal] mb-0">{`Включить принудительное разделение, `}</p>
+          <p className="leading-[normal] mb-0">чтобы хранить синхронизированные</p>
+          <p className="leading-[normal]">настройки отдельно для этой сборки.</p>
+        </div>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:652">
+          <div className="col-1 h-[27px] ml-[425px] mt-[13px] relative row-1 w-[80px]" data-node-id="3:653">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup609} />
+          </div>
+          <div className="[word-break:break-word] col-1 content-stretch flex flex-col items-start ml-0 mt-0 not-italic relative row-1 w-[487px]" data-node-id="3:658">
+            <p className="font-['Geologica:SemiBold'] font-semibold leading-[normal] relative shrink-0 text-[16px] text-white w-full" data-node-id="3:659" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Рассинхронизация настроек игры
+            </p>
+            <div className="font-['Geologica:Regular'] font-normal leading-[0] relative shrink-0 text-[#848488] text-[13px] w-full whitespace-pre-wrap" data-node-id="3:660" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              <p className="leading-[normal] mb-0">{`Оставить options.txt этой сборки отдельно от `}</p>
+              <p className="leading-[normal]">синхронизированной копии.</p>
+            </div>
+          </div>
+        </div>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:661">
+          <div className="col-1 h-[27px] ml-[425px] mt-[4px] relative row-1 w-[80px]" data-node-id="3:662">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup609} />
+          </div>
+          <div className="[word-break:break-word] col-1 content-stretch flex flex-col items-start leading-[normal] ml-0 mt-0 not-italic relative row-1 w-[269px]" data-node-id="3:667">
+            <p className="font-['Geologica:SemiBold'] font-semibold relative shrink-0 text-[16px] text-white w-full" data-node-id="3:668" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Рассинхронизация серверов
+            </p>
+            <p className="font-['Geologica:Regular'] font-normal relative shrink-0 text-[#848488] text-[13px] w-full" data-node-id="3:669" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Оставить серверы этой сборки отдельно.
+            </p>
+          </div>
+        </div>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:670">
+          <div className="col-1 h-[27px] ml-[425px] mt-[4px] relative row-1 w-[80px]" data-node-id="3:671">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup609} />
+          </div>
+          <div className="[word-break:break-word] col-1 content-stretch flex flex-col items-start leading-[normal] ml-0 mt-0 not-italic relative row-1 w-[327px]" data-node-id="3:676">
+            <p className="font-['Geologica:SemiBold'] font-semibold relative shrink-0 text-[16px] text-white w-full" data-node-id="3:677" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Рассинхронизация наборов ресурсов
+            </p>
+            <p className="font-['Geologica:Regular'] font-normal relative shrink-0 text-[#848488] text-[13px] w-full" data-node-id="3:678" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Оставить наборы ресурсов этой сборки отдельно.
+            </p>
+          </div>
+        </div>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:679">
+          <div className="col-1 h-[27px] ml-[425px] mt-[4px] relative row-1 w-[80px]" data-node-id="3:680">
+            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup609} />
+          </div>
+          <div className="[word-break:break-word] col-1 content-stretch flex flex-col items-start leading-[normal] ml-0 mt-0 not-italic relative row-1 w-[323px]" data-node-id="3:685">
+            <p className="font-['Geologica:SemiBold'] font-semibold relative shrink-0 text-[16px] text-white w-full" data-node-id="3:686" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Рассинхронизация истории команд
+            </p>
+            <p className="font-['Geologica:Regular'] font-normal relative shrink-0 text-[#848488] text-[13px] w-full" data-node-id="3:687" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Оставить историю команд этой сборки отдельно.
+            </p>
+          </div>
+        </div>
+        <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-node-id="3:688">
+          <div className="col-1 flex h-[24.2px] items-center justify-center ml-[461px] mt-[5.8px] relative row-1 w-[44px]" data-node-id="3:689">
+            <div className="flex-none rotate-180">
+              <div className="h-[24.2px] relative w-[44px]">
+                <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup566} />
+              </div>
+            </div>
+          </div>
+          <div className="[word-break:break-word] col-1 content-stretch flex flex-col items-start leading-[normal] ml-0 mt-0 not-italic relative row-1 w-[394px]" data-node-id="3:692">
+            <p className="font-['Geologica:SemiBold'] font-semibold relative shrink-0 text-[16px] text-white w-full" data-node-id="3:693" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Рассинхронизация сохранённых инструментов
+            </p>
+            <p className="font-['Geologica:Regular'] font-normal relative shrink-0 text-[#848488] text-[13px] w-full" data-node-id="3:694" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+              Оставить сохраненные инструменты этой сборки отдельно.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="absolute bg-[#333] content-stretch flex gap-[10px] items-center left-[624px] p-[7px] rounded-[12px] top-[124px]" data-node-id="3:695">
+        <div className="h-[14px] relative shrink-0 w-[16px]" data-node-id="3:696" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector} />
+        </div>
+        <p className="[word-break:break-word] font-['Geologica:SemiBold'] font-semibold leading-[normal] not-italic relative shrink-0 text-[10px] text-white whitespace-nowrap" data-node-id="3:697" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Глобальные настройки
+        </p>
+      </div>
+      <div className="absolute contents left-[32px] top-[31px]" data-node-id="3:698">
+        <p className="[word-break:break-word] absolute font-['Inter:Semi_Bold'] font-semibold leading-[normal] left-[185px] not-italic text-[18px] text-white top-[35px] whitespace-nowrap" data-node-id="3:699">
+          Настройки
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[71px] not-italic text-[#848488] text-[18px] top-[34px] whitespace-nowrap" data-node-id="3:700" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          GY 1.21.11
+        </p>
+        <div className="absolute left-[32px] size-[29px] top-[31px]" data-node-id="3:701" data-name="Frame 529 2">
+          <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgFrame5292} />
+        </div>
+        <div className="absolute left-[791px] size-[14px] top-[39px]" data-node-id="3:702" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector1} />
+        </div>
+      </div>
+      <div className="absolute flex h-[305px] items-center justify-center left-[251px] top-[128px] w-0" data-node-id="3:703">
+        <div className="flex-none rotate-90">
+          <div className="h-0 relative w-[305px]">
+            <div className="absolute inset-[-0.75px_0]">
+              <img alt="" className="block max-w-none size-full" src={imgVector422} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="absolute contents left-[26px] top-[120px]" data-node-id="3:704">
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[56px] not-italic text-[#848488] text-[16px] top-[120px] w-[166px]" data-node-id="3:705" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Основные
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[56px] not-italic text-[#848488] text-[16px] top-[150px] w-[166px]" data-node-id="3:706" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Установка
+        </p>
+        <p className="[word-break:break-word] absolute font-['Geologica:Regular'] font-normal leading-[normal] left-[56px] not-italic text-[#c12926] text-[16px] top-[180px] w-[166px]" data-node-id="3:707" style={{ fontVariationSettings: '"CRSV" 0, "SHRP" 0' }}>
+          Переопределения
+        </p>
+        <div className="-translate-y-1/2 absolute aspect-[683.9025268554688/685.7142333984375] left-[3.11%] right-[95.1%] top-[calc(50%-75.5px)]" data-node-id="3:708" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector2} />
+        </div>
+        <div className="absolute left-[26px] size-[15px] top-[122px]" data-node-id="3:709" data-name="Vector">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVector3} />
+        </div>
+        <div className="absolute h-[14px] left-[26px] top-[183px] w-[15px]" data-node-id="3:710" data-name="Vector (Stroke)">
+          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgVectorStroke} />
+        </div>
+      </div>
+    </div>
+  );
+}
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

@@ -1,0 +1,20 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 571">
+<rect id="Rectangle 146736" width="32" height="32" rx="11" fill="#C12926"/>
+<g id="Vector">
+<path d="M14.2 12H10.6V15.6667H14.2V12Z" fill="white" fill-opacity="0.32"/>
+<path d="M21.4 12H17.8V15.6667H21.4V12Z" fill="white" fill-opacity="0.32"/>
+<path d="M21.4 15.6667V19.3333H10.6V15.6667H7V23H25V15.6667H21.4Z" fill="white" fill-opacity="0.32"/>
+</g>
+<g id="Vector_2">
+<path d="M14.2 10H10.6V13.6667H14.2V10Z" fill="black" fill-opacity="0.32"/>
+<path d="M21.4 10H17.8V13.6667H21.4V10Z" fill="black" fill-opacity="0.32"/>
+<path d="M21.4 13.6667V17.3333H10.6V13.6667H7V21H25V13.6667H21.4Z" fill="black" fill-opacity="0.32"/>
+</g>
+<g id="Vector_3">
+<path d="M14.2 11H10.6V14.6667H14.2V11Z" fill="#0C0C0C"/>
+<path d="M21.4 11H17.8V14.6667H21.4V11Z" fill="#0C0C0C"/>
+<path d="M21.4 14.6667V18.3333H10.6V14.6667H7V22H25V14.6667H21.4Z" fill="#0C0C0C"/>
+</g>
+</g>
+</svg>

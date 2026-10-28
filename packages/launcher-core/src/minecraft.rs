@@ -395,10 +395,10 @@ impl Engine {
 					let temporary =
 						target.with_extension(format!("lzma.{}.part", uuid::Uuid::new_v4()));
 					tokio::fs::write(&temporary, bytes).await?;
-					if target.exists() {
-						tokio::fs::remove_file(&target).await?;
+					if let Err(error) = tokio::fs::rename(&temporary, &target).await {
+						let _ = tokio::fs::remove_file(&temporary).await;
+						return Err(error.into());
 					}
-					tokio::fs::rename(temporary, target).await?;
 					continue;
 				}
 				let hash = if let Some(hash) = library.checksums.as_ref().and_then(|x| x.first()) {
@@ -606,13 +606,41 @@ impl Engine {
 		Ok(())
 	}
 	pub async fn launch(&self, instance_id: &str, identity: LaunchIdentity) -> Result<RunningGame> {
+		self.launch_with_java_paths(instance_id, identity, &std::collections::BTreeMap::new())
+			.await
+	}
+	pub async fn launch_with_java_paths(
+		&self,
+		instance_id: &str,
+		identity: LaunchIdentity,
+		java_paths: &std::collections::BTreeMap<u32, String>,
+	) -> Result<RunningGame> {
+		self.launch_with_options(instance_id, identity, java_paths, None)
+			.await
+	}
+	pub async fn launch_with_options(
+		&self,
+		instance_id: &str,
+		identity: LaunchIdentity,
+		java_paths: &std::collections::BTreeMap<u32, String>,
+		window_size: Option<(u32, u32)>,
+	) -> Result<RunningGame> {
 		let _guard = self.mutation.lock().await;
 		self.ensure_stopped(instance_id).await?;
 		let mut instance = self.instance(instance_id).await?;
+		let window_size = instance
+			.window_width
+			.zip(instance.window_height)
+			.or(window_size);
 		if instance.status != "ready" {
 			return Err(Error::Invalid(
 				"install Minecraft before launching this instance".into(),
 			));
+		}
+		if window_size.is_some_and(|(width, height)| {
+			!(320..=7680).contains(&width) || !(240..=4320).contains(&height)
+		}) {
+			return Err(Error::Invalid("Invalid Minecraft window dimensions".into()));
 		}
 		let info: VersionInfo = serde_json::from_slice(
 			&tokio::fs::read(
@@ -633,6 +661,8 @@ impl Engine {
 			|| info.java_version.as_ref().map_or(8, |v| v.major_version),
 			|m| m.java.major,
 		);
+		let mut java_instance = instance.clone();
+		apply_default_java_path(&mut java_instance.java_path, java_major, java_paths);
 		if let Some(m) = &edition
 			&& (instance.memory_mb < m.memory.minimum_mb
 				|| instance.memory_mb > m.memory.maximum_mb)
@@ -643,7 +673,7 @@ impl Engine {
 		}
 
 		let java_op = self.begin("java", Some(instance_id));
-		let resolved = self.choose_java(&instance, java_major, &java_op).await;
+		let resolved = self.choose_java(&java_instance, java_major, &java_op).await;
 		java_op.finish(&resolved);
 		let java = resolved?;
 		let runtime = self.root.join("minecraft");
@@ -773,6 +803,9 @@ impl Engine {
 				game.push(substitute(argument, &substitutions)?);
 			}
 		}
+		if let Some((width, height)) = window_size {
+			apply_window_size(&mut game, width, height);
+		}
 		if let Some(logging) = info
 			.logging
 			.as_ref()
@@ -823,6 +856,56 @@ impl Engine {
 			started_at: chrono::Utc::now().timestamp(),
 			log_path: log_path.to_string_lossy().into(),
 		})
+	}
+	pub async fn game_log_tail(&self, instance_id: &str) -> Result<String> {
+		use tokio::io::{AsyncReadExt, AsyncSeekExt};
+		self.instance(instance_id).await?;
+		let directory = self.instance_path(instance_id)?.join("logs");
+		let metadata = match tokio::fs::symlink_metadata(&directory).await {
+			Ok(metadata) => metadata,
+			Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(String::new()),
+			Err(error) => return Err(error.into()),
+		};
+		if metadata.file_type().is_symlink() || !metadata.is_dir() {
+			return Err(Error::Invalid("Unsafe game log directory".into()));
+		}
+		let mut entries = tokio::fs::read_dir(&directory).await?;
+		let mut latest: Option<(String, PathBuf)> = None;
+		for _ in 0..1024 {
+			let Some(entry) = entries.next_entry().await? else {
+				break;
+			};
+			let name = entry.file_name();
+			let Some(name) = name.to_str() else { continue };
+			if !name.starts_with("launcher-") || !name.ends_with(".log") {
+				continue;
+			}
+			if latest
+				.as_ref()
+				.is_none_or(|(current, _)| name > current.as_str())
+			{
+				latest = Some((name.to_string(), entry.path()));
+			}
+		}
+		let Some((_, path)) = latest else {
+			return Ok(String::new());
+		};
+		let metadata = tokio::fs::symlink_metadata(&path).await?;
+		if metadata.file_type().is_symlink() || !metadata.is_file() {
+			return Err(Error::Invalid("Unsafe game log file".into()));
+		}
+		let mut file = tokio::fs::File::open(path).await?;
+		let start = metadata.len().saturating_sub(32_768);
+		file.seek(std::io::SeekFrom::Start(start)).await?;
+		let mut bytes = Vec::with_capacity((metadata.len() - start) as usize);
+		file.take(32_768).read_to_end(&mut bytes).await?;
+		let text = String::from_utf8_lossy(&bytes);
+		let text = if start == 0 {
+			text.as_ref()
+		} else {
+			text.split_once('\n').map_or("", |(_, rest)| rest)
+		};
+		Ok(sanitize_game_log(&readable_game_log(text)))
 	}
 	pub async fn prepare_ely_runtime(&self, op: &Operation) -> Result<String> {
 		let release: serde_json::Value = self
@@ -1091,6 +1174,58 @@ fn extract_natives(archive: &Path, directory: &Path, exclude: Option<&[String]>)
 	}
 	Ok(())
 }
+fn readable_game_log(input: &str) -> String {
+	static EVENT: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+	let pattern = EVENT.get_or_init(|| {
+		regex::Regex::new(
+			r#"(?s)<log4j:Event\b[^>]*\blevel="([^"]+)"[^>]*>.*?<log4j:Message><!\[CDATA\[(.*?)\]\]></log4j:Message>.*?</log4j:Event>"#,
+		)
+		.expect("constant game log event pattern")
+	});
+	pattern
+		.replace_all(input, |captures: &regex::Captures<'_>| {
+			format!("[{}] {}", &captures[1], &captures[2])
+		})
+		.into_owned()
+}
+
+fn apply_window_size(args: &mut Vec<String>, width: u32, height: u32) {
+	for option in ["--width", "--height"] {
+		let mut index = 0;
+		while index < args.len() {
+			if args[index] == option {
+				args.remove(index);
+				if index < args.len() && !args[index].starts_with("--") {
+					args.remove(index);
+				}
+			} else {
+				index += 1;
+			}
+		}
+	}
+	args.extend(["--width".into(), width.to_string()]);
+	args.extend(["--height".into(), height.to_string()]);
+}
+
+fn sanitize_game_log(input: &str) -> String {
+	static SECRET: std::sync::OnceLock<regex::Regex> = std::sync::OnceLock::new();
+	let pattern = SECRET.get_or_init(|| {
+		regex::Regex::new(
+			r#"(?i)\b(access[_-]?token|refresh[_-]?token|authorization|password|session[_-]?id)\b["']?(?:\s*[:=]\s*|\s+)(?:Bearer\s+)?["']?[^\s"',;]+"#,
+		)
+		.expect("constant log redaction pattern")
+	});
+	pattern.replace_all(input, "$1=[redacted]").into_owned()
+}
+
+fn redact_identity_token(line: &str, token: &str) -> String {
+	if token.is_empty() || token == "0" {
+		line.to_owned()
+	} else {
+		line.replace(token, "[redacted]")
+	}
+}
+
 fn capture_log<R: tokio::io::AsyncRead + Unpin + Send + 'static>(
 	reader: R,
 	path: PathBuf,
@@ -1114,11 +1249,7 @@ fn capture_log<R: tokio::io::AsyncRead + Unpin + Send + 'static>(
 			match reader.read_line(&mut line).await {
 				Ok(0) | Err(_) => break,
 				Ok(_) => {
-					let safe = if token.is_empty() {
-						line.clone()
-					} else {
-						line.replace(token.as_str(), "[redacted]")
-					};
+					let safe = redact_identity_token(&line, token.as_str());
 					if file.write_all(safe.as_bytes()).await.is_err() {
 						break;
 					}
@@ -1143,8 +1274,81 @@ impl Drop for SecretMap {
 	}
 }
 
+fn apply_default_java_path(
+	instance_path: &mut Option<String>,
+	required: u32,
+	java_paths: &std::collections::BTreeMap<u32, String>,
+) {
+	if instance_path.as_deref().is_none_or(str::is_empty)
+		&& let Some(path) = java_paths
+			.get(&required)
+			.filter(|path| !path.trim().is_empty())
+	{
+		*instance_path = Some(path.clone());
+	}
+}
+
 #[cfg(test)]
 mod tests {
+	#[test]
+	fn custom_window_size_replaces_existing_resolution_without_duplicate_flags() {
+		let mut args = vec![
+			"--username".into(),
+			"Player".into(),
+			"--width".into(),
+			"854".into(),
+			"--height".into(),
+			"480".into(),
+		];
+		super::apply_window_size(&mut args, 1280, 720);
+		assert_eq!(
+			args,
+			["--username", "Player", "--width", "1280", "--height", "720"]
+		);
+	}
+	#[test]
+	fn xml_game_events_are_readable_in_sidebar() {
+		let input = "<log4j:Event logger=\"Minecraft\" level=\"WARN\" thread=\"main\"><log4j:Message><![CDATA[Missing optional mod]]></log4j:Message></log4j:Event>";
+		assert_eq!(
+			super::readable_game_log(input),
+			"[WARN] Missing optional mod"
+		);
+	}
+	#[test]
+	fn offline_placeholder_does_not_corrupt_game_versions_in_logs() {
+		let line = "Fabric Loader 0.19.5 and Minecraft 1.21.1";
+		assert_eq!(super::redact_identity_token(line, "0"), line);
+		assert_eq!(
+			super::redact_identity_token("token=secret", "secret"),
+			"token=[redacted]"
+		);
+	}
+	#[test]
+	fn game_log_redacts_common_credentials_before_frontend_delivery() {
+		let input =
+			"accessToken=secret123\nAuthorization: Bearer abc.def\npassword: hunter2\nINFO Started";
+		let output = super::sanitize_game_log(input);
+		assert!(!output.contains("secret123"));
+		assert!(!output.contains("abc.def"));
+		assert!(!output.contains("hunter2"));
+		assert!(output.contains("INFO Started"));
+	}
+	#[test]
+	fn configured_java_path_uses_required_major_and_keeps_pack_override() {
+		let paths = std::collections::BTreeMap::from([
+			(21, "/java-21/bin/java".to_string()),
+			(25, "/java-25/bin/java".to_string()),
+		]);
+		let mut automatic = None;
+		super::apply_default_java_path(&mut automatic, 25, &paths);
+		assert_eq!(automatic.as_deref(), Some("/java-25/bin/java"));
+		let mut override_path = Some("/pack-specific/java".to_string());
+		super::apply_default_java_path(&mut override_path, 21, &paths);
+		assert_eq!(override_path.as_deref(), Some("/pack-specific/java"));
+		let mut missing = None;
+		super::apply_default_java_path(&mut missing, 17, &paths);
+		assert!(missing.is_none());
+	}
 	#[cfg(target_os = "linux")]
 	#[test]
 	fn unicode_native_directory_has_private_ascii_alias_until_cleanup() {

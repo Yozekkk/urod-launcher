@@ -35,9 +35,14 @@ impl AppState {
 		self.engine
 			.get_or_try_init(|| async {
 				let store = self.store().await?;
-				Engine::open(store.directory.clone(), store.pool.clone())
-					.await
-					.map_err(core_commands::core_error)
+				let parallelism = store.snapshot().await?.settings.download_parallelism as usize;
+				Engine::open_with_download_parallelism(
+					store.directory.clone(),
+					store.pool.clone(),
+					parallelism,
+				)
+				.await
+				.map_err(core_commands::core_error)
 			})
 			.await
 			.cloned()
@@ -106,9 +111,7 @@ async fn rename_offline(
 ) -> Result<Snapshot> {
 	local(&window)?;
 	let store = state.store().await?;
-	let result = store.rename(&uuid, &nickname).await?;
-	let _ = tokio::fs::remove_file(store.directory.join("skins").join(format!("{uuid}.png"))).await;
-	Ok(result)
+	store.rename(&uuid, &nickname).await
 }
 #[tauri::command]
 async fn set_active(
@@ -200,6 +203,23 @@ async fn save_settings(
 			.await
 			.map_err(core_commands::core_error)?;
 	}
+	for (major, path) in &settings.java_paths {
+		if path.trim().is_empty() {
+			continue;
+		}
+		let runtime = state
+			.engine()
+			.await?
+			.validate_java(path, None)
+			.await
+			.map_err(core_commands::core_error)?;
+		if runtime.major != *major {
+			return Err(format!(
+				"Выбранная Java {major} имеет версию {}",
+				runtime.major
+			));
+		}
+	}
 	state.store().await?.settings(settings).await
 }
 #[tauri::command]
@@ -252,6 +272,15 @@ async fn skin_library_list(
 	skin_library::list(state.store().await?).await
 }
 #[tauri::command]
+async fn skin_library_history(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	account: String,
+) -> Result<Vec<skin_library::SkinHistoryEntry>> {
+	local(&window)?;
+	skin_library::history(state.store().await?, &account).await
+}
+#[tauri::command]
 async fn skin_library_save(
 	window: tauri::WebviewWindow,
 	state: tauri::State<'_, AppState>,
@@ -269,10 +298,24 @@ async fn skin_library_rename(
 	state: tauri::State<'_, AppState>,
 	id: String,
 	name: String,
+	slim: Option<bool>,
 ) -> Result<Vec<skin_library::SavedSkin>> {
 	local(&window)?;
 	let _gate = state.skin_gate.lock().await;
-	skin_library::rename(state.store().await?, &id, &name).await
+	skin_library::rename(state.store().await?, &id, &name, slim).await
+}
+#[tauri::command]
+async fn skin_library_update(
+	window: tauri::WebviewWindow,
+	state: tauri::State<'_, AppState>,
+	id: String,
+	name: String,
+	slim: bool,
+	data: Option<String>,
+) -> Result<Vec<skin_library::SavedSkin>> {
+	local(&window)?;
+	let _gate = state.skin_gate.lock().await;
+	skin_library::update(state.store().await?, &id, &name, slim, data.as_deref()).await
 }
 #[tauri::command]
 async fn skin_library_remove(
@@ -527,8 +570,10 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		save_customization,
 		skin,
 		skin_library_list,
+		skin_library_history,
 		skin_library_save,
 		skin_library_rename,
+		skin_library_update,
 		skin_library_remove,
 		skin_library_apply,
 		skin_library_reset,
@@ -556,13 +601,17 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		core_commands::core_install_game,
 		core_commands::core_launch,
 		core_commands::core_stop,
+		core_commands::core_game_log_tail,
 		core_commands::core_jobs,
 		core_commands::core_cancel,
 		core_commands::core_game_versions,
 		core_commands::core_loader_versions,
 		core_commands::core_categories,
 		core_commands::core_open_folder,
+		core_commands::core_open_backup_folder,
 		core_commands::pick_instance_icon,
+		core_commands::core_java_runtimes,
+		core_commands::core_detect_instance_java,
 		core_commands::core_pick_java,
 		core_commands::core_select_java,
 		core_commands::core_java_download,
@@ -593,8 +642,10 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		save_customization,
 		skin,
 		skin_library_list,
+		skin_library_history,
 		skin_library_save,
 		skin_library_rename,
+		skin_library_update,
 		skin_library_remove,
 		skin_library_apply,
 		skin_library_reset,
@@ -622,13 +673,17 @@ fn run() -> std::result::Result<(), Box<dyn std::error::Error>> {
 		core_commands::core_install_game,
 		core_commands::core_launch,
 		core_commands::core_stop,
+		core_commands::core_game_log_tail,
 		core_commands::core_jobs,
 		core_commands::core_cancel,
 		core_commands::core_game_versions,
 		core_commands::core_loader_versions,
 		core_commands::core_categories,
 		core_commands::core_open_folder,
+		core_commands::core_open_backup_folder,
 		core_commands::pick_instance_icon,
+		core_commands::core_java_runtimes,
+		core_commands::core_detect_instance_java,
 		core_commands::core_pick_java,
 		core_commands::core_select_java,
 		core_commands::core_java_download,

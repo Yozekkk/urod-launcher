@@ -11,10 +11,19 @@ const versions = [
 	{ id: 'multiloader', game_versions: ['1.21', '1.21.1'], loaders: ['quilt', 'fabric'] },
 ]
 test('all product routes are closed to legacy and arbitrary pages', () => {
-	for (const page of ['home', 'library', 'content', 'accounts', 'settings'])
+	for (const page of ['library', 'content', 'accounts', 'skins', 'settings'])
 		assert.equal(parseLauncherRoute('#/' + page).page, page)
-	for (const path of ['browse', 'friends', 'hosting', 'marketplace', 'user', 'instances'])
-		assert.deepEqual(parseLauncherRoute('#/' + path), { page: 'home', detail: null })
+	for (const path of [
+		'home',
+		'browse',
+		'friends',
+		'hosting',
+		'marketplace',
+		'user',
+		'instances',
+		'',
+	])
+		assert.deepEqual(parseLauncherRoute('#/' + path), { page: 'library', detail: null })
 })
 test('library and project detail retain safe identifiers and separate search parameters', () => {
 	assert.deepEqual(parseLauncherRoute('#/library/abc-123?tab=mods'), {
@@ -40,6 +49,17 @@ test('compatible version selection requires both exact Minecraft version and loa
 		compatibleVersions(versions, { ...instance, loader: 'forge' }).map((v) => v.id),
 		['wrong-loader'],
 	)
+})
+test('resource packs and shaders use Minecraft version without a mod loader constraint', () => {
+	assert.deepEqual(
+		compatibleVersions(versions, instance, 'resourcepack').map((v) => v.id),
+		['match', 'wrong-loader', 'multiloader'],
+	)
+	assert.deepEqual(
+		compatibleVersions(versions, { ...instance, loader: 'vanilla' }, 'shader').map((v) => v.id),
+		['match', 'wrong-loader', 'multiloader'],
+	)
+	assert.deepEqual(compatibleVersions(versions, undefined, 'shader'), [])
 })
 test('user status distinguishes installation, ready, running and recoverable failure', () => {
 	assert.equal(statusLabel('created'), 'Нужна установка')

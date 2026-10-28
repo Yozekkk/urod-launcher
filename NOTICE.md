@@ -1,12 +1,15 @@
 # Source and licensing
 
-UrodLauncher 0.1.0 is a separate GPL-3.0-only derivative of NCreate Launcher.
+UrodLauncher 1.0.0 is a separate GPL-3.0-only derivative of NCreate Launcher.
 It keeps the existing Rust/Tauri/Vue architecture and adapted NCreate code. The
 skin manager was informed by the open-source Millida Launcher; no Millida
 service, account infrastructure, keys or branded artwork are included.
-UrodLauncher's logo and city illustration are new, unofficial community-themed
-assets; see apps/app-frontend/public/brand/PROVENANCE.md. The old NCreate
-branding described below is provenance only and is not shipped in this UI.
+The UrodLauncher interface uses assets exported from the
+owner's Figma file `nxRBVO5kqVue97M5fgKDvZ`, including the launcher mark at
+node `3:1175`. See apps/app-frontend/public/brand/PROVENANCE.md and
+docs/FIGMA_IMPLEMENTATION_MAP.md. The earlier UrodLauncher logo and city
+illustration are historical assets. The old NCreate branding described below
+is provenance only and is not shipped in this UI.
 
 NCreate Launcher is a modified version of the GPL-3.0-only desktop application
 Modrinth App, copyright Rinth, Inc. and upstream contributors.
@@ -22,4 +25,7 @@ with the permission stated by the NCreate project owner. No OneLauncher runtime,
 backend or product services are included. Generic Poppins font files were
 converted to WOFF2 from that reference's bundled fonts; their SIL Open Font License
 is retained in apps/app-frontend/public/fonts/Poppins-OFL.txt.
+The new interface embeds Geologica and Inter variable fonts from the Google
+Fonts repositories. Their SIL Open Font License notices are retained at
+apps/app-frontend/public/fonts/OFL-Geologica.txt and OFL-Inter.txt.
 The historical seasonal artwork has been removed from UrodLauncher.

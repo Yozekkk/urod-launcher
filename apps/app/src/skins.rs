@@ -23,7 +23,7 @@ impl SkinService {
 			.redirect(reqwest::redirect::Policy::none())
 			.timeout(Duration::from_secs(12))
 			.connect_timeout(Duration::from_secs(5))
-			.user_agent("UrodLauncher/0.1.0")
+			.user_agent("UrodLauncher/1.0.0")
 			.build()
 			.map_err(|_| "Не удалось создать соединение".to_string())?;
 		Ok(Self { client })

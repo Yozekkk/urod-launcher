@@ -8,11 +8,20 @@ import {
 	validateCustomization,
 } from '../src/customization.ts'
 
-test('all forty controls have unique persisted keys and schema validation', () => {
-	assert.equal(fields.length, 40)
-	assert.deepEqual(new Set(fields.map((field) => field.key)), new Set(Object.keys(defaults)))
+test('visible customization excludes three obsolete home controls while all forty keys remain valid', () => {
+	assert.equal(fields.length, 37)
+	assert.deepEqual(new Set(fields.map((field) => field.key)).size, 37)
+	assert.deepEqual(
+		new Set(Object.keys(defaults).filter((key) => !fields.some((field) => field.key === key))),
+		new Set(['homeOrder', 'showServer', 'showNews']),
+	)
 	assert.deepEqual(validateCustomization(JSON.parse(JSON.stringify(defaults))), defaults)
 	assert.deepEqual(normalizeCustomization({ theme: 'invalid' }), defaults)
+	assert.equal(
+		normalizeCustomization({ fontFamily: 'Inter', theme: 'invalid' }).fontFamily,
+		'Inter',
+	)
+	assert.equal(normalizeCustomization({ fontFamily: 'Geologica' }).fontFamily, 'Geologica')
 	assert.throws(() => validateCustomization({ unknown: true }), /неизвестные/)
 	assert.throws(
 		() => validateCustomization({ customBackground: 'javascript:alert(1)' }),
@@ -54,4 +63,23 @@ test('previous home order keeps other saved customization values', () => {
 	const migrated = validateCustomization({ ...defaults, homeOrder: 'academy-first', fontSize: 16 })
 	assert.equal(migrated.homeOrder, 'community-first')
 	assert.equal(migrated.fontSize, 16)
+})
+
+test('all forty customization values survive validation and normalization together', () => {
+	const changed = { ...defaults }
+	for (const field of fields) {
+		const current = changed[field.key]
+		if (field.kind === 'select')
+			changed[field.key] = field.options.find((option) => option !== current)
+		if (field.kind === 'range') changed[field.key] = current === field.min ? field.max : field.min
+		if (field.kind === 'color') changed[field.key] = '#123456'
+		if (field.kind === 'toggle') changed[field.key] = !current
+	}
+	changed.customBackground = 'data:image/png;base64,YWJj'
+	changed.homeOrder = 'server-first'
+	changed.showServer = false
+	changed.showNews = false
+	assert.equal(Object.keys(changed).length, 40)
+	assert.deepEqual(validateCustomization(changed), changed)
+	assert.deepEqual(normalizeCustomization(changed), changed)
 })

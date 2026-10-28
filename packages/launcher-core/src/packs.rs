@@ -89,6 +89,8 @@ impl Engine {
 				loader,
 				loader_version,
 				memory_mb: 4096,
+				window_width: None,
+				window_height: None,
 				java_path: None,
 			})
 			.await?;
@@ -425,6 +427,8 @@ impl Engine {
 		let _ = tokio::fs::remove_file(&path).await;
 		let mut copy = result?;
 		copy.memory_mb = original.memory_mb;
+		copy.window_width = original.window_width;
+		copy.window_height = original.window_height;
 		copy.java_path = original.java_path;
 		self.save_instance(&copy).await?;
 		Ok(copy)

@@ -1,4 +1,4 @@
-export type Page = 'home' | 'library' | 'content' | 'accounts' | 'skins' | 'settings'
+export type Page = 'library' | 'content' | 'accounts' | 'skins' | 'settings'
 export type LauncherRoute = { page: Page; detail: string | null }
 
 export function parseLauncherRoute(hash: string): LauncherRoute {
@@ -13,7 +13,7 @@ export function parseLauncherRoute(hash: string): LauncherRoute {
 		return { page, detail: detail && /^[A-Za-z0-9_-]{1,128}$/.test(detail) ? detail : null }
 	}
 	if (page === 'accounts' || page === 'skins' || page === 'settings') return { page, detail: null }
-	return { page: 'home', detail: null }
+	return { page: 'library', detail: null }
 }
 
 export function formatCount(value: number): string {

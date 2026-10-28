@@ -19,6 +19,35 @@ pub struct SavedSkin {
 	pub preview: Option<Skin>,
 }
 
+#[derive(Clone, Serialize, sqlx::FromRow)]
+pub struct SkinHistoryEntry {
+	pub id: i64,
+	pub account_uuid: String,
+	pub skin_id: Option<String>,
+	pub skin_name: String,
+	pub applied_at: String,
+}
+
+pub async fn history(store: &Store, account: &str) -> Result<Vec<SkinHistoryEntry>> {
+	store.account(account).await?;
+	sqlx::query_as::<_, SkinHistoryEntry>("SELECT id, account_uuid, skin_id, skin_name, applied_at FROM skin_history WHERE account_uuid = ? ORDER BY id DESC LIMIT 100")
+		.bind(account).fetch_all(&store.pool).await.map_err(|_| "Не удалось прочитать историю скинов".into())
+}
+
+async fn record_history(store: &Store, account: &str, skin: Option<(&str, &str)>) -> Result<()> {
+	let (id, name) = skin.map_or((None, "Стандартный скин"), |(id, name)| {
+		(Some(id), name)
+	});
+	sqlx::query("INSERT INTO skin_history(account_uuid, skin_id, skin_name) VALUES(?, ?, ?)")
+		.bind(account)
+		.bind(id)
+		.bind(name)
+		.execute(&store.pool)
+		.await
+		.map_err(|_| "Не удалось сохранить историю скинов".to_string())?;
+	Ok(())
+}
+
 fn directory(store: &Store) -> std::path::PathBuf {
 	store.directory.join("skin-library")
 }
@@ -78,10 +107,13 @@ fn decode_png(data: &str) -> Result<Vec<u8>> {
 }
 async fn read_skin(store: &Store, id: &str) -> Result<Vec<u8>> {
 	let path = skin_path(store, id)?;
-	let metadata = tokio::fs::metadata(&path)
+	let metadata = tokio::fs::symlink_metadata(&path)
 		.await
 		.map_err(|_| "Скин не найден")?;
-	if !metadata.is_file() || metadata.len() > MAX_PNG_BYTES as u64 {
+	if metadata.file_type().is_symlink()
+		|| !metadata.is_file()
+		|| metadata.len() > MAX_PNG_BYTES as u64
+	{
 		return Err("Файл скина повреждён".into());
 	}
 	let bytes = tokio::fs::read(path)
@@ -131,7 +163,12 @@ pub async fn save(store: &Store, name: &str, slim: bool, data: &str) -> Result<V
 	}
 	list(store).await
 }
-pub async fn rename(store: &Store, id: &str, name: &str) -> Result<Vec<SavedSkin>> {
+pub async fn rename(
+	store: &Store,
+	id: &str,
+	name: &str,
+	slim: Option<bool>,
+) -> Result<Vec<SavedSkin>> {
 	let name = valid_name(name)?;
 	let mut skins = index(store).await?;
 	let item = skins
@@ -139,7 +176,60 @@ pub async fn rename(store: &Store, id: &str, name: &str) -> Result<Vec<SavedSkin
 		.find(|item| item.id == id)
 		.ok_or("Скин не найден")?;
 	item.name = name;
+	if let Some(slim) = slim {
+		if item.slim != slim {
+			item.active_for.clear();
+		}
+		item.slim = slim;
+	}
 	persist(store, &skins).await?;
+	list(store).await
+}
+pub async fn update(
+	store: &Store,
+	id: &str,
+	name: &str,
+	slim: bool,
+	data: Option<&str>,
+) -> Result<Vec<SavedSkin>> {
+	let name = valid_name(name)?;
+	let replacement = data.map(decode_png).transpose()?;
+	let mut skins = index(store).await?;
+	let item = skins
+		.iter_mut()
+		.find(|item| item.id == id)
+		.ok_or("Скин не найден")?;
+	let changed_appearance = item.slim != slim || replacement.is_some();
+	item.name = name;
+	item.slim = slim;
+	if changed_appearance {
+		item.active_for.clear();
+	}
+	if let Some(bytes) = replacement {
+		let path = skin_path(store, id)?;
+		let original = read_skin(store, id).await?;
+		let staging = directory(store).join(format!("{}.tmp", Uuid::new_v4()));
+		tokio::fs::write(&staging, bytes)
+			.await
+			.map_err(|_| "Не удалось подготовить новую текстуру")?;
+		if tokio::fs::rename(&staging, &path).await.is_err() {
+			let _ = tokio::fs::remove_file(staging).await;
+			return Err("Не удалось заменить текстуру скина".into());
+		}
+		if let Err(error) = persist(store, &skins).await {
+			let rollback = directory(store).join(format!("{}.tmp", Uuid::new_v4()));
+			if tokio::fs::write(&rollback, original).await.is_err()
+				|| tokio::fs::rename(&rollback, &path).await.is_err()
+			{
+				return Err(
+					"Не удалось восстановить прежнюю текстуру после ошибки записи каталога".into(),
+				);
+			}
+			return Err(error);
+		}
+	} else {
+		persist(store, &skins).await?;
+	}
 	list(store).await
 }
 pub async fn remove(store: &Store, id: &str) -> Result<Vec<SavedSkin>> {
@@ -166,6 +256,7 @@ pub async fn local_skin(store: &Store, account: &str) -> Result<Option<Skin>> {
 	Ok(Some(render(&bytes, "local", "ready")?))
 }
 pub async fn apply_local(store: &Store, account: &str, id: &str) -> Result<Vec<SavedSkin>> {
+	store.account(account).await?;
 	read_skin(store, id).await?;
 	let mut skins = index(store).await?;
 	if !skins.iter().any(|item| item.id == id) {
@@ -178,14 +269,22 @@ pub async fn apply_local(store: &Store, account: &str, id: &str) -> Result<Vec<S
 		}
 	}
 	persist(store, &skins).await?;
+	let name = &skins
+		.iter()
+		.find(|item| item.id == id)
+		.ok_or("Скин не найден")?
+		.name;
+	record_history(store, account, Some((id, name))).await?;
 	list(store).await
 }
 pub async fn reset_local(store: &Store, account: &str) -> Result<Vec<SavedSkin>> {
+	store.account(account).await?;
 	let mut skins = index(store).await?;
 	for item in &mut skins {
 		item.active_for.retain(|value| value != account);
 	}
 	persist(store, &skins).await?;
+	record_history(store, account, None).await?;
 	list(store).await
 }
 pub async fn bytes(store: &Store, id: &str) -> Result<(Vec<u8>, bool)> {
@@ -202,18 +301,36 @@ pub async fn upload_microsoft(
 	id: &str,
 	token: &str,
 ) -> Result<Vec<SavedSkin>> {
-	let (bytes, slim) = bytes(store, id).await?;
 	let client = reqwest::Client::builder()
 		.https_only(true)
 		.redirect(reqwest::redirect::Policy::none())
 		.timeout(std::time::Duration::from_secs(20))
 		.build()
 		.map_err(|_| "Не удалось подготовить соединение Minecraft")?;
+	upload_microsoft_with_client(
+		store,
+		account,
+		id,
+		token,
+		&client,
+		"https://api.minecraftservices.com/minecraft/profile",
+	)
+	.await
+}
+
+async fn upload_microsoft_with_client(
+	store: &Store,
+	account: &str,
+	id: &str,
+	token: &str,
+	client: &reqwest::Client,
+	endpoint: &str,
+) -> Result<Vec<SavedSkin>> {
+	let (bytes, slim) = bytes(store, id).await?;
 	let boundary = format!("urod-{}", Uuid::new_v4());
 	let mut body = format!("--{boundary}\r\nContent-Disposition: form-data; name=\"variant\"\r\n\r\n{}\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"skin.png\"\r\nContent-Type: image/png\r\n\r\n", if slim { "slim" } else { "classic" }).into_bytes();
 	body.extend_from_slice(&bytes);
 	body.extend_from_slice(format!("\r\n--{boundary}--\r\n").as_bytes());
-	let endpoint = "https://api.minecraftservices.com/minecraft/profile";
 	let response = client
 		.post(format!("{endpoint}/skins"))
 		.bearer_auth(token)
@@ -290,6 +407,12 @@ pub async fn upload_microsoft(
 		}
 	}
 	persist(store, &skins).await?;
+	let name = &skins
+		.iter()
+		.find(|item| item.id == id)
+		.ok_or("Скин не найден")?
+		.name;
+	record_history(store, account, Some((id, name))).await?;
 	list(store).await
 }
 
@@ -376,19 +499,22 @@ mod tests {
 	async fn stores_multiple_skins_and_restores_active_offline_skin() {
 		let directory = std::env::temp_dir().join(format!("urod-skins-{}", Uuid::new_v4()));
 		let store = Store::open(directory.clone()).await.unwrap();
+		store.add_offline("offline_test").await.unwrap();
+		let account = crate::storage::offline_uuid("offline_test").to_string();
 		let png = BASE64_STANDARD.encode(include_bytes!("../assets/steve.png"));
 		let first = save(&store, "Первый", false, &png).await.unwrap();
 		let first_id = first[0].id.clone();
 		let second = save(&store, "Второй", true, &png).await.unwrap();
 		let second_id = second[0].id.clone();
 		assert_eq!(second.len(), 2);
-		apply_local(&store, "offline-test", &first_id)
+		let edited = rename(&store, &second_id, "Переименован", Some(false))
 			.await
 			.unwrap();
-		assert!(local_skin(&store, "offline-test").await.unwrap().is_some());
-		apply_local(&store, "offline-test", &second_id)
-			.await
-			.unwrap();
+		assert_eq!(edited[0].name, "Переименован");
+		assert!(!edited[0].slim);
+		apply_local(&store, &account, &first_id).await.unwrap();
+		assert!(local_skin(&store, &account).await.unwrap().is_some());
+		apply_local(&store, &account, &second_id).await.unwrap();
 		let reloaded = list(&store).await.unwrap();
 		assert_eq!(
 			reloaded
@@ -398,11 +524,287 @@ mod tests {
 			1
 		);
 		assert_eq!(reloaded[0].id, second_id);
-		assert_eq!(reloaded[0].active_for, ["offline-test"]);
-		reset_local(&store, "offline-test").await.unwrap();
-		assert!(local_skin(&store, "offline-test").await.unwrap().is_none());
+		assert_eq!(reloaded[0].active_for, [account.as_str()]);
+		assert_eq!(history(&store, &account).await.unwrap().len(), 2);
+		let original = bytes(&store, &second_id).await.unwrap().0;
+		assert!(
+			update(&store, &second_id, "Изменён", true, Some("not a PNG"))
+				.await
+				.is_err()
+		);
+		assert_eq!(bytes(&store, &second_id).await.unwrap().0, original);
+		assert_eq!(list(&store).await.unwrap()[0].name, "Переименован");
+		let mut image = image::load_from_memory(&original).unwrap().to_rgba8();
+		image.put_pixel(8, 8, image::Rgba([244, 32, 31, 255]));
+		let mut encoded = std::io::Cursor::new(Vec::new());
+		image::DynamicImage::ImageRgba8(image)
+			.write_to(&mut encoded, image::ImageFormat::Png)
+			.unwrap();
+		let replacement = BASE64_STANDARD.encode(encoded.into_inner());
+		let updated = update(&store, &second_id, "Изменён", true, Some(&replacement))
+			.await
+			.unwrap();
+		assert_eq!(updated[0].name, "Изменён");
+		assert!(updated[0].slim);
+		assert!(updated[0].active_for.is_empty());
+		assert_ne!(bytes(&store, &second_id).await.unwrap().0, original);
+		assert!(local_skin(&store, &account).await.unwrap().is_none());
+		reset_local(&store, &account).await.unwrap();
+		assert!(local_skin(&store, &account).await.unwrap().is_none());
+		assert_eq!(history(&store, &account).await.unwrap().len(), 3);
 		remove(&store, &first_id).await.unwrap();
 		assert_eq!(list(&store).await.unwrap().len(), 1);
+		drop(store);
+		let _ = tokio::fs::remove_dir_all(directory).await;
+	}
+	#[tokio::test]
+	async fn fifteen_pngs_keep_per_account_selections_and_history_after_reopens() {
+		let directory = std::env::temp_dir().join(format!("urod-skin-stress-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone())
+			.await
+			.expect("isolated store");
+		let accounts = ["SkinUserA", "SkinUserB", "SkinUserC"];
+		for name in accounts {
+			store.add_offline(name).await.expect("account");
+		}
+		let base = image::load_from_memory(include_bytes!("../assets/steve.png"))
+			.unwrap()
+			.to_rgba8();
+		let mut ids = Vec::new();
+		for n in 0..15 {
+			let mut image = base.clone();
+			image.put_pixel(8, 8, image::Rgba([n, 40, 80, 255]));
+			let mut output = std::io::Cursor::new(Vec::new());
+			image::DynamicImage::ImageRgba8(image)
+				.write_to(&mut output, image::ImageFormat::Png)
+				.unwrap();
+			let saved = save(
+				&store,
+				&format!("Skin {n}"),
+				n % 2 == 1,
+				&BASE64_STANDARD.encode(output.into_inner()),
+			)
+			.await
+			.expect("PNG import");
+			ids.push(saved[0].id.clone());
+		}
+		assert_eq!(list(&store).await.unwrap().len(), 15);
+		assert_eq!(
+			ids.iter().collect::<std::collections::HashSet<_>>().len(),
+			15
+		);
+		for (position, name) in accounts.iter().enumerate() {
+			let account = crate::storage::offline_uuid(name).to_string();
+			for id in ids.iter().skip(position).take(3) {
+				apply_local(&store, &account, id)
+					.await
+					.expect("select skin");
+			}
+			assert_eq!(history(&store, &account).await.unwrap().len(), 3);
+			assert_eq!(
+				history(&store, &account).await.unwrap()[0]
+					.skin_id
+					.as_deref(),
+				Some(ids[position + 2].as_str())
+			);
+		}
+		let malformed = BASE64_STANDARD.encode(b"\x89PNG\r\n\x1a\ninvalid");
+		assert!(save(&store, "broken", false, &malformed).await.is_err());
+		let invalid_size = image::DynamicImage::new_rgba8(32, 32);
+		let mut output = std::io::Cursor::new(Vec::new());
+		invalid_size
+			.write_to(&mut output, image::ImageFormat::Png)
+			.unwrap();
+		assert!(
+			save(
+				&store,
+				"wrong size",
+				false,
+				&BASE64_STANDARD.encode(output.into_inner())
+			)
+			.await
+			.is_err()
+		);
+		store.pool.close().await;
+		for _ in 0..20 {
+			let reopened = Store::open(directory.clone()).await.expect("reopen store");
+			assert_eq!(list(&reopened).await.unwrap().len(), 15);
+			for (position, name) in accounts.iter().enumerate() {
+				let account = crate::storage::offline_uuid(name).to_string();
+				let selected = list(&reopened)
+					.await
+					.unwrap()
+					.into_iter()
+					.find(|item| item.active_for.contains(&account))
+					.expect("selected skin");
+				assert_eq!(selected.id, ids[position + 2]);
+				let history = history(&reopened, &account).await.expect("history");
+				assert_eq!(history.len(), 3);
+				assert!(
+					history
+						.iter()
+						.all(|entry| entry.account_uuid == account && !entry.applied_at.is_empty())
+				);
+			}
+			reopened.pool.close().await;
+		}
+		let reopened = Store::open(directory.clone()).await.unwrap();
+		let account = crate::storage::offline_uuid(accounts[0]).to_string();
+		apply_local(&reopened, &account, &ids[0])
+			.await
+			.expect("restore previous skin");
+		assert_eq!(history(&reopened, &account).await.unwrap().len(), 4);
+		rename(&reopened, &ids[0], "Restored", None)
+			.await
+			.expect("rename skin");
+		remove(&reopened, &ids[1]).await.expect("delete skin");
+		assert_eq!(list(&reopened).await.unwrap().len(), 14);
+		reopened.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[tokio::test]
+	async fn microsoft_skin_mock_records_only_a_verified_profile_change() {
+		use std::sync::{
+			Arc,
+			atomic::{AtomicBool, AtomicU8, Ordering},
+		};
+		let directory = std::env::temp_dir().join(format!("urod-ms-skin-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone())
+			.await
+			.expect("isolated store");
+		let account_id = Uuid::new_v4();
+		store
+			.microsoft(
+				urod_app_lib::MicrosoftProfile {
+					uuid: account_id,
+					nickname: "SyntheticMicrosoft".into(),
+					skin_url: None,
+				},
+				true,
+			)
+			.await
+			.expect("synthetic profile");
+		let account = account_id.to_string();
+		let png = BASE64_STANDARD.encode(include_bytes!("../assets/steve.png"));
+		let id = save(&store, "Mock Skin", false, &png).await.unwrap()[0]
+			.id
+			.clone();
+		let server = tiny_http::Server::http("127.0.0.1:0").expect("mock bind");
+		let endpoint = format!("http://{}/minecraft/profile", server.server_addr());
+		let mode = Arc::new(AtomicU8::new(1));
+		let stop = Arc::new(AtomicBool::new(false));
+		let worker_mode = mode.clone();
+		let worker_stop = stop.clone();
+		let expected_id = account.replace('-', "");
+		let worker = std::thread::spawn(move || {
+			while !worker_stop.load(Ordering::SeqCst) {
+				let Some(request) = server
+					.recv_timeout(std::time::Duration::from_millis(20))
+					.expect("mock request")
+				else {
+					continue;
+				};
+				assert!(
+					request
+						.headers()
+						.iter()
+						.any(|header| header.field.equiv("Authorization")
+							&& header.value.as_str() == "Bearer synthetic-skin-token")
+				);
+				let phase = worker_mode.load(Ordering::SeqCst);
+				let response = if request.url().ends_with("/skins") {
+					if phase == 1 {
+						tiny_http::Response::from_string("expired").with_status_code(401)
+					} else if phase == 3 {
+						tiny_http::Response::from_string("offline").with_status_code(503)
+					} else {
+						tiny_http::Response::from_string("{}").with_status_code(200)
+					}
+				} else if phase == 4 {
+					tiny_http::Response::from_string("offline").with_status_code(503)
+				} else {
+					let id = if phase == 2 {
+						"wrong-profile"
+					} else {
+						&expected_id
+					};
+					let body = serde_json::json!({"id":id,"skins":[{"state":"ACTIVE","variant":"CLASSIC","url":"https://textures.minecraft.net/texture/synthetic"}]}).to_string();
+					tiny_http::Response::from_string(body).with_status_code(200)
+				};
+				request.respond(response).expect("mock response");
+			}
+		});
+		let client = reqwest::Client::builder()
+			.redirect(reqwest::redirect::Policy::none())
+			.timeout(std::time::Duration::from_secs(2))
+			.build()
+			.unwrap();
+		let token = "synthetic-skin-token";
+		let expired =
+			upload_microsoft_with_client(&store, &account, &id, token, &client, &endpoint)
+				.await
+				.err()
+				.expect("rejected upload");
+		assert!(expired.contains("истекла"));
+		assert!(!expired.contains(token));
+		assert!(history(&store, &account).await.unwrap().is_empty());
+		mode.store(3, Ordering::SeqCst);
+		let unavailable =
+			upload_microsoft_with_client(&store, &account, &id, token, &client, &endpoint)
+				.await
+				.err()
+				.expect("service unavailable");
+		assert!(unavailable.contains("HTTP 503"));
+		assert!(history(&store, &account).await.unwrap().is_empty());
+		mode.store(2, Ordering::SeqCst);
+		let mismatch =
+			upload_microsoft_with_client(&store, &account, &id, token, &client, &endpoint)
+				.await
+				.err()
+				.expect("rejected upload");
+		assert!(mismatch.contains("другой профиль"));
+		assert!(history(&store, &account).await.unwrap().is_empty());
+		mode.store(4, Ordering::SeqCst);
+		let unverified =
+			upload_microsoft_with_client(&store, &account, &id, token, &client, &endpoint)
+				.await
+				.err()
+				.expect("profile unavailable");
+		assert!(unverified.contains("Не удалось проверить профиль"));
+		assert!(history(&store, &account).await.unwrap().is_empty());
+		mode.store(0, Ordering::SeqCst);
+		let saved = upload_microsoft_with_client(&store, &account, &id, token, &client, &endpoint)
+			.await
+			.expect("verified upload");
+		assert_eq!(saved[0].active_for, [account.as_str()]);
+		assert_eq!(
+			history(&store, &account).await.unwrap()[0]
+				.skin_id
+				.as_deref(),
+			Some(id.as_str())
+		);
+		stop.store(true, Ordering::SeqCst);
+		worker.join().expect("mock server join");
+		store.pool.close().await;
+		tokio::fs::remove_dir_all(directory).await.expect("cleanup");
+	}
+	#[cfg(unix)]
+	#[tokio::test]
+	async fn rejects_a_symlink_replacing_a_saved_skin() {
+		let directory = std::env::temp_dir().join(format!("urod-skin-link-{}", Uuid::new_v4()));
+		let store = Store::open(directory.clone()).await.unwrap();
+		let png = BASE64_STANDARD.encode(include_bytes!("../assets/steve.png"));
+		let saved = save(&store, "Link test", false, &png).await.unwrap();
+		let id = &saved[0].id;
+		let path = skin_path(&store, id).unwrap();
+		tokio::fs::remove_file(&path).await.unwrap();
+		std::os::unix::fs::symlink(
+			Path::new(env!("CARGO_MANIFEST_DIR")).join("assets/steve.png"),
+			&path,
+		)
+		.unwrap();
+		assert!(read_skin(&store, id).await.is_err());
+		assert!(list(&store).await.unwrap()[0].preview.is_none());
 		drop(store);
 		let _ = tokio::fs::remove_dir_all(directory).await;
 	}
