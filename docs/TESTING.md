@@ -2,6 +2,8 @@
 
 Updated: 2026-10-27. Branch: `release/1.0.0-figma-stable`. Results describe only checks observed on this Linux host and in the linked CI runs. Native tests used isolated launcher data under `/tmp/urod-figma-rc` and `.qa-runtime/urod-figma-native`; live loader tests used an ignored local cache in `.qa-runtime`.
 
+The 1.0.0 release-candidate [PR CI run 40566825264](https://github.com/Yozekkk/urod-launcher/actions/runs/40566825264) passed verification and Windows, Debian and Arch packaging. The Windows runner silently installed NSIS and read ProductVersion `1.0.0` from the installed executable; Debian installed the DEB with apt and Arch installed the PKG with pacman. The downloaded package metadata and names all identify 1.0.0. The locally built 1.0.0 release binary opened a real Library window using isolated data. Windows GUI and installed Debian GUI execution remain untested. Details are in [TEST-REPORT.md](TEST-REPORT.md).
+
 The Library First, account and skin-history checks are recorded separately in [TEST-REPORT.md](TEST-REPORT.md). They include three 20-launch Tauri runs, the last with all 40 customization values, and the latest 126 passing frontend/Rust tests. This table also retains historical 0.1.0 checks instead of relabeling them as current Stable results. [CI run 40457515119](https://github.com/Yozekkk/urod-launcher/actions/runs/40457515119) passed verification and Windows, Debian and Arch package builds on code and test commit `5490ace`.
 
 | Command or scenario | Outcome |
